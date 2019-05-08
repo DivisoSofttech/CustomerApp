@@ -11,26 +11,60 @@
 </ion-header>
 
 <ion-content>
-
     <ion-item lines="none">
       <ion-searchbar></ion-searchbar>
-      <ion-button color="light">
+      <ion-button color="light" (click)="presentFilterModal()">
       <ion-icon name="options"></ion-icon>
       </ion-button>
     </ion-item>
-    <ion-card>
-        <ion-card-header>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          <ion-card-title>Card Title</ion-card-title>
-        </ion-card-header>
+    <ion-card (click)="showHotelMenu()"> 
         <ion-item lines="none">
           <ion-img src="/assets/images/pizza.jpg" class="imageShow">
             </ion-img>
         <ion-card-content>
-          Keep close to Nature's heart... and break clear away, once in awhile,
-          and climb a mountain or spend a week in the woods. Wash your spirit clean.
+            <ion-card-title>Pizza</ion-card-title>
+            <ion-card-subtitle>white stand</ion-card-subtitle>
+          <ion-text><strong>100Rs</strong></ion-text>
         </ion-card-content>
       </ion-item>
       </ion-card>
+      <ion-card (click)="showHotelMenu()">
+             
+        <ion-item lines="none">
+          <ion-img src="/assets/images/fry.jpg" class="imageShow">
+            </ion-img>
+        <ion-card-content>
+            <ion-card-title>Fry</ion-card-title>
+            <ion-card-subtitle>white stand</ion-card-subtitle>      
+          <ion-text><strong>100Rs</strong></ion-text>
+        </ion-card-content>
+      </ion-item>
+      </ion-card>
+
+      <ion-card (click)="showHotelMenu()">
+             
+          <ion-item lines="none">
+            <ion-img src="/assets/images/icecream.jpg" class="imageShow">
+              </ion-img>
+          <ion-card-content>
+              <ion-card-title>Ice cream</ion-card-title>
+              <ion-card-subtitle>white stand</ion-card-subtitle>      
+            <ion-text><strong>100Rs</strong></ion-text>
+          </ion-card-content>
+        </ion-item>
+        </ion-card>
+        <ion-card (click)="showHotelMenu()">
+             
+            <ion-item lines="none">
+              <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
+                </ion-img>
+            <ion-card-content>
+                <ion-card-title>Frut flower</ion-card-title>
+                <ion-card-subtitle>white stand</ion-card-subtitle>      
+              <ion-text><strong>100Rs</strong></ion-text>
+            </ion-card-content>
+          </ion-item>
+          </ion-card>
+        
       
 </ion-content>

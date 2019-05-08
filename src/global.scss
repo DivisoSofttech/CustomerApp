@@ -9,3 +9,31 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+
+ion-modal.half-height {
+
+    &.bottom {
+    align-items: flex-end;
+    }
+    
+    --height: 157vw;;
+    
+    
+        .modal-wrapper {
+            position: absolute;
+            bottom: -3%;
+            border-radius: 4%;
+        }
+    
+    
+    .ion-page {
+        position: relative;
+        display: block;
+        contain: content;
+        .inner-content {
+        max-height: 80vh;
+        overflow: auto;
+        padding: 10px;
+        }
+    }
+}
