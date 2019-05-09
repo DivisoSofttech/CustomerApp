@@ -17,10 +17,9 @@ export class Tab1Page {
   }
   async presentFilterModal()
   {
-    
     const modal=await this.modalController.create({
       component : FilterComponent,
-      cssClass : 'half-height',
+       cssClass : 'half-height',
       showBackdrop : true
     });
     return await modal.present();
