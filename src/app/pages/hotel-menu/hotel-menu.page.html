@@ -1,11 +1,9 @@
 <ion-header>
   <ion-toolbar>
- <ion-item inline>
-       <ion-back-button>
-        </ion-back-button>
-        <ion-title>White Stand Menu</ion-title>
-    
-  </ion-item >
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+      <ion-title>White Stand Menu</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,69 +11,68 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-    <ion-img src="/assets/images/pizza.jpg"></ion-img>
-  </ion-col>
-  </ion-row>  
-  <ion-row>
-    <ion-col size="6">
-      <ion-item>
-        <ion-label>
-          veg only 
-        </ion-label>
-        <ion-toggle color="primary" dis></ion-toggle> 
-      </ion-item>
-    </ion-col>
-  </ion-row>
-   <ion-card > 
+        <ion-img src="/assets/images/pizza.jpg"></ion-img>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <ion-item lines="none">
+          <ion-label>
+            veg only
+          </ion-label>
+          <ion-toggle color="primary"></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-card>
       <ion-item lines="none">
         <ion-img src="/assets/images/pizza.jpg" class="imageShow">
-          </ion-img>
-      <ion-card-content>
-          <ion-card-title>Pizza</ion-card-title>
-        <ion-text><strong>100Rs</strong></ion-text>
-      </ion-card-content>
-    </ion-item>
-    </ion-card>
-    <ion-card >
-           
-      <ion-item lines="none">
-        <ion-img src="/assets/images/fry.jpg" class="imageShow">
-          </ion-img>
-      <ion-card-content>
-          <ion-card-title>Fry</ion-card-title>
-        <ion-text><strong>100Rs</strong></ion-text>
-      </ion-card-content>
-    </ion-item>
-    </ion-card>
-
-    <ion-card >
-           
-        <ion-item lines="none">
-          <ion-img src="/assets/images/icecream.jpg" class="imageShow">
-            </ion-img>
+        </ion-img>
         <ion-card-content>
-            <ion-card-title>Ice cream</ion-card-title>
-   
+          <ion-card-title>Pizza</ion-card-title>
           <ion-text><strong>100Rs</strong></ion-text>
         </ion-card-content>
       </ion-item>
-      </ion-card>
-      <ion-card >
-           
-          <ion-item lines="none">
-            <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
-              </ion-img>
-          <ion-card-content>
-              <ion-card-title>Frut flower</ion-card-title>
-            <ion-text><strong>100Rs</strong></ion-text>
-          </ion-card-content>
-        </ion-item>
-        </ion-card>
-      
+    </ion-card>
+    <ion-card>
+
+      <ion-item lines="none">
+        <ion-img src="/assets/images/fry.jpg" class="imageShow">
+        </ion-img>
+        <ion-card-content>
+          <ion-card-title>Fry</ion-card-title>
+          <ion-text><strong>100Rs</strong></ion-text>
+        </ion-card-content>
+      </ion-item>
+    </ion-card>
+
+    <ion-card>
+      <ion-item lines="none">
+        <ion-img src="/assets/images/icecream.jpg" class="imageShow">
+        </ion-img>
+        <ion-card-content>
+          <ion-card-title>Ice cream</ion-card-title>
+
+          <ion-text><strong>100Rs</strong></ion-text>
+        </ion-card-content>
+      </ion-item>
+    </ion-card>
+    <ion-card>
+
+      <ion-item lines="none">
+        <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
+        </ion-img>
+        <ion-card-content>
+          <ion-card-title>Frut flower</ion-card-title>
+          <ion-text><strong>100Rs</strong></ion-text>
+        </ion-card-content>
+      </ion-item>
+    </ion-card>
+
   </ion-grid>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
-      <ion-fab-button (click)=presentPopover($event)>
-        <ion-icon name="pizza"></ion-icon>
- </ion-fab-button>
-    </ion-fab>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)=presentPopover($event)>
+      <ion-icon name="pizza"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
