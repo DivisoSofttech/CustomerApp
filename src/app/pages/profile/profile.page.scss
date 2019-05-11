@@ -23,3 +23,37 @@ p{
     margin-left: 69%;
 
 }
+
+.reviewProfile{
+    display: block;
+    border-radius: 51%;
+    width: 12%;
+    margin: 2vw;
+    height: 12%;
+  }
+  .commentText{
+    margin-left: 18%;
+  }
+  .cardHeaderCustom{
+    background-color: #efeeee;
+  }
+
+.ion-color-vibrant {
+    --ion-color-base:  #efeeee;
+    --ion-color-base-rgb: 255,255,0;
+    --ion-color-contrast: #000000;
+    --ion-color-contrast-rgb: 0,0,0;
+    --ion-color-shade: #e0e000;
+    --ion-color-tint: #ffff1a;
+  }
+  .font2{
+    text-align: center;
+    font-size: 50px;
+}
+.imageShow{
+    position: relative;
+    left: 0%;
+    top: 0%;
+    height: 106px;
+    width: 145px;
+  } 

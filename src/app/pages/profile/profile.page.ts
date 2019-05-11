@@ -8,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-
+  currentSubPage : string = 'history'
+  segmentChanged(ev : any)
+  {
+    this.currentSubPage = ev.detail.value;
+  }
   constructor(private oauthService: OAuthService,
               private toastController: ToastController,
               private alertController: AlertController,
@@ -25,11 +29,6 @@ export class ProfilePage implements OnInit {
   presentPopover(){
 
   }
-
-  segmentChanged(event) {
-
-  }
-
   logout() {
     this.oauthService.logOut();
     this.presentToast('You\'ve been logged out');
