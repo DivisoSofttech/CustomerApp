@@ -14,6 +14,10 @@ const routes: Routes = [
   },
   { path: 'restaurants',
     loadChildren: './pages/restaurants/restaurants.module#RestaurantsPageModule'
+  },
+  { path: 'profile',
+    loadChildren: './pages/profile/profile.module#ProfilePageModule',
+    // canActivate: [AuthGuardService]
   }
 
 ];

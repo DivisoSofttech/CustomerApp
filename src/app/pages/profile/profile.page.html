@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+ <ion-buttons slot="end">
+   <ion-button >
+      <ion-icon name="notifications" ></ion-icon>
+   </ion-button>
+ </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-card>
+        <ion-item>
+            <ion-card-subtitle slot="start" slot="start"><strong>Tony Stark</strong>
+            <p>cool</p></ion-card-subtitle>
+           
+          <img src="assets/images/toney.jpg" slot="end" class="img"/>
+        </ion-item>
+        <ion-item>
+            <ion-card-subtitle size="3" slot="start" slot="start">palakkad</ion-card-subtitle>
+            <ion-button class="editButton">edit</ion-button>
+        </ion-item>
+      </ion-card>
+
+      <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true">
+          <ion-segment-button value="friends">
+            <ion-label color="primary">Frequently Odered</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="enemies">
+            <ion-label color="primary">History</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Reviews">
+            <ion-label color="primary">Reviews</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+
+  </ion-content>
