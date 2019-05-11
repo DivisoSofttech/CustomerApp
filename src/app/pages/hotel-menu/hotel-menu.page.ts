@@ -13,6 +13,7 @@ export class HotelMenuPage implements OnInit {
   constructor(private popoverController: PopoverController ) { }
   simple : boolean =true;
   currentSubPage : string = 'menu';
+  rate : number;
   ngOnInit() {
   }
   async presentPopover(ev: any) {

@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.13.8",
-    "@angular-devkit/build-angular": "~0.13.8",
+    "@angular-devkit/build-angular": "^0.13.9",
     "@angular-devkit/core": "~7.3.8",
     "@angular-devkit/schematics": "~7.3.8",
     "@angular/cli": "~7.3.8",
@@ -57,6 +57,7 @@
     "@types/node": "~12.0.0",
     "angular-oauth2-oidc": "^5.0.2",
     "codelyzer": "~4.5.0",
+    "ionic-rating": "^1.0.6",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",

@@ -21,16 +21,155 @@
         </ion-item>
       </ion-card>
 
-      <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true">
-          <ion-segment-button value="friends">
-            <ion-label color="primary">Frequently Odered</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="enemies">
+      <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true" value="history">
+          <ion-segment-button value="history">
             <ion-label color="primary">History</ion-label>
           </ion-segment-button>
-          <ion-segment-button value="Reviews">
+          <ion-segment-button value="reviews">
             <ion-label color="primary">Reviews</ion-label>
           </ion-segment-button>
+          <ion-segment-button value="frequently odered">
+              <ion-label color="primary">Frequently Odered</ion-label>
+            </ion-segment-button>
         </ion-segment>
-
+        <ion-row *ngIf="'reviews' === currentSubPage">
+            <ion-col>
+                <ion-card>
+                    <ion-item lines="none" color="vibrant">
+                    <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                    <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                    </ion-card-subtitle> 
+                    </ion-item>
+                    <ion-item lines="none"> 
+                        <ion-card-subtitle class="commentText">
+                            the food is awsome you need to try once 
+                        </ion-card-subtitle>
+                    </ion-item>
+                </ion-card>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="'reviews' === currentSubPage">
+              <ion-col>
+                  <ion-card>
+                      <ion-item lines="none" color="vibrant">
+                      <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                      <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                      </ion-card-subtitle> 
+                      </ion-item>
+                      <ion-item lines="none"> 
+                          <ion-card-subtitle class="commentText">
+                              the food is awsome you need to try once 
+                          </ion-card-subtitle>
+                      </ion-item>
+                  </ion-card>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="'reviews' === currentSubPage"> 
+                <ion-col>
+                    <ion-card>
+                        <ion-item lines="none" color="vibrant">
+                        <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                        <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                        </ion-card-subtitle> 
+                        </ion-item>
+                        <ion-item lines="none"> 
+                            <ion-card-subtitle class="commentText">
+                                the food is awsome you need to try once 
+                            </ion-card-subtitle>
+                        </ion-item>
+                    </ion-card>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="'reviews' === currentSubPage">
+                  <ion-col>
+                      <ion-card>
+                          <ion-item lines="none" color="vibrant">
+                          <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                          <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                          </ion-card-subtitle> 
+                          </ion-item>
+                          <ion-item lines="none"> 
+                              <ion-card-subtitle class="commentText">
+                                  the food is awsome you need to try once 
+                              </ion-card-subtitle>
+                          </ion-item>
+                      </ion-card>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="'reviews' === currentSubPage">
+                    <ion-col>
+                        <ion-card>
+                            <ion-item lines="none" color="vibrant">
+                            <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                            <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                            </ion-card-subtitle> 
+                            </ion-item>
+                            <ion-item lines="none"> 
+                                <ion-card-subtitle class="commentText">
+                                    the food is awsome you need to try once 
+                                </ion-card-subtitle>
+                            </ion-item>
+                        </ion-card>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="'reviews' === currentSubPage">
+                      <ion-col>
+                          <ion-card>
+                              <ion-item lines="none" color="vibrant">
+                              <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                              <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                              </ion-card-subtitle> 
+                              </ion-item>
+                              <ion-item lines="none"> 
+                                  <ion-card-subtitle class="commentText">
+                                      the food is awsome you need to try once 
+                                  </ion-card-subtitle>
+                              </ion-item>
+                          </ion-card>
+                      </ion-col>
+                    </ion-row>
+                    <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage">
+                        <ion-item lines="none">
+                          <ion-img src="/assets/images/pizza.jpg" class="imageShow">
+                          </ion-img>
+                          <ion-card-content>
+                            <ion-card-title>Pizza</ion-card-title>
+                            <ion-text><strong>100Rs</strong></ion-text>
+                          </ion-card-content>
+                        </ion-item>
+                      </ion-card>
+                      <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage"> 
+                  
+                        <ion-item lines="none">
+                          <ion-img src="/assets/images/fry.jpg" class="imageShow">
+                          </ion-img>
+                          <ion-card-content>
+                            <ion-card-title>Fry</ion-card-title>
+                            <ion-text><strong>100Rs</strong></ion-text>
+                          </ion-card-content>
+                        </ion-item>
+                      </ion-card>
+                  
+                      <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage">
+                        <ion-item lines="none">
+                          <ion-img src="/assets/images/icecream.jpg" class="imageShow">
+                          </ion-img>
+                          <ion-card-content>
+                            <ion-card-title>Ice cream</ion-card-title>
+                  
+                            <ion-text><strong>100Rs</strong></ion-text>
+                          </ion-card-content>
+                        </ion-item>
+                      </ion-card>
+                      <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage">
+                  
+                        <ion-item lines="none">
+                          <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
+                          </ion-img>
+                          <ion-card-content>
+                            <ion-card-title>Frut flower</ion-card-title>
+                            <ion-text><strong>100Rs</strong></ion-text>
+                          </ion-card-content>
+                        </ion-item>
+                      </ion-card>
   </ion-content>

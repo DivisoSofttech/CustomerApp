@@ -6,19 +6,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-
+  currentSubPage : string = 'history'
   constructor() { }
 
   ngOnInit() {
   }
-  edit(){
-
-  }
-  save(){
-
-  }
-  presentPopover(){
-    
+  
+  segmentChanged(ev : any)
+  {
+    this.currentSubPage = ev.detail.value;
   }
 
 }
