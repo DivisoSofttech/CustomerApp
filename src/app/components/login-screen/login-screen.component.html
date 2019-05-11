@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()" >
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid margin-top>
+    <ion-row justify-content-center>
+      <ion-col size="6" text-center>
+        <div class="circle">
+          <ion-icon class="large-icon" name="person"></ion-icon>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row justify-content-center>
+      <ion-col text-center>
+        <ion-item  class="item-inner" >
+          <ion-label color="medium"  position="floating">Username or Email</ion-label>
+          <ion-input [(ngModel)]="username"  background="light"></ion-input>
+        </ion-item>
+        <ion-item class="item-inner">
+          <ion-label color="medium" position="floating">Passsword</ion-label>
+          <ion-input [(ngModel)]="password"  type="password"></ion-input>
+        </ion-item>
+        <ion-button [disabled]="disabled()" (click)="login()"  expand="block" margin-top margin-bottom>Login</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

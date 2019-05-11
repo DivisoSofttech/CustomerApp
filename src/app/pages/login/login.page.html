@@ -1,22 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button (click)="navigateRoot()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-title>Login to continue</ion-title>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
   <ion-img src="/assets/images/logimag3.jpg"> </ion-img>
 
   <div class="card-title2" color="light">
-          <strong>Continue as</strong>
+    <strong>Continue with</strong>
   </div>
-  <ion-text  class="button2">i'll log in later</ion-text>
+  <ion-text class="button2">i'll log in later</ion-text>
   <ion-grid class>
-   
-    
-        <ion-fab >
-            <ion-row text-center>
-          <ion-item lines="none">
-            <ion-col>
+
+
+    <ion-fab>
+      <ion-row text-center>
+        <ion-item lines="none">
+          <ion-col>
             <ion-fab-button>
               <ion-icon name="logo-facebook"></ion-icon>
             </ion-fab-button>
-            </ion-col>
-            <ion-col>
+          </ion-col>
+          <ion-col>
             <ion-fab-button color="secondary">
               <ion-icon name="logo-twitter"></ion-icon>
             </ion-fab-button>
@@ -27,18 +37,18 @@
             </ion-fab-button>
           </ion-col>
           <ion-col>
-              <ion-fab-button color="success">
-                  <ion-icon name="mail"></ion-icon>
-              </ion-fab-button>
-            </ion-col>
-          </ion-item>
-        </ion-row>
-        </ion-fab>
+            <ion-fab-button color="success" (click)="showLoginPage()">
+              <ion-icon name="mail"></ion-icon>
+            </ion-fab-button>
+          </ion-col>
+        </ion-item>
+      </ion-row>
+    </ion-fab>
 
-        <ion-row>
-          
-        </ion-row>
+    <ion-row>
+
+    </ion-row>
   </ion-grid>
- 
+
 
 </ion-content>

@@ -1,4 +1,3 @@
-import { LoginScreenComponent } from './../../components/login-screen/login-screen.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,13 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { LoginPage } from './login.page';
-import { ComponentsModule } from 'src/app/components/components.module';
+import { BasketPage } from './basket.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginPage
+    component: BasketPage
   }
 ];
 
@@ -21,12 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    ComponentsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [LoginPage],
-  entryComponents: [
-    LoginScreenComponent
-  ]
+  declarations: [BasketPage]
 })
-export class LoginPageModule {}
+export class BasketPageModule {}
