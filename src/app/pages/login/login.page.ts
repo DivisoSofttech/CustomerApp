@@ -1,6 +1,8 @@
+import { OAuthService } from 'angular-oauth2-oidc';
 import { LoginScreenComponent } from './../../components/login-screen/login-screen.component';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
+import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +11,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private modalController: ModalController) { }
+  username = '';
+  password = '';
+  constructor(private modalController: ModalController,
+              private navController: NavController,
+              private oauthService: OAuthService,
+              private navCtrl: NavController,
+              private toastController: ToastController) { }
 
   ngOnInit() {
   }
@@ -21,4 +29,7 @@ export class LoginPage implements OnInit {
     await modal.present();
   }
 
+  navigateRoot() {
+    this.navController.navigateRoot('/tabs');
+  }
 }

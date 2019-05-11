@@ -17,8 +17,11 @@ const routes: Routes = [
   },
   { path: 'profile',
     loadChildren: './pages/profile/profile.module#ProfilePageModule',
-    // canActivate: [AuthGuardService]
-  }
+    canActivate: [AuthGuardService]
+  },
+  { path: 'basket', loadChildren: './pages/basket/basket.module#BasketPageModule' },
+  { path: 'search', loadChildren: './pages/search/search.module#SearchPageModule' }
+
 
 ];
 @NgModule({

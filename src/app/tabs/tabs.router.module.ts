@@ -1,4 +1,4 @@
-import { RestaurantsPage } from './../pages/restaurants/restaurants.page';
+import { AuthGuardService } from './../services/security/auth-guard.service';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
@@ -18,11 +18,20 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tab2',
+        path: 'search',
         children: [
           {
             path: '',
-            loadChildren: '../tab2/tab2.module#Tab2PageModule'
+            loadChildren: '../pages/search/search.module#SearchPageModule'
+          }
+        ]
+      },
+      {
+        path: 'basket',
+        children: [
+          {
+            path: '',
+            loadChildren: '../pages/basket/basket.module#BasketPageModule'
           }
         ]
       },
@@ -31,7 +40,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../pages/profile/profile.module#ProfilePageModule'
+            loadChildren: '../pages/profile/profile.module#ProfilePageModule',
+            canActivate: [AuthGuardService]
           }
         ]
       },
@@ -44,7 +54,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/tabs/home',
+    redirectTo: '/tabs',
     pathMatch: 'full'
   }
 ];

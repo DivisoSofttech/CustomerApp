@@ -1,3 +1,5 @@
+import { ToastController, AlertController, NavController } from '@ionic/angular';
+import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfilePage implements OnInit {
 
-  constructor() { }
+  constructor(private oauthService: OAuthService,
+              private toastController: ToastController,
+              private alertController: AlertController,
+              private navController: NavController) { }
 
   ngOnInit() {
   }
@@ -18,7 +23,45 @@ export class ProfilePage implements OnInit {
 
   }
   presentPopover(){
-    
+
+  }
+
+  segmentChanged(event) {
+
+  }
+
+  logout() {
+    this.oauthService.logOut();
+    this.presentToast('You\'ve been logged out');
+    this.navController.navigateRoot('tabs/home');
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      cssClass: 'toast'
+    });
+    toast.present();
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'LOGOUT',
+      message: 'Do you really wish to logout?',
+      buttons: [
+        {
+          text: 'Cancel',
+        }, {
+          text: 'Okay',
+          handler: () => {
+            this.logout();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
 }

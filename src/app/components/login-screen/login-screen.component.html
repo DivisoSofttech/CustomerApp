@@ -9,24 +9,26 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding-bottom>
+<ion-content padding>
   <ion-grid margin-top>
-    <ion-row>
-      <ion-col>
-        <ion-icon class="large-icon" name="person"></ion-icon>
+    <ion-row justify-content-center>
+      <ion-col size="6" text-center>
+        <div class="circle">
+          <ion-icon class="large-icon" name="person"></ion-icon>
+        </div>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col size-md="6" align-self-center offset="1" offset-md="3" size="10">
+    <ion-row justify-content-center>
+      <ion-col text-center>
         <ion-item  class="item-inner" >
-          <ion-label color="medium" position="floating">Username or Email</ion-label>
-          <ion-input background="light"></ion-input>
+          <ion-label color="medium"  position="floating">Username or Email</ion-label>
+          <ion-input [(ngModel)]="username"  background="light"></ion-input>
         </ion-item>
         <ion-item class="item-inner">
           <ion-label color="medium" position="floating">Passsword</ion-label>
-          <ion-input type="password"></ion-input>
+          <ion-input [(ngModel)]="password"  type="password"></ion-input>
         </ion-item>
-        <ion-button color="danger" expand="block" margin-top margin-bottom>Login</ion-button>
+        <ion-button [disabled]="disabled()" (click)="login()"  expand="block" margin-top margin-bottom>Login</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

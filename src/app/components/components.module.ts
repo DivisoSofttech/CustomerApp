@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HotelMenuPopoverComponent } from './hotel-menu-popover/hotel-menu-popover.component';
 import { IonicModule } from '@ionic/angular';
 import { FilterComponent } from './filter/filter.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,9 @@ import { FilterComponent } from './filter/filter.component';
                   LoginScreenComponent
                 ],
   imports: [
-    CommonModule, IonicModule.forRoot()
+    CommonModule,
+    IonicModule.forRoot(),
+    FormsModule
   ],
   exports:  [
               HotelMenuPopoverComponent,
