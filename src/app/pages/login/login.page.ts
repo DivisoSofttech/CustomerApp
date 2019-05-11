@@ -1,3 +1,5 @@
+import { LoginScreenComponent } from './../../components/login-screen/login-screen.component';
+import { ModalController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginPage implements OnInit {
 
-  constructor() { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
+  }
+
+  async showLoginPage() {
+    const modal = await this.modalController.create({
+      component: LoginScreenComponent
+    });
+    await modal.present();
   }
 
 }
