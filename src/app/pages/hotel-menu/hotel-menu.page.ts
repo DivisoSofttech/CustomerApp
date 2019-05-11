@@ -12,6 +12,7 @@ export class HotelMenuPage implements OnInit {
 
   constructor(private popoverController: PopoverController ) { }
   simple : boolean =true;
+  currentSubPage : string = 'menu';
   ngOnInit() {
   }
   async presentPopover(ev: any) {
@@ -21,6 +22,11 @@ export class HotelMenuPage implements OnInit {
       translucent: true
     });
     return await popover.present();
+  }
+
+  segmentChanged(ev: any) {
+    console.log('value is =' + ev.detail.value);
+    this.currentSubPage = ev.detail.value;
   }
 
 }

@@ -21,12 +21,15 @@
         </ion-item>
       </ion-card>
 
-      <ion-segment color="shade" (ionChange)="segmentChanged($event)">
+      <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true">
           <ion-segment-button value="friends">
-            <ion-label color="primary">Frequenty Odered</ion-label>
+            <ion-label color="primary">Frequently Odered</ion-label>
           </ion-segment-button>
           <ion-segment-button value="enemies">
             <ion-label color="primary">History</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Reviews">
+            <ion-label color="primary">Reviews</ion-label>
           </ion-segment-button>
         </ion-segment>
 
