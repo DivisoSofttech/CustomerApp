@@ -7,7 +7,6 @@ import {
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { slidesOpts } from 'src/app/constants/slide-option';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 
 @Component({
@@ -41,7 +40,6 @@ export class LoginScreenComponent implements OnInit {
 
      });
     this.configureKeycloakAdmin();
-    // this.slides.options = slidesOpts;
   }
 
   configureKeycloakAdmin() {
@@ -124,6 +122,11 @@ export class LoginScreenComponent implements OnInit {
         this.value = 'login';
       }
     });
+  }
+
+  setSlideValue(): number {
+    this.slideChange();
+    return 1;
   }
 
   signup() {
