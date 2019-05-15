@@ -35,7 +35,7 @@
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-card *ngIf="'menu' === currentSubPage">
+    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'">
       <ion-item lines="none">
         <ion-img src="/assets/images/pizza.jpg" class="imageShow">
         </ion-img>
@@ -45,7 +45,7 @@
         </ion-card-content>
       </ion-item>
     </ion-card>
-    <ion-card *ngIf="'menu' === currentSubPage"> 
+    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'"> 
 
       <ion-item lines="none">
         <ion-img src="/assets/images/fry.jpg" class="imageShow">
@@ -57,7 +57,7 @@
       </ion-item>
     </ion-card>
 
-    <ion-card *ngIf="'menu' === currentSubPage">
+    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'"> 
       <ion-item lines="none">
         <ion-img src="/assets/images/icecream.jpg" class="imageShow">
         </ion-img>
@@ -68,7 +68,7 @@
         </ion-card-content>
       </ion-item>
     </ion-card>
-    <ion-card *ngIf="'menu' === currentSubPage">
+    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'">
 
       <ion-item lines="none">
         <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
