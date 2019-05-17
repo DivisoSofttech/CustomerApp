@@ -85,42 +85,63 @@
                 <ion-item lines="none" color="vibrant">
                 <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
                 <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                  <rating></rating>
                 </ion-card-subtitle> 
+              </ion-item>
+              <ion-item lines="none"> 
+                <ion-card-subtitle class="commentText">
+                  <ion-textarea placeholder="Add your review..."></ion-textarea>
+                    </ion-card-subtitle>
+                  <ion-icon class="cursor" name="paper-plane"></ion-icon>
                 </ion-item>
-                <ion-item lines="none"> 
-                    <ion-card-subtitle class="commentText">
-                        the food is awsome you need to try once 
+            </ion-card>
+          </ion-col>
+      </ion-row>
+    <ion-row *ngIf="'reviews' === currentSubPage">
+        <ion-col>
+            <ion-card>
+                <ion-item lines="none" color="vibrant">
+                <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                  <rating [rate]="4" [readonly]="true"></rating>
+                </ion-card-subtitle> 
+              </ion-item>
+              <ion-item lines="none"> 
+                <ion-card-subtitle class="commentText">
+                  the food is awsome you need to try once 
                     </ion-card-subtitle>
                 </ion-item>
             </ion-card>
-        </ion-col>
+          </ion-col>
       </ion-row>
       <ion-row *ngIf="'reviews' === currentSubPage">
-          <ion-col>
-              <ion-card>
-                  <ion-item lines="none" color="vibrant">
+        <ion-col>
+          <ion-card>
+            <ion-item lines="none" color="vibrant">
                   <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
                   <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                    <rating [rate]="5" [readonly]="true"></rating>
                   </ion-card-subtitle> 
-                  </ion-item>
-                  <ion-item lines="none"> 
-                      <ion-card-subtitle class="commentText">
-                          the food is awsome you need to try once 
-                      </ion-card-subtitle>
-                  </ion-item>
+                </ion-item>
+                <ion-item lines="none"> 
+                  <ion-card-subtitle class="commentText">
+                    the food is awsome you need to try once 
+                  </ion-card-subtitle>
+                </ion-item>
               </ion-card>
-          </ion-col>
-        </ion-row>
-        <ion-row *ngIf="'reviews' === currentSubPage"> 
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="'reviews' === currentSubPage"> 
             <ion-col>
-                <ion-card>
-                    <ion-item lines="none" color="vibrant">
-                    <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                    <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                    </ion-card-subtitle> 
-                    </ion-item>
+              <ion-card>
+                <ion-item lines="none" color="vibrant">
+                  <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                  <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                    <rating [rate]="5" [readonly]="true"></rating>
+                  </ion-card-subtitle> 
+                </ion-item>
                     <ion-item lines="none"> 
-                        <ion-card-subtitle class="commentText">
+                      <ion-card-subtitle class="commentText">
                             the food is awsome you need to try once 
                         </ion-card-subtitle>
                     </ion-item>
@@ -129,42 +150,45 @@
           </ion-row>
           <ion-row *ngIf="'reviews' === currentSubPage">
               <ion-col>
-                  <ion-card>
-                      <ion-item lines="none" color="vibrant">
-                      <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                      <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                      </ion-card-subtitle> 
-                      </ion-item>
+                <ion-card>
+                  <ion-item lines="none" color="vibrant">
+                    <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                    <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                      <rating [rate]="4" [readonly]="true"></rating>
+                    </ion-card-subtitle> 
+                  </ion-item>
                       <ion-item lines="none"> 
                           <ion-card-subtitle class="commentText">
                               the food is awsome you need to try once 
                           </ion-card-subtitle>
-                      </ion-item>
+                        </ion-item>
                   </ion-card>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="'reviews' === currentSubPage">
                 <ion-col>
-                    <ion-card>
+                  <ion-card>
                         <ion-item lines="none" color="vibrant">
-                        <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+                          <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
                         <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                          <rating [rate]="3" [readonly]="true"></rating>
                         </ion-card-subtitle> 
-                        </ion-item>
+                      </ion-item>
                         <ion-item lines="none"> 
                             <ion-card-subtitle class="commentText">
                                 the food is awsome you need to try once 
                             </ion-card-subtitle>
-                        </ion-item>
+                          </ion-item>
                     </ion-card>
                 </ion-col>
               </ion-row>
               <ion-row *ngIf="'reviews' === currentSubPage">
                   <ion-col>
                       <ion-card>
-                          <ion-item lines="none" color="vibrant">
+                        <ion-item lines="none" color="vibrant">
                           <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
                           <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
+                            <rating [rate]="2" [readonly]="true"></rating>
                           </ion-card-subtitle> 
                           </ion-item>
                           <ion-item lines="none"> 

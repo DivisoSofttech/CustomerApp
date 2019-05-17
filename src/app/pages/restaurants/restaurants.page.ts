@@ -13,7 +13,7 @@ export class RestaurantsPage implements OnInit {
 
   latitude;
   longitude;
-
+  rate = 2;
   constructor(private navCtrl: NavController,
               private modalController: ModalController,
               private geolocation: Geolocation,
@@ -58,4 +58,7 @@ export class RestaurantsPage implements OnInit {
 
   }
 
+  rateChange(event) {
+    console.log('rate changed', event);
+  }
 }

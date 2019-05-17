@@ -1,3 +1,4 @@
+import { RatingComponent } from './../../components/rating/rating.component';
 import { HotelMenuPopoverComponent } from './../../components/hotel-menu-popover/hotel-menu-popover.component';
 import { ComponentsModule } from './../../components/components.module';
 import { NgModule } from '@angular/core';
@@ -25,6 +26,6 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [HotelMenuPage],
-  entryComponents:[HotelMenuPopoverComponent]
+  entryComponents:[HotelMenuPopoverComponent, RatingComponent]
 })
 export class HotelMenuPageModule {}

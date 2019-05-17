@@ -1,3 +1,5 @@
+import { RatingComponent } from './../../components/rating/rating.component';
+import { IonicRatingModule } from 'ionic-rating';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { FilterComponent } from './../../components/filter/filter.component';
 import { RestaurantsPage } from './restaurants.page';
@@ -19,6 +21,6 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
   ],
   providers: [Geolocation, NativeGeocoder],
   declarations: [RestaurantsPage],
-  entryComponents : [FilterComponent]
+  entryComponents : [FilterComponent, RatingComponent]
 })
 export class RestaurantsPageModule {}

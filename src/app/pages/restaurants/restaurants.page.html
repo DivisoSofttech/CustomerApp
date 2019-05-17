@@ -1,67 +1,73 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons>
-      <ion-button><ion-icon name="locate" slot="icon-only"></ion-icon></ion-button>
+      <ion-button>
+        <ion-icon name="locate" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-title>Location</ion-title>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-item lines="none">
-      <ion-searchbar></ion-searchbar>
-      <ion-button color="light" (click)="presentFilterModal()">
+  <ion-item lines="none">
+    <ion-searchbar></ion-searchbar>
+    <ion-button color="light" (click)="presentFilterModal()">
       <ion-icon name="options"></ion-icon>
-      </ion-button>
+    </ion-button>
+  </ion-item>
+  <ion-card>
+    <ion-item lines="none">
+      <ion-img src="/assets/images/pizza.jpg" class="imageShow">
+      </ion-img>
+      <ion-card-content (click)="showHotelMenu()">
+        <ion-card-title>Bharat Hotel</ion-card-title>
+        <ion-card-subtitle>Starters, Meals</ion-card-subtitle>
+        <ion-text><strong>1 Km</strong></ion-text>
+      </ion-card-content>
     </ion-item>
-    <ion-card (click)="showHotelMenu()"> 
-        <ion-item lines="none">
-          <ion-img src="/assets/images/pizza.jpg" class="imageShow">
-            </ion-img>
-        <ion-card-content>
-            <ion-card-title>Bharat Hotel</ion-card-title>
-            <ion-card-subtitle>Starters, Meals</ion-card-subtitle>
-            <ion-text><strong>1 Km</strong></ion-text>
-        </ion-card-content>
-      </ion-item>
-      </ion-card>
-      <ion-card (click)="showHotelMenu()">
-             
-        <ion-item lines="none">
-          <ion-img src="/assets/images/fry.jpg" class="imageShow">
-            </ion-img>
-        <ion-card-content>
-            <ion-card-title>White Sand</ion-card-title>
-            <ion-card-subtitle>Arabian</ion-card-subtitle>      
-            <ion-text><strong>500m</strong></ion-text>
-        </ion-card-content>
-      </ion-item>
-      </ion-card>
+    <rating [rate]="4" [readonly]="true" (rateChange)="rateChange($event)"></rating>
+  </ion-card>
+  <ion-card>
 
-      <ion-card (click)="showHotelMenu()">
-             
-          <ion-item lines="none">
-            <ion-img src="/assets/images/icecream.jpg" class="imageShow">
-              </ion-img>
-          <ion-card-content>
-              <ion-card-title>Cafe Coffee Day</ion-card-title>
-              <ion-card-subtitle>Coffee, Cappuccino</ion-card-subtitle>      
-            <ion-text><strong>350m</strong></ion-text>
-          </ion-card-content>
-        </ion-item>
-        </ion-card>
-        <ion-card (click)="showHotelMenu()">
-             
-            <ion-item lines="none">
-              <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
-                </ion-img>
-            <ion-card-content>
-                <ion-card-title>Fruit Flower</ion-card-title>
-                <ion-card-subtitle>Starters, Meals</ion-card-subtitle>      
-              <ion-text><strong>750m</strong></ion-text>
-            </ion-card-content>
-          </ion-item>
-          </ion-card>
-        
-      
+    <ion-item lines="none">
+      <ion-img src="/assets/images/fry.jpg" class="imageShow">
+      </ion-img>
+      <ion-card-content (click)="showHotelMenu()">
+        <ion-card-title>White Sand</ion-card-title>
+        <ion-card-subtitle>Arabian</ion-card-subtitle>
+        <ion-text><strong>500m</strong></ion-text>
+      </ion-card-content>
+    </ion-item>
+    <rating [rate]="3" [readonly]="true" (rateChange)="rateChange($event)"></rating>
+  </ion-card>
+
+  <ion-card>
+
+    <ion-item lines="none">
+      <ion-img src="/assets/images/icecream.jpg" class="imageShow">
+      </ion-img>
+      <ion-card-content (click)="showHotelMenu()">
+        <ion-card-title>Cafe Coffee Day</ion-card-title>
+        <ion-card-subtitle>Coffee, Cappuccino</ion-card-subtitle>
+        <ion-text><strong>350m</strong></ion-text>
+      </ion-card-content>
+    </ion-item>
+    <rating [rate]="2" [readonly]="true" (rateChange)="rateChange($event)"></rating>
+  </ion-card>
+  <ion-card>
+
+    <ion-item lines="none">
+      <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
+      </ion-img>
+      <ion-card-content (click)="showHotelMenu()">
+        <ion-card-title>Fruit Flower</ion-card-title>
+        <ion-card-subtitle>Starters, Meals</ion-card-subtitle>
+        <ion-text><strong>750m</strong></ion-text>
+      </ion-card-content>
+    </ion-item>
+    <rating [rate]="2" [readonly]="true" (rateChange)="rateChange($event)"></rating>
+  </ion-card>
+
+
 </ion-content>

@@ -5,12 +5,14 @@ import { HotelMenuPopoverComponent } from './hotel-menu-popover/hotel-menu-popov
 import { IonicModule } from '@ionic/angular';
 import { FilterComponent } from './filter/filter.component';
 import { FormsModule } from '@angular/forms';
+import { RatingComponent } from './rating/rating.component';
 
 @NgModule({
   declarations: [
                   HotelMenuPopoverComponent,
                   FilterComponent,
-                  LoginScreenComponent
+                  LoginScreenComponent,
+                  RatingComponent
                 ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import { FormsModule } from '@angular/forms';
   exports:  [
               HotelMenuPopoverComponent,
               FilterComponent,
-              LoginScreenComponent
+              LoginScreenComponent,
+              RatingComponent
             ]
 })
 export class ComponentsModule { }

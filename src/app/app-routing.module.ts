@@ -20,7 +20,6 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   { path: 'basket', loadChildren: './pages/basket/basket.module#BasketPageModule' },
-  { path: 'search', loadChildren: './pages/search/search.module#SearchPageModule' },
   { path: 'hotel-menu/product', loadChildren: './pages/product/product.module#ProductPageModule' }
 
 

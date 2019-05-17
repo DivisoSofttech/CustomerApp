@@ -12,3 +12,13 @@
     height: 106px;
     width: 145px;
   }
+
+  rating {
+    ion-icon {
+      color: gray;
+  
+      &.filled {
+        color: #ffb400;
+      }
+    }
+  }

@@ -23,15 +23,6 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'search',
-        children: [
-          {
-            path: '',
-            loadChildren: '../pages/search/search.module#SearchPageModule'
-          }
-        ]
-      },
-      {
         path: 'basket',
         children: [
           {
