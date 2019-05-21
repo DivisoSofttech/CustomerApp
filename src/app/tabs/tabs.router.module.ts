@@ -18,7 +18,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../pages/restaurants/restaurants.module#RestaurantsPageModule'
+            loadChildren: '../pages/restaurants/restaurants.module#RestaurantsPageModule',
+            canActivate: [AuthGuardService]
           }
         ]
       },
@@ -27,7 +28,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../pages/basket/basket.module#BasketPageModule'
+            loadChildren: '../pages/basket/basket.module#BasketPageModule',
+            canActivate: [AuthGuardService]
           }
         ]
       },

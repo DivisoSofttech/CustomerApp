@@ -3,29 +3,31 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-      <ion-title>White Stand Menu</ion-title>
+    <ion-title>White Stand Menu</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content *ngIf="store">
+  <div class="container">
+    <ion-img [src]="'data:' + store.imageContentType + ';base64,' + store.image" class="mainImg"></ion-img>
+    <div class="overlay">
+      <h2><strong>{{store.name | uppercase}}</strong></h2>
+      <p>{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</p>
+    </div>
+  </div>
   <ion-grid>
-    <ion-row >
-      <ion-col>
-        <ion-img src="/assets/images/pizza.jpg" class="mainImg"></ion-img>
-      </ion-col>   
-    </ion-row>
-    <ion-row >
+    <ion-row>
       <ion-col text-center>
-        <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true" text-center value="menu">
-            <ion-segment-button value="menu">
-              <ion-label color="primary">Menu</ion-label>
-            </ion-segment-button>
-            <ion-segment-button value="reviews">
-              <ion-label color="primary">Reviews</ion-label>
-            </ion-segment-button>
-          </ion-segment>
-        </ion-col>
+        <ion-segment color="shade" [value]="currentSubPage" (ionChange)="segmentChanged($event)" scrollable="true" text-center value="menu">
+          <ion-segment-button value="menu">
+            <ion-label color="primary">Menu</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="reviews">
+            <ion-label color="primary">Reviews</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
     </ion-row>
-    <ion-row *ngIf="'menu' === currentSubPage">
+    <!-- <ion-row *ngIf="'menu' === currentSubPage">
       <ion-col size="6">
         <ion-item lines="none">
           <ion-label>
@@ -34,172 +36,64 @@
           <ion-toggle color="primary"></ion-toggle>
         </ion-item>
       </ion-col>
-    </ion-row>
-    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'">
-      <ion-item lines="none">
-        <ion-img src="/assets/images/pizza.jpg" class="imageShow">
-        </ion-img>
-        <ion-card-content>
-          <ion-card-title>Pizza</ion-card-title>
-          <ion-text><strong>100Rs</strong></ion-text>
-        </ion-card-content>
-      </ion-item>
-    </ion-card>
-    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'"> 
-
-      <ion-item lines="none">
-        <ion-img src="/assets/images/fry.jpg" class="imageShow">
-        </ion-img>
-        <ion-card-content>
-          <ion-card-title>Fry</ion-card-title>
-          <ion-text><strong>100Rs</strong></ion-text>
-        </ion-card-content>
-      </ion-item>
-    </ion-card>
-
-    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'"> 
-      <ion-item lines="none">
-        <ion-img src="/assets/images/icecream.jpg" class="imageShow">
-        </ion-img>
-        <ion-card-content>
-          <ion-card-title>Ice cream</ion-card-title>
-
-          <ion-text><strong>100Rs</strong></ion-text>
-        </ion-card-content>
-      </ion-item>
-    </ion-card>
-    <ion-card *ngIf="'menu' === currentSubPage" [routerLink]="'product'">
-
-      <ion-item lines="none">
-        <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
-        </ion-img>
-        <ion-card-content>
-          <ion-card-title>Frut flower</ion-card-title>
-          <ion-text><strong>100Rs</strong></ion-text>
-        </ion-card-content>
-      </ion-item>
-    </ion-card>
-    <ion-row *ngIf="'reviews' === currentSubPage">
-        <ion-col>
+    </ion-row> -->
+  </ion-grid>
+  <ion-slides #slides (ionSlideDidChange)="slideChange()">
+    <ion-slide>
+      <div>
+        <ion-card *ngFor="let product of products" [routerLink]="'product'">
+          <ion-item lines="none">
+            <ion-img [src]="'data:' + product.imageContentType + ';base64,' + product.image" class="imageShow">
+            </ion-img>
+            <ion-card-content>
+              <ion-card-title>{{product.name}}</ion-card-title>
+              <ion-text><strong>100Rs</strong></ion-text>
+            </ion-card-content>
+          </ion-item>
+        </ion-card>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
             <ion-card>
-                <ion-item lines="none" color="vibrant">
-                <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
+              <ion-item lines="none" color="vibrant">
+                <img src="assets/images/toney.jpg" slot="start" class="reviewProfile" />
                 <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
                   <rating></rating>
-                </ion-card-subtitle> 
+                </ion-card-subtitle>
               </ion-item>
-              <ion-item lines="none"> 
+              <ion-item lines="none">
                 <ion-card-subtitle class="commentText">
                   <ion-textarea placeholder="Add your review..."></ion-textarea>
-                    </ion-card-subtitle>
-                  <ion-icon class="cursor" name="paper-plane"></ion-icon>
-                </ion-item>
-            </ion-card>
-          </ion-col>
-      </ion-row>
-    <ion-row *ngIf="'reviews' === currentSubPage">
-        <ion-col>
-            <ion-card>
-                <ion-item lines="none" color="vibrant">
-                <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                  <rating [rate]="4" [readonly]="true"></rating>
-                </ion-card-subtitle> 
+                </ion-card-subtitle>
+                <ion-icon class="cursor" name="paper-plane"></ion-icon>
               </ion-item>
-              <ion-item lines="none"> 
-                <ion-card-subtitle class="commentText">
-                  the food is awsome you need to try once 
-                    </ion-card-subtitle>
-                </ion-item>
             </ion-card>
           </ion-col>
-      </ion-row>
-      <ion-row *ngIf="'reviews' === currentSubPage">
-        <ion-col>
-          <ion-card>
-            <ion-item lines="none" color="vibrant">
-                  <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                  <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                    <rating [rate]="5" [readonly]="true"></rating>
-                  </ion-card-subtitle> 
-                </ion-item>
-                <ion-item lines="none"> 
-                  <ion-card-subtitle class="commentText">
-                    the food is awsome you need to try once 
-                  </ion-card-subtitle>
-                </ion-item>
-              </ion-card>
-            </ion-col>
-          </ion-row>
-          <ion-row *ngIf="'reviews' === currentSubPage"> 
-            <ion-col>
-              <ion-card>
-                <ion-item lines="none" color="vibrant">
-                  <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                  <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                    <rating [rate]="5" [readonly]="true"></rating>
-                  </ion-card-subtitle> 
-                </ion-item>
-                    <ion-item lines="none"> 
-                      <ion-card-subtitle class="commentText">
-                            the food is awsome you need to try once 
-                        </ion-card-subtitle>
-                    </ion-item>
-                </ion-card>
-            </ion-col>
-          </ion-row>
-          <ion-row *ngIf="'reviews' === currentSubPage">
-              <ion-col>
-                <ion-card>
-                  <ion-item lines="none" color="vibrant">
-                    <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                    <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                      <rating [rate]="4" [readonly]="true"></rating>
-                    </ion-card-subtitle> 
-                  </ion-item>
-                      <ion-item lines="none"> 
-                          <ion-card-subtitle class="commentText">
-                              the food is awsome you need to try once 
-                          </ion-card-subtitle>
-                        </ion-item>
-                  </ion-card>
-              </ion-col>
-            </ion-row>
-            <ion-row *ngIf="'reviews' === currentSubPage">
-                <ion-col>
-                  <ion-card>
-                        <ion-item lines="none" color="vibrant">
-                          <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                        <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                          <rating [rate]="3" [readonly]="true"></rating>
-                        </ion-card-subtitle> 
-                      </ion-item>
-                        <ion-item lines="none"> 
-                            <ion-card-subtitle class="commentText">
-                                the food is awsome you need to try once 
-                            </ion-card-subtitle>
-                          </ion-item>
-                    </ion-card>
-                </ion-col>
-              </ion-row>
-              <ion-row *ngIf="'reviews' === currentSubPage">
-                  <ion-col>
-                      <ion-card>
-                        <ion-item lines="none" color="vibrant">
-                          <img src="assets/images/toney.jpg" slot="start" class="reviewProfile"/>
-                          <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                            <rating [rate]="2" [readonly]="true"></rating>
-                          </ion-card-subtitle> 
-                          </ion-item>
-                          <ion-item lines="none"> 
-                              <ion-card-subtitle class="commentText">
-                                  the food is awsome you need to try once 
-                              </ion-card-subtitle>
-                          </ion-item>
-                      </ion-card>
-                  </ion-col>
-                </ion-row>
-  </ion-grid>
+        </ion-row>
+        
+        <ion-row>
+          <ion-col size="12">
+            <ion-card *ngFor="let review of reviews" >
+              <ion-item lines="none" color="vibrant">
+                <img src="assets/images/toney.jpg" slot="start" class="reviewProfile" />
+                <ion-card-subtitle slot="start"><strong>{{review.userName}}</strong>
+                  <rating [rate]="4" [readonly]="true"></rating>
+                </ion-card-subtitle>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-card-subtitle class="commentText">{{review.review}}</ion-card-subtitle>
+              </ion-item>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+
+      </ion-grid>
+    </ion-slide>
+  </ion-slides>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'menu' === currentSubPage">
     <ion-fab-button (click)=presentPopover($event)>
       <ion-icon name="pizza"></ion-icon>

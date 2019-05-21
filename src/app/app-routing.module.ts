@@ -4,12 +4,13 @@ import { PreloadAllModules, RouterModule, Routes, CanActivate } from '@angular/r
 
 const routes: Routes = [
   { path: '',
-    loadChildren: './tabs/tabs.module#TabsPageModule'
+    loadChildren: './tabs/tabs.module#TabsPageModule',
+    canActivate: [AuthGuardService]
   },
   { path: 'login',
-    loadChildren: './pages/login/login.module#LoginPageModule'
+  loadChildren: './pages/login/login.module#LoginPageModule',
   },
-  { path: 'hotel-menu',
+  { path: 'hotel-menu/:id',
     loadChildren: './pages/hotel-menu/hotel-menu.module#HotelMenuPageModule'
   },
   { path: 'restaurants',

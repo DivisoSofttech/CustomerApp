@@ -3,6 +3,8 @@ import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@io
 import { NavController, ModalController } from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Store } from 'src/app/api/models';
+import { QueryResourceService } from 'src/app/api/services';
 
 @Component({
   selector: 'app-restaurants',
@@ -13,18 +15,19 @@ export class RestaurantsPage implements OnInit {
 
   latitude;
   longitude;
+  stores: Store[] = [];
   rate = 2;
   constructor(private navCtrl: NavController,
               private modalController: ModalController,
               private geolocation: Geolocation,
-              private nativeGeocoder: NativeGeocoder) {
+              private nativeGeocoder: NativeGeocoder,
+              private queryResourceService: QueryResourceService) {
 
   }
-  showHotelMenu() {
-    this.navCtrl.navigateForward('/hotel-menu');
+  showHotelMenu(storeId) {
+    this.navCtrl.navigateForward('/hotel-menu/' + storeId);
   }
   async presentFilterModal() {
-
     const modal = await this.modalController.create({
       component : FilterComponent,
       cssClass : 'half-height',
@@ -35,6 +38,12 @@ export class RestaurantsPage implements OnInit {
 
   ngOnInit() {
     this.getLocation();
+    this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
+      this.stores = res;
+    },
+    err => {
+      console.log('Error fetching stores');
+    });
   }
   getLocation() {
     this.geolocation.getCurrentPosition().then((resp) => {
