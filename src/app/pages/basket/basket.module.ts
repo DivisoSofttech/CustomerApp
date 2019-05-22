@@ -1,3 +1,5 @@
+import { MakePaymentComponent } from './../../components/make-payment/make-payment.component';
+import { ComponentsModule } from './../../components/components.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +8,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { BasketPage } from './basket.page';
+import { ProductQuantityModalComponent } from 'src/app/components/product-quantity-modal/product-quantity-modal.component';
 
 const routes: Routes = [
   {
@@ -19,8 +22,10 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ComponentsModule
   ],
-  declarations: [BasketPage]
+  declarations: [BasketPage],
+  entryComponents: [ProductQuantityModalComponent, MakePaymentComponent]
 })
 export class BasketPageModule {}

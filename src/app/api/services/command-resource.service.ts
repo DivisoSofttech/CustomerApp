@@ -44,8 +44,8 @@ class CommandResourceService extends __BaseService {
   static readonly createReplyUsingPOSTPath = '/api/command/replies';
   static readonly updateReplyUsingPUTPath = '/api/command/replies';
   static readonly deleteReplyUsingDELETEPath = '/api/command/replies/{id}';
-  static readonly createUserRatingUsingPOSTPath = '/api/command/reviews';
-  static readonly updateUserRatingUsingPUTPath = '/api/command/reviews';
+  static readonly createUserReviewUsingPOSTPath = '/api/command/reviews';
+  static readonly updateReviewUsingPUTPath = '/api/command/reviews';
   static readonly deleteReviewUsingDELETEPath = '/api/command/reviews/{id}';
   static readonly createSaleUsingPOSTPath = '/api/command/sales';
   static readonly updateSaleUsingPUTPath = '/api/command/sales';
@@ -67,8 +67,8 @@ class CommandResourceService extends __BaseService {
   static readonly createUOMUsingPOSTPath = '/api/command/unit-of-meassurement';
   static readonly updateUOMUsingPUTPath = '/api/command/uoms';
   static readonly deleteUOMUsingDELETEPath = '/api/command/uoms/{id}';
-  static readonly createUserRatingUsingPOST1Path = '/api/command/user-ratings';
-  static readonly updateUserRatingUsingPUT1Path = '/api/command/user-ratings';
+  static readonly createUserRatingUsingPOSTPath = '/api/command/user-ratings';
+  static readonly updateUserRatingUsingPUTPath = '/api/command/user-ratings';
   static readonly deleteUserRatingUsingDELETEPath = '/api/command/user-ratings/{id}';
 
   constructor(
@@ -576,7 +576,7 @@ class CommandResourceService extends __BaseService {
    * @param reviewDTO reviewDTO
    * @return OK
    */
-  createUserRatingUsingPOSTResponse(reviewDTO: ReviewDTO): __Observable<__StrictHttpResponse<ReviewDTO>> {
+  createUserReviewUsingPOSTResponse(reviewDTO: ReviewDTO): __Observable<__StrictHttpResponse<ReviewDTO>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -602,8 +602,8 @@ class CommandResourceService extends __BaseService {
    * @param reviewDTO reviewDTO
    * @return OK
    */
-  createUserRatingUsingPOST(reviewDTO: ReviewDTO): __Observable<ReviewDTO> {
-    return this.createUserRatingUsingPOSTResponse(reviewDTO).pipe(
+  createUserReviewUsingPOST(reviewDTO: ReviewDTO): __Observable<ReviewDTO> {
+    return this.createUserReviewUsingPOSTResponse(reviewDTO).pipe(
       __map(_r => _r.body as ReviewDTO)
     );
   }
@@ -612,7 +612,7 @@ class CommandResourceService extends __BaseService {
    * @param reviewDTO reviewDTO
    * @return OK
    */
-  updateUserRatingUsingPUTResponse(reviewDTO: ReviewDTO): __Observable<__StrictHttpResponse<ReviewDTO>> {
+  updateReviewUsingPUTResponse(reviewDTO: ReviewDTO): __Observable<__StrictHttpResponse<ReviewDTO>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -638,8 +638,8 @@ class CommandResourceService extends __BaseService {
    * @param reviewDTO reviewDTO
    * @return OK
    */
-  updateUserRatingUsingPUT(reviewDTO: ReviewDTO): __Observable<ReviewDTO> {
-    return this.updateUserRatingUsingPUTResponse(reviewDTO).pipe(
+  updateReviewUsingPUT(reviewDTO: ReviewDTO): __Observable<ReviewDTO> {
+    return this.updateReviewUsingPUTResponse(reviewDTO).pipe(
       __map(_r => _r.body as ReviewDTO)
     );
   }
@@ -1392,7 +1392,7 @@ class CommandResourceService extends __BaseService {
    * @param userRatingDTO userRatingDTO
    * @return OK
    */
-  createUserRatingUsingPOST1Response(userRatingDTO: UserRatingDTO): __Observable<__StrictHttpResponse<UserRatingDTO>> {
+  createUserRatingUsingPOSTResponse(userRatingDTO: UserRatingDTO): __Observable<__StrictHttpResponse<UserRatingDTO>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -1418,8 +1418,8 @@ class CommandResourceService extends __BaseService {
    * @param userRatingDTO userRatingDTO
    * @return OK
    */
-  createUserRatingUsingPOST1(userRatingDTO: UserRatingDTO): __Observable<UserRatingDTO> {
-    return this.createUserRatingUsingPOST1Response(userRatingDTO).pipe(
+  createUserRatingUsingPOST(userRatingDTO: UserRatingDTO): __Observable<UserRatingDTO> {
+    return this.createUserRatingUsingPOSTResponse(userRatingDTO).pipe(
       __map(_r => _r.body as UserRatingDTO)
     );
   }
@@ -1428,7 +1428,7 @@ class CommandResourceService extends __BaseService {
    * @param userRatingDTO userRatingDTO
    * @return OK
    */
-  updateUserRatingUsingPUT1Response(userRatingDTO: UserRatingDTO): __Observable<__StrictHttpResponse<UserRatingDTO>> {
+  updateUserRatingUsingPUTResponse(userRatingDTO: UserRatingDTO): __Observable<__StrictHttpResponse<UserRatingDTO>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -1454,8 +1454,8 @@ class CommandResourceService extends __BaseService {
    * @param userRatingDTO userRatingDTO
    * @return OK
    */
-  updateUserRatingUsingPUT1(userRatingDTO: UserRatingDTO): __Observable<UserRatingDTO> {
-    return this.updateUserRatingUsingPUT1Response(userRatingDTO).pipe(
+  updateUserRatingUsingPUT(userRatingDTO: UserRatingDTO): __Observable<UserRatingDTO> {
+    return this.updateUserRatingUsingPUTResponse(userRatingDTO).pipe(
       __map(_r => _r.body as UserRatingDTO)
     );
   }

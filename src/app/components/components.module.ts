@@ -1,3 +1,5 @@
+import { MakePaymentComponent } from './make-payment/make-payment.component';
+import { ProductQuantityModalComponent } from './product-quantity-modal/product-quantity-modal.component';
 import { LoginScreenComponent } from './login-screen/login-screen.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12,7 +14,9 @@ import { RatingComponent } from './rating/rating.component';
                   HotelMenuPopoverComponent,
                   FilterComponent,
                   LoginScreenComponent,
-                  RatingComponent
+                  RatingComponent,
+                  ProductQuantityModalComponent,
+                  MakePaymentComponent
                 ],
   imports: [
     CommonModule,
@@ -23,7 +27,9 @@ import { RatingComponent } from './rating/rating.component';
               HotelMenuPopoverComponent,
               FilterComponent,
               LoginScreenComponent,
-              RatingComponent
+              RatingComponent,
+              ProductQuantityModalComponent,
+              MakePaymentComponent
             ]
 })
 export class ComponentsModule { }

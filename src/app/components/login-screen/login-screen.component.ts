@@ -1,3 +1,5 @@
+import { CustomerDTO } from './../../api/models/customer-dto';
+import { CommandResourceService, QueryResourceService } from 'src/app/api/services';
 import {
   ModalController,
   NavController,
@@ -29,6 +31,8 @@ export class LoginScreenComponent implements OnInit {
     private navController: NavController,
     private oauthService: OAuthService,
     private navCtrl: NavController,
+    private queryResourceService: QueryResourceService,
+    private commandResourceService: CommandResourceService,
     private toastController: ToastController
   ) {}
 
@@ -67,6 +71,12 @@ export class LoginScreenComponent implements OnInit {
         const claims = this.oauthService.getIdentityClaims();
         if (claims) {
           console.log(claims);
+          const param: QueryResourceService.FindCustomerByNameUsingGETParams = {name: this.username};
+          this.queryResourceService.findCustomerByNameUsingGET(param).subscribe(res => {
+          }, err => {
+            const customer: CustomerDTO = {name: this.username};
+            this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
+          });
         }
         if (this.oauthService.hasValidAccessToken()) {
           this.navCtrl.navigateRoot('/tabs/profile');
@@ -148,10 +158,11 @@ export class LoginScreenComponent implements OnInit {
 
     }).then(res => {
       this.presentToast('Registration Successful');
+      const customer: CustomerDTO = {name: this.username};
+      this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
     }, err => {
       this.presentToast('Error Registering User');
     });
-
 
 
   }

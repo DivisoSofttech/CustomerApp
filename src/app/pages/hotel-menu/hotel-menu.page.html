@@ -12,12 +12,14 @@
     <div class="overlay">
       <h2><strong>{{store.name | uppercase}}</strong></h2>
       <p>{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</p>
+      <!-- <p>{{store.}}</p> -->
     </div>
   </div>
   <ion-grid>
     <ion-row>
       <ion-col text-center>
-        <ion-segment color="shade" [value]="currentSubPage" (ionChange)="segmentChanged($event)" scrollable="true" text-center value="menu">
+        <ion-segment color="shade" [value]="currentSubPage" (ionChange)="segmentChanged($event)" scrollable="true"
+          text-center value="menu">
           <ion-segment-button value="menu">
             <ion-label color="primary">Menu</ion-label>
           </ion-segment-button>
@@ -41,15 +43,19 @@
   <ion-slides #slides (ionSlideDidChange)="slideChange()">
     <ion-slide>
       <div>
-        <ion-card *ngFor="let product of products" [routerLink]="'product'">
-          <ion-item lines="none">
-            <ion-img [src]="'data:' + product.imageContentType + ';base64,' + product.image" class="imageShow">
+        <ion-card *ngFor="let stock of stockCurrents,let i = index">
+          <ion-item lines="none" (click)="expandOrCollapse(i)">
+            <ion-img [src]="'data:' + stock.product.imageContentType + ';base64,' + stock.product.image"
+              class="imageShow">
             </ion-img>
             <ion-card-content>
-              <ion-card-title>{{product.name}}</ion-card-title>
-              <ion-text><strong>100Rs</strong></ion-text>
+              <ion-card-title>{{stock.product.name}}</ion-card-title>
+              <ion-text><strong>&#x20b9;{{stock.sellPrice}}</strong></ion-text>
             </ion-card-content>
           </ion-item>
+          <ion-button  *ngIf="cardExpand[i]" color="primary" expand="full" (click)="addToCart(stock)" >
+            Add to Basket
+          </ion-button>
         </ion-card>
       </div>
     </ion-slide>
@@ -66,17 +72,17 @@
               </ion-item>
               <ion-item lines="none">
                 <ion-card-subtitle class="commentText">
-                  <ion-textarea placeholder="Add your review..."></ion-textarea>
+                  <ion-textarea [(ngModel)]="review.review" placeholder="Add your review..."></ion-textarea>
                 </ion-card-subtitle>
-                <ion-icon class="cursor" name="paper-plane"></ion-icon>
+                <ion-icon class="cursor" name="paper-plane" (click)="postReview()"></ion-icon>
               </ion-item>
             </ion-card>
           </ion-col>
         </ion-row>
-        
+
         <ion-row>
           <ion-col size="12">
-            <ion-card *ngFor="let review of reviews" >
+            <ion-card *ngFor="let review of reviews">
               <ion-item lines="none" color="vibrant">
                 <img src="assets/images/toney.jpg" slot="start" class="reviewProfile" />
                 <ion-card-subtitle slot="start"><strong>{{review.userName}}</strong>
@@ -95,7 +101,7 @@
     </ion-slide>
   </ion-slides>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'menu' === currentSubPage">
-    <ion-fab-button (click)=presentPopover($event)>
+    <ion-fab-button (click)="presentPopover($event)">
       <ion-icon name="pizza"></ion-icon>
     </ion-fab-button>
   </ion-fab>

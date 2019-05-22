@@ -1,8 +1,9 @@
 /* tslint:disable */
+import { Store } from './store';
 export interface UserRating {
   id?: number;
   ratedOn?: string;
   rating?: number;
-  storeId?: number;
+  store?: Store;
   userName?: string;
 }

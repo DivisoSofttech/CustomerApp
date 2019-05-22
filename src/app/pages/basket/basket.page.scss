@@ -1,0 +1,64 @@
+.bg-grey {
+    
+    background: #eae4e4;
+}
+
+.cl-grey {
+    color: grey;
+}
+
+.bold {
+
+    color: black;
+    font-weight: bold;
+}
+
+.price {
+    font-size: 41px;
+    margin: 3px;
+    color: darkslategrey;
+}
+
+.info-icon {
+    font-size: 50px;
+    margin-right: 5px;
+}
+
+.border-top{
+
+    border-top: 1px solid grey;
+}
+
+.border-bottom{
+    border-bottom: 1px solid grey;
+}
+
+.line-height-medium {
+
+    line-height: 22px;
+}
+
+address {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.cart {
+    font-size: 275px;
+    opacity: .35;
+}
+.rightAlignIcon{
+    position: absolute; 
+    right: 2%;
+    size: 5%
+}
+
+.absolute {
+    position: relative;
+    top: 0%;
+    right: 0%;
+}
+
+.wrap {
+    white-space: normal;
+}

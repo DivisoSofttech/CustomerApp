@@ -11,19 +11,15 @@ const routes: Routes = [
   loadChildren: './pages/login/login.module#LoginPageModule',
   },
   { path: 'hotel-menu/:id',
-    loadChildren: './pages/hotel-menu/hotel-menu.module#HotelMenuPageModule'
+    loadChildren: './pages/hotel-menu/hotel-menu.module#HotelMenuPageModule',
+    canActivate: [AuthGuardService]
   },
-  { path: 'restaurants',
-    loadChildren: './pages/restaurants/restaurants.module#RestaurantsPageModule'
-  },
-  { path: 'profile',
+  {
+    path: 'profile',
     loadChildren: './pages/profile/profile.module#ProfilePageModule',
     canActivate: [AuthGuardService]
   },
   { path: 'basket', loadChildren: './pages/basket/basket.module#BasketPageModule' },
-  { path: 'hotel-menu/product', loadChildren: './pages/product/product.module#ProductPageModule' }
-
-
 
 ];
 @NgModule({

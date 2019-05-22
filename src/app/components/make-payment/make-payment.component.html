@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-margin-vertical">
+      <ion-col text-center>
+        <ion-text>
+          <h1>{{toBePaid  | number:'1.2-2'}}</h1>
+          <p>Total amount Due</p>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-button expand="block" margin-bottom text-center color="light" class="ion-padding-vertical" (click)="save()" >
+    <ion-icon name="cash" slot="icon-only" margin></ion-icon>
+    <p>COD</p>
+  </ion-button>
+
+  <ion-button expand="block" margin-bottom text-center color="light" class="ion-padding-vertical" (click)="save()" >
+    <ion-icon name="globe" slot="icon-only" margin></ion-icon>
+    <p>Net Banking</p>
+  </ion-button>
+
+  <ion-button expand="full" margin-top text-center color="light" class="ion-padding-vertical" (click)="save()">
+    <ion-icon name="card" slot="icon-only" margin></ion-icon>
+    <p>CARD</p>
+  </ion-button>
+
+</ion-content>
