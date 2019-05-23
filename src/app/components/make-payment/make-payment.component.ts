@@ -1,8 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TicketLineDTO, SaleDTO, StockDiaryDTO } from 'src/app/api/models';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
-import { CommandResourceService } from 'src/app/api/services';
+import { CommandResourceService, QueryResourceService, OrderCommandResourceService } from 'src/app/api/services';
 import { CartService } from 'src/app/services/cart.service';
+import { AddAddressModalComponent } from '../add-address-modal/add-address-modal.component';
+import { AddressDTO } from 'src/app/order/models';
 
 @Component({
   selector: 'app-make-payment',
@@ -19,10 +21,13 @@ export class MakePaymentComponent implements OnInit {
   customerId;
   cashRecieved;
   sale: SaleDTO = {};
+  addresses: AddressDTO[] = [];
 
   constructor(
     private modalController: ModalController,
     private commandResourceService: CommandResourceService,
+    private queryResourceService: QueryResourceService,
+    private OrderCommandResourceService: OrderCommandResourceService,
     private navController: NavController,
     private cartService: CartService,
     private toastController: ToastController
@@ -39,6 +44,28 @@ export class MakePaymentComponent implements OnInit {
 
   returnToSale() {
     this.navController.navigateRoot('/tabs/home');
+  }
+
+  getCurrentAddresses() {
+    // this.OrderCommandResourceService.
+    // .subscribe(addresses => {
+    //   this.addresses = addresses;
+    // });
+  }
+
+
+  async addAddressModal() {
+    const modal = await this.modalController.create({
+      component: AddAddressModalComponent,
+      componentProps: {customerId: this.customerId}
+    });
+
+    modal.onDidDismiss()
+    .then(() => {
+      this.getCurrentAddresses();
+    });
+
+    modal.present();
   }
 
   save() {

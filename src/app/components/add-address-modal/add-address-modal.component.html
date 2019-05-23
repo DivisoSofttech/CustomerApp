@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back"></ion-icon>
+        <ion-title>Add Address</ion-title>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item>
+    <ion-label position="floating">Name</ion-label>
+    <ion-input type="text" [(ngModel)]="address.name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Phone</ion-label>
+    <ion-input type="text" [(ngModel)]="address.phone"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Alternate Phone</ion-label>
+    <ion-input type="number" [(ngModel)]="address.alternatePhone"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">House Number / Building Name</ion-label>
+    <ion-input type="text" [(ngModel)]="address.houseNoOrBuildingName"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">City</ion-label>
+    <ion-input type="text" [(ngModel)]="address.city"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating" [(ngModel)]="address.landmark">Landmark</ion-label>
+    <ion-input type="text"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating" [(ngModel)]="address.pincode">Pincode</ion-label>
+    <ion-input type="number"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating" [(ngModel)]="address.state">State</ion-label>
+    <ion-input type="text"></ion-input>
+  </ion-item>
+ </ion-content>
+ <ion-footer>
+  <ion-button expand="block" fill="outline" (click)="saveAddress()">Save</ion-button>
+ </ion-footer>
