@@ -21,9 +21,9 @@ import { PaymentDTO } from '../models/payment-dto';
 })
 class OrderCommandResourceService extends __BaseService {
   static readonly initiateOrderUsingPOSTPath = '/api/command/order/initiateOrder';
-  static readonly getAllSavedAddressUsingGETPath = '/api/command/orders/addresses';
   static readonly createAddressUsingPOSTPath = '/api/command/orders/addresses';
-  static readonly collectDeliveryDetailsUsingPOSTPath = '/api/command/orders/collectDeliveryDetails';
+  static readonly getAllSavedAddressUsingGETPath = '/api/command/orders/addresses/{customerId}';
+  static readonly collectDeliveryDetailsUsingPOSTPath = '/api/command/orders/collectDeliveryDetails/{orderId}';
   static readonly confirmDeliveryUsingPOSTPath = '/api/command/orders/confirmDelivery/{phone}/{taskId}';
   static readonly createPaymentUsingPOSTPath = '/api/command/orders/makePayment/{taskId}';
 
@@ -67,39 +67,6 @@ class OrderCommandResourceService extends __BaseService {
   initiateOrderUsingPOST(order: Order): __Observable<CommandResource> {
     return this.initiateOrderUsingPOSTResponse(order).pipe(
       __map(_r => _r.body as CommandResource)
-    );
-  }
-
-  /**
-   * @return OK
-   */
-  getAllSavedAddressUsingGETResponse(): __Observable<__StrictHttpResponse<Array<AddressDTO>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-    let req = new HttpRequest<any>(
-      'GET',
-      this.rootUrl + `/api/command/orders/addresses`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<AddressDTO>>;
-      })
-    );
-  }
-  /**
-   * @return OK
-   */
-  getAllSavedAddressUsingGET(): __Observable<Array<AddressDTO>> {
-    return this.getAllSavedAddressUsingGETResponse().pipe(
-      __map(_r => _r.body as Array<AddressDTO>)
     );
   }
 
@@ -201,16 +168,57 @@ class OrderCommandResourceService extends __BaseService {
   }
 
   /**
-   * @param deliveryInfo deliveryInfo
+   * @param customerId customerId
+   * @return OK
    */
-  collectDeliveryDetailsUsingPOSTResponse(deliveryInfo: DeliveryInfo): __Observable<__StrictHttpResponse<null>> {
+  getAllSavedAddressUsingGETResponse(customerId: string): __Observable<__StrictHttpResponse<Array<AddressDTO>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
-    __body = deliveryInfo;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/command/orders/addresses/${customerId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<AddressDTO>>;
+      })
+    );
+  }
+  /**
+   * @param customerId customerId
+   * @return OK
+   */
+  getAllSavedAddressUsingGET(customerId: string): __Observable<Array<AddressDTO>> {
+    return this.getAllSavedAddressUsingGETResponse(customerId).pipe(
+      __map(_r => _r.body as Array<AddressDTO>)
+    );
+  }
+
+  /**
+   * @param params The `OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams` containing the following parameters:
+   *
+   * - `orderId`: orderId
+   *
+   * - `deliveryInfo`: deliveryInfo
+   */
+  collectDeliveryDetailsUsingPOSTResponse(params: OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams): __Observable<__StrictHttpResponse<null>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    __body = params.deliveryInfo;
     let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/api/command/orders/collectDeliveryDetails`,
+      this.rootUrl + `/api/command/orders/collectDeliveryDetails/${params.orderId}`,
       __body,
       {
         headers: __headers,
@@ -226,10 +234,14 @@ class OrderCommandResourceService extends __BaseService {
     );
   }
   /**
-   * @param deliveryInfo deliveryInfo
+   * @param params The `OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams` containing the following parameters:
+   *
+   * - `orderId`: orderId
+   *
+   * - `deliveryInfo`: deliveryInfo
    */
-  collectDeliveryDetailsUsingPOST(deliveryInfo: DeliveryInfo): __Observable<null> {
-    return this.collectDeliveryDetailsUsingPOSTResponse(deliveryInfo).pipe(
+  collectDeliveryDetailsUsingPOST(params: OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams): __Observable<null> {
+    return this.collectDeliveryDetailsUsingPOSTResponse(params).pipe(
       __map(_r => _r.body as null)
     );
   }
@@ -347,6 +359,22 @@ module OrderCommandResourceService {
     city?: string;
     alternatePhone?: number;
     addressType?: string;
+  }
+
+  /**
+   * Parameters for collectDeliveryDetailsUsingPOST
+   */
+  export interface CollectDeliveryDetailsUsingPOSTParams {
+
+    /**
+     * orderId
+     */
+    orderId: number;
+
+    /**
+     * deliveryInfo
+     */
+    deliveryInfo: DeliveryInfo;
   }
 
   /**

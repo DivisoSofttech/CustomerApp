@@ -18,6 +18,7 @@ export { Entry } from './models/entry';
 export { Label } from './models/label';
 export { LabelDTO } from './models/label-dto';
 export { Link } from './models/link';
+export { LinkRel } from './models/link-rel';
 export { Note } from './models/note';
 export { Order } from './models/order';
 export { OrderLine } from './models/order-line';

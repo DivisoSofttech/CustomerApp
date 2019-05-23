@@ -1,11 +1,6 @@
 /* tslint:disable */
+import { LinkRel } from './link-rel';
 export interface Link {
-  deprecation?: string;
-  href?: string;
-  hreflang?: string;
-  media?: string;
-  rel?: string;
-  templated?: boolean;
-  title?: string;
-  type?: string;
+  next?: LinkRel;
+  self?: LinkRel;
 }

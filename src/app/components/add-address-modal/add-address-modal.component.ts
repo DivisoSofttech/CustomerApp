@@ -1,3 +1,4 @@
+import { OAuthService } from 'angular-oauth2-oidc';
 import { OrderCommandResourceService } from 'src/app/api/services';
 import { AddressDTO } from './../../order/models/address-dto';
 import { ModalController } from '@ionic/angular';
@@ -15,7 +16,8 @@ export class AddAddressModalComponent implements OnInit {
 
   constructor(
     private moadlController: ModalController,
-    private orderCommandResourceService: OrderCommandResourceService
+    private orderCommandResourceService: OrderCommandResourceService,
+    private oauthService: OAuthService
   ) { }
 
   ngOnInit() {}
@@ -25,26 +27,29 @@ export class AddAddressModalComponent implements OnInit {
   }
 
   saveAddress() {
-    
+
     console.log(this.address);
-    this.orderCommandResourceService.createAddressUsingPOST(
-      {
-        alternatePhone: this.address.alternatePhone,
-        city: this.address.city,
-        customerId: this.customerId,
-        houseNoOrBuildingName: this.address.houseNoOrBuildingName,
-        landmark: this.address.landmark,
-        name: this.address.name,
-        phone: this.address.phone,
-        pincode: this.address.pincode,
-        roadNameAreaOrStreet: this.address.roadNameAreaOrStreet,
-        state: this.address.state
-      }
-    )
-    .subscribe(address => {
-      console.log('Address Saved' , address);
-      this.moadlController.dismiss();
-    });
+    this.oauthService.loadUserProfile()
+    .then((user: any) => {
+      this.orderCommandResourceService.createAddressUsingPOST(
+        {
+          alternatePhone: this.address.alternatePhone,
+          city: this.address.city,
+          customerId: user.preferred_username,
+          houseNoOrBuildingName: this.address.houseNoOrBuildingName,
+          landmark: this.address.landmark,
+          name: this.address.name,
+          phone: this.address.phone,
+          pincode: this.address.pincode,
+          roadNameAreaOrStreet: this.address.roadNameAreaOrStreet,
+          state: this.address.state
+        }
+      )
+      .subscribe(address => {
+        console.log('Address Saved' , address);
+        this.moadlController.dismiss();
+      });
+    })
   }
 
 }
