@@ -14,6 +14,7 @@ import { CategoryDTO } from '../models/category-dto';
 import { PageOfProduct } from '../models/page-of-product';
 import { UomDTO } from '../models/uom-dto';
 import { Entry } from '../models/entry';
+import { PageOfCategory } from '../models/page-of-category';
 import { PageOfStockCurrent } from '../models/page-of-stock-current';
 import { PageOfStockDiary } from '../models/page-of-stock-diary';
 import { Product } from '../models/product';
@@ -49,6 +50,7 @@ class QueryResourceService extends __BaseService {
   static readonly findAllProductsUsingGETPath = '/api/query/findAllProducts';
   static readonly findAllUomUsingGETPath = '/api/query/findAllUom';
   static readonly findCategoryAndCountUsingGETPath = '/api/query/findCategoryAndCount';
+  static readonly findCategoryIdByUserIdUsingGETPath = '/api/query/findCategoryByUserId/{userId}';
   static readonly findProductByCategoryIdAndUserIdUsingGETPath = '/api/query/findProductByCategoryIdAndUserId/{categoryId}/{userId}';
   static readonly findAllProductBySearchTermUsingGETPath = '/api/query/findProductBySearchTerm/{searchTerm}';
   static readonly findStockCurrentByProductIdUsingGETPath = '/api/query/findStockCurrentByProductId/{productId}';
@@ -613,6 +615,63 @@ class QueryResourceService extends __BaseService {
   findCategoryAndCountUsingGET(params: QueryResourceService.FindCategoryAndCountUsingGETParams): __Observable<Array<Entry>> {
     return this.findCategoryAndCountUsingGETResponse(params).pipe(
       __map(_r => _r.body as Array<Entry>)
+    );
+  }
+
+  /**
+   * @param params The `QueryResourceService.FindCategoryIdByUserIdUsingGETParams` containing the following parameters:
+   *
+   * - `userId`: userId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
+   * @return OK
+   */
+  findCategoryIdByUserIdUsingGETResponse(params: QueryResourceService.FindCategoryIdByUserIdUsingGETParams): __Observable<__StrictHttpResponse<PageOfCategory>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    (params.sort || []).forEach(val => {if (val != null) __params = __params.append('sort', val.toString())});
+    if (params.size != null) __params = __params.set('size', params.size.toString());
+    if (params.page != null) __params = __params.set('page', params.page.toString());
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/findCategoryByUserId/${params.userId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<PageOfCategory>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.FindCategoryIdByUserIdUsingGETParams` containing the following parameters:
+   *
+   * - `userId`: userId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
+   * @return OK
+   */
+  findCategoryIdByUserIdUsingGET(params: QueryResourceService.FindCategoryIdByUserIdUsingGETParams): __Observable<PageOfCategory> {
+    return this.findCategoryIdByUserIdUsingGETResponse(params).pipe(
+      __map(_r => _r.body as PageOfCategory)
     );
   }
 
@@ -2081,6 +2140,32 @@ module QueryResourceService {
    * Parameters for findCategoryAndCountUsingGET
    */
   export interface FindCategoryAndCountUsingGETParams {
+
+    /**
+     * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     */
+    sort?: Array<string>;
+
+    /**
+     * Size of a page
+     */
+    size?: number;
+
+    /**
+     * Page number of the requested page
+     */
+    page?: number;
+  }
+
+  /**
+   * Parameters for findCategoryIdByUserIdUsingGET
+   */
+  export interface FindCategoryIdByUserIdUsingGETParams {
+
+    /**
+     * userId
+     */
+    userId: string;
 
     /**
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.

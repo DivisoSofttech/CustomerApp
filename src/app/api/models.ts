@@ -16,6 +16,7 @@ export { Entry } from './models/entry';
 export { Label } from './models/label';
 export { LabelDTO } from './models/label-dto';
 export { Note } from './models/note';
+export { PageOfCategory } from './models/page-of-category';
 export { PageOfCustomer } from './models/page-of-customer';
 export { PageOfProduct } from './models/page-of-product';
 export { PageOfSale } from './models/page-of-sale';

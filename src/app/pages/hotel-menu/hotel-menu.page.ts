@@ -1,3 +1,4 @@
+import { Category } from './../../api/models/category';
 import { CartService } from './../../services/cart.service';
 import { StockCurrent } from './../../api/models/stock-current';
 import { QueryResourceService, CommandResourceService } from 'src/app/api/services';
@@ -31,6 +32,7 @@ export class HotelMenuPage implements OnInit {
     reviews: Review[];
     ratings: UserRating[];
     rate: number;
+    categories: Category[] = [];
     review: ReviewDTO = {userName: '', review: '', reviewedDate: '', storeId: 0};
     stockCurrents: StockCurrent[];
     @ViewChild('slides') slides: IonSlides;
@@ -53,6 +55,10 @@ export class HotelMenuPage implements OnInit {
         this.reviews = result;
       }, err => {
         console.log('Error fetching review data', err);
+      });
+      const param: QueryResourceService.FindCategoryIdByUserIdUsingGETParams = {userId: this.storeId};
+      this.queryResourceService.findCategoryIdByUserIdUsingGET(param).subscribe(res => {
+        this.categories = res.content;
       });
     }
     async presentPopover(ev: any) {
