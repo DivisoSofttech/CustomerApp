@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import { NavController, ModalController } from '@ionic/angular';
+import { NavController, ModalController, ToastController } from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Store } from 'src/app/api/models';
@@ -20,6 +20,7 @@ export class RestaurantsPage implements OnInit {
   constructor(private navCtrl: NavController,
               private modalController: ModalController,
               private geolocation: Geolocation,
+              private toastCtrl: ToastController,
               private nativeGeocoder: NativeGeocoder,
               private queryResourceService: QueryResourceService) {
 
@@ -67,7 +68,35 @@ export class RestaurantsPage implements OnInit {
 
   }
 
+  search(event) {
+    if (event.detail.value !== '') {
+      this.queryResourceService.findAllStoreByNameUsingGET(event.detail.value).subscribe(res => {
+        if (res.length > 0) {
+          this.stores = res;
+        }
+      }, err => {
+        this.toastView('No results found');
+      });
+    } else {
+      this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
+        this.stores = res;
+      },
+      err => {
+        console.log('Error fetching stores');
+      });
+    }
+  }
+
   rateChange(event) {
     console.log('rate changed', event);
+  }
+
+  async toastView(message) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      cssClass: 'toast'
+    });
+    await toast.present();
   }
 }

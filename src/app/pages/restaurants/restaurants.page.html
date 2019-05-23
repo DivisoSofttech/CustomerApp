@@ -11,7 +11,7 @@
 
 <ion-content>
   <ion-item lines="none">
-    <ion-searchbar></ion-searchbar>
+    <ion-searchbar placeholder="Search restaurants..." (ionChange)='search($event)'></ion-searchbar>
     <ion-button color="light" (click)="presentFilterModal()">
       <ion-icon name="options"></ion-icon>
     </ion-button>

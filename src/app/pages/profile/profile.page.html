@@ -17,13 +17,13 @@
 <ion-content>
     <ion-card>
         <ion-item>
-            <ion-card-subtitle slot="start" slot="start"><strong>Tony Stark</strong>
-            <p>cool</p></ion-card-subtitle>
+            <ion-card-subtitle *ngIf="profile"  slot="start" slot="start"><strong>{{profile.preferred_username | uppercase}}</strong>
+            </ion-card-subtitle>
            
-          <img src="assets/images/toney.jpg" slot="end" class="img"/>
+          <img src="assets/images/user.png" slot="end" class="img"/>
         </ion-item>
         <ion-item>
-            <ion-card-subtitle size="3" slot="start" slot="start">palakkad</ion-card-subtitle>
+            <ion-card-subtitle size="3" slot="start" slot="start">{{profile.email}}</ion-card-subtitle>
             <ion-button class="editButton">edit</ion-button>
         </ion-item>
       </ion-card>

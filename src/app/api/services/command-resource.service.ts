@@ -12,6 +12,7 @@ import { ContactDTO } from '../models/contact-dto';
 import { CustomerDTO } from '../models/customer-dto';
 import { CustomerAggregator } from '../models/customer-aggregator';
 import { ProductDTO } from '../models/product-dto';
+import { RatingReview } from '../models/rating-review';
 import { ReplyDTO } from '../models/reply-dto';
 import { ReviewDTO } from '../models/review-dto';
 import { SaleDTO } from '../models/sale-dto';
@@ -41,6 +42,7 @@ class CommandResourceService extends __BaseService {
   static readonly createProductUsingPOSTPath = '/api/command/products';
   static readonly updateProductUsingPUTPath = '/api/command/products';
   static readonly deleteProductUsingDELETEPath = '/api/command/products/{id}';
+  static readonly createRatingAndReviewUsingPOSTPath = '/api/command/rating-review';
   static readonly createReplyUsingPOSTPath = '/api/command/replies';
   static readonly updateReplyUsingPUTPath = '/api/command/replies';
   static readonly deleteReplyUsingDELETEPath = '/api/command/replies/{id}';
@@ -463,6 +465,42 @@ class CommandResourceService extends __BaseService {
   deleteProductUsingDELETE(id: number): __Observable<null> {
     return this.deleteProductUsingDELETEResponse(id).pipe(
       __map(_r => _r.body as null)
+    );
+  }
+
+  /**
+   * @param ratingReview ratingReview
+   * @return OK
+   */
+  createRatingAndReviewUsingPOSTResponse(ratingReview: RatingReview): __Observable<__StrictHttpResponse<RatingReview>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    __body = ratingReview;
+    let req = new HttpRequest<any>(
+      'POST',
+      this.rootUrl + `/api/command/rating-review`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<RatingReview>;
+      })
+    );
+  }
+  /**
+   * @param ratingReview ratingReview
+   * @return OK
+   */
+  createRatingAndReviewUsingPOST(ratingReview: RatingReview): __Observable<RatingReview> {
+    return this.createRatingAndReviewUsingPOSTResponse(ratingReview).pipe(
+      __map(_r => _r.body as RatingReview)
     );
   }
 

@@ -73,6 +73,10 @@ export class LoginScreenComponent implements OnInit {
           console.log(claims);
           const param: QueryResourceService.FindCustomerByNameUsingGETParams = {name: this.username};
           this.queryResourceService.findCustomerByNameUsingGET(param).subscribe(res => {
+            if (res.content.length === 0) {
+              const customer: CustomerDTO = {name: this.username};
+              this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
+            }
           }, err => {
             const customer: CustomerDTO = {name: this.username};
             this.commandResourceService.createCustomerUsingPOST(customer).subscribe();

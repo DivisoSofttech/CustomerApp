@@ -1,3 +1,5 @@
+import { RatingReview } from './../../api/models/rating-review';
+import { UserRatingDTO } from './../../api/models/user-rating-dto';
 import { Category } from './../../api/models/category';
 import { CartService } from './../../services/cart.service';
 import { StockCurrent } from './../../api/models/stock-current';
@@ -9,6 +11,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { PopoverController, IonSlide, IonSlides, ToastController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { Product, Review, ReviewDTO, UserRating } from 'src/app/api/models';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'app-hotel-menu',
@@ -21,6 +24,7 @@ export class HotelMenuPage implements OnInit {
               private route: ActivatedRoute,
               private cartService: CartService,
               private toastController: ToastController,
+              private oauthService: OAuthService,
               private commandResourceService: CommandResourceService,
               private queryResourceService: QueryResourceService) { }
     storeId;
@@ -29,10 +33,11 @@ export class HotelMenuPage implements OnInit {
     simple = true;
     currentSubPage = 'menu';
     cardExpand: boolean[] = [];
-    reviews: Review[];
+    usr: any;
+    rateReview: RatingReview[];
     ratings: UserRating[];
-    rate: number;
-    categories: Category[] = [];
+    categories: Category[];
+    rate: UserRatingDTO = {rating: 1};
     review: ReviewDTO = {userName: '', review: '', reviewedDate: '', storeId: 0};
     stockCurrents: StockCurrent[];
     @ViewChild('slides') slides: IonSlides;
@@ -51,19 +56,23 @@ export class HotelMenuPage implements OnInit {
       }, err => {
         console.log('Error fetching product data', err);
       });
-      this.queryResourceService.findReviewsByStoreIdUsingGET(this.storeId).subscribe(result => {
-        this.reviews = result;
+      // const params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams = {storeId: this.}
+      this.queryResourceService.findRatingReviewByStoreidAndCustomerNameUsingGET({storeId: this.storeId}).subscribe(result => {
+        this.rateReview = result;
       }, err => {
         console.log('Error fetching review data', err);
       });
-      const param: QueryResourceService.FindCategoryIdByUserIdUsingGETParams = {userId: this.storeId};
-      this.queryResourceService.findCategoryIdByUserIdUsingGET(param).subscribe(res => {
-        this.categories = res.content;
+      this.queryResourceService.findAllCategoriesUsingGET({}).subscribe(success => {
+        this.categories = success;
+      });
+      this.oauthService.loadUserProfile().then(user => {
+        this.usr = user;
       });
     }
     async presentPopover(ev: any) {
       const popover = await this.popoverController.create({
         component: HotelMenuPopoverComponent,
+        componentProps: {categories: this.categories},
         event: ev,
         translucent: true
       });
@@ -90,10 +99,14 @@ export class HotelMenuPage implements OnInit {
 
     postReview() {
       console.log('here');
-      this.review.storeId = this.storeId;
+      this.review.storeId = this.store.id;
+      this.rate.storeId = this.store.id;
       if (this.review.review !== '') {
-        this.commandResourceService.createUserReviewUsingPOST(this.review).subscribe(result => {
-          this.reviews.push(result);
+        const raterev: RatingReview = {review: this.review,  rating: this.rate};
+        raterev.rating.userName = this.usr.preferred_username;
+        raterev.review.userName = this.usr.preferred_username;
+        this.commandResourceService.createRatingAndReviewUsingPOST(raterev).subscribe(result => {
+          console.log(result);
         }, err => {
           this.presentToast('Error while posting review. Try again later');
         });
@@ -122,5 +135,10 @@ export class HotelMenuPage implements OnInit {
     addToCart(stock: StockCurrent) {
       this.cartService.addProduct(stock.product, stock);
       this.presentToast('Product added to basket');
+    }
+
+    updateRating(event) {
+      this.rate.rating = event;
+      console.log(this.rate.rating);
     }
   }

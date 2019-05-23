@@ -7,10 +7,10 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit {
-  currentSubPage : string = 'history'
-  segmentChanged(ev : any)
-  {
+export class ProfilePage {
+  currentSubPage = 'history';
+  profile: any = {};
+  segmentChanged(ev: any) {
     this.currentSubPage = ev.detail.value;
   }
   constructor(private oauthService: OAuthService,
@@ -18,7 +18,11 @@ export class ProfilePage implements OnInit {
               private alertController: AlertController,
               private navController: NavController) { }
 
-  ngOnInit() {
+  ionViewWillEnter() {
+    this.oauthService.loadUserProfile().then(user => {
+      this.profile = user;
+      console.log(user);
+    });
   }
   edit(){
 

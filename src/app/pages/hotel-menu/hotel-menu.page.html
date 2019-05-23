@@ -5,6 +5,7 @@
     </ion-buttons>
     <ion-title>White Stand Menu</ion-title>
   </ion-toolbar>
+  <ion-searchbar placeholder="Search products..."></ion-searchbar>
 </ion-header>
 <ion-content *ngIf="store">
   <div class="container">
@@ -65,9 +66,9 @@
           <ion-col size="12">
             <ion-card>
               <ion-item lines="none" color="vibrant">
-                <img src="assets/images/toney.jpg" slot="start" class="reviewProfile" />
-                <ion-card-subtitle slot="start"><strong>Tony Stark</strong>
-                  <rating></rating>
+                <img src="assets/images/user.png" slot="start" class="reviewProfile" />
+                <ion-card-subtitle *ngIf="usr"  slot="start"><strong>{{usr.preferred_username | uppercase}}</strong>
+                  <rating [rate]="rate.rating" (rateChange)="updateRating($event)"></rating>
                 </ion-card-subtitle>
               </ion-item>
               <ion-item lines="none">
@@ -82,15 +83,15 @@
 
         <ion-row>
           <ion-col size="12">
-            <ion-card *ngFor="let review of reviews">
+            <ion-card *ngFor="let raterev of rateReview">
               <ion-item lines="none" color="vibrant">
-                <img src="assets/images/toney.jpg" slot="start" class="reviewProfile" />
-                <ion-card-subtitle slot="start"><strong>{{review.userName}}</strong>
-                  <rating [rate]="4" [readonly]="true"></rating>
+                <img src="assets/images/user.png" slot="start" class="reviewProfile" />
+                <ion-card-subtitle slot="start"><strong>{{raterev.review.userName | uppercase}}</strong>
+                  <rating [rate]="raterev.rating.rating" [readonly]="true"></rating>
                 </ion-card-subtitle>
               </ion-item>
               <ion-item lines="none">
-                <ion-card-subtitle class="commentText">{{review.review}}</ion-card-subtitle>
+                <ion-card-subtitle class="commentText">{{raterev.review.review}}</ion-card-subtitle>
               </ion-item>
             </ion-card>
           </ion-col>
