@@ -1,7 +1,7 @@
 /* tslint:disable */
-import { UserRating } from './user-rating';
-import { Review } from './review';
+import { UserRatingDTO } from './user-rating-dto';
+import { ReviewDTO } from './review-dto';
 export interface RatingReview {
-  rating?: UserRating;
-  review?: Review;
+  rating?: UserRatingDTO;
+  review?: ReviewDTO;
 }

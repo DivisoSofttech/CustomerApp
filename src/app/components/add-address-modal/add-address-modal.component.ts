@@ -1,6 +1,6 @@
+import { OrderAddressDTO } from 'src/app/api/models';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { OrderCommandResourceService } from 'src/app/api/services';
-import { AddressDTO } from './../../order/models/address-dto';
 import { ModalController } from '@ionic/angular';
 import { Component, OnInit, Input } from '@angular/core';
 
@@ -11,7 +11,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AddAddressModalComponent implements OnInit {
 
-  address: AddressDTO = {};
+  address: OrderAddressDTO = {};
   @Input() customerId;
 
   constructor(

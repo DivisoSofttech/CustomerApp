@@ -1,5 +1,5 @@
 /* tslint:disable */
-export interface PaymentDTO {
+export interface OrderPaymentDTO {
   amount?: number;
   id?: number;
   paymentType?: string;

@@ -1,5 +1,5 @@
 /* tslint:disable */
-export interface AddressDTO {
+export interface OrderAddressDTO {
   landmark?: string;
   addressType?: string;
   city?: string;

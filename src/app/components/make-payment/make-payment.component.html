@@ -13,11 +13,11 @@
     <ion-row>
       <ion-col size="12" text-center>
         <address *ngFor="let address of addresses" [ngClass]="{selectedClass:address===selectedAddress}" (click)="selectAddress(address)">
-          <span>{{address.houseNoOrBuildingName}}</span>
-          <span>{{address.phone}}</span>
-          <span>{{address.alternatePhone}}</span>
-          <span>{{address.city}}</span>
-          <span>{{address.pincode}}</span>
+          <span>{{address.houseNoOrBuildingName}}</span><br/>
+          <span>{{address.phone}}</span><br/>
+          <span>{{address.alternatePhone}}</span><br/>
+          <span>{{address.city}}</span><br/>
+          <span>{{address.pincode}}</span><br/>
           <span>{{address.state}}</span>
         </address>
       </ion-col>

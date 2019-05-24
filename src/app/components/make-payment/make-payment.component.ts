@@ -1,12 +1,11 @@
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit, Input } from '@angular/core';
-import { TicketLineDTO, SaleDTO, StockDiaryDTO } from 'src/app/api/models';
+import { TicketLineDTO, SaleDTO, StockDiaryDTO , OrderAddressDTO } from 'src/app/api/models';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
-import { CommandResourceService, QueryResourceService} from 'src/app/api/services';
+import { CommandResourceService, OrderCommandResourceService, QueryResourceService } from 'src/app/api/services';
 import { CartService } from 'src/app/services/cart.service';
 import { AddAddressModalComponent } from '../add-address-modal/add-address-modal.component';
-import { AddressDTO } from 'src/app/order/models';
-import { OrderCommandResourceService } from 'src/app/order/services';
+
 
 @Component({
   selector: 'app-make-payment',
@@ -23,16 +22,16 @@ export class MakePaymentComponent implements OnInit {
   customerId: number;
   cashRecieved;
   sale: SaleDTO = {};
-  addresses: AddressDTO[] = [];
+  addresses: OrderAddressDTO[] = [];
 
-  selectedAddress: AddressDTO;
+  selectedAddress: OrderAddressDTO;
 
   constructor(
     private modalController: ModalController,
     private commandResourceService: CommandResourceService,
     private queryResourceService: QueryResourceService,
     private oauthService: OAuthService,
-    private OrderCommandResourceService: OrderCommandResourceService,
+    private orderCommandResourceService: OrderCommandResourceService,
     private navController: NavController,
     private cartService: CartService,
     private toastController: ToastController
@@ -64,8 +63,9 @@ export class MakePaymentComponent implements OnInit {
     this.oauthService.loadUserProfile()
     .then((user: any) => {
       console.log(user);
-      this.OrderCommandResourceService.getAllSavedAddressUsingGET(user.preferred_username)
+      this.orderCommandResourceService.getAllSavedAddressUsingGET(user.preferred_username)
       .subscribe(addresses => {
+        console.log('Got Addresses ' , addresses);
         this.addresses = addresses;
       });
     });

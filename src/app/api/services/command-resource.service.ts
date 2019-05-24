@@ -12,9 +12,9 @@ import { ContactDTO } from '../models/contact-dto';
 import { CustomerDTO } from '../models/customer-dto';
 import { CustomerAggregator } from '../models/customer-aggregator';
 import { ProductDTO } from '../models/product-dto';
-import { UserRatingDTO } from '../models/user-rating-dto';
-import { ReviewDTO } from '../models/review-dto';
+import { RatingReview } from '../models/rating-review';
 import { ReplyDTO } from '../models/reply-dto';
+import { ReviewDTO } from '../models/review-dto';
 import { SaleDTO } from '../models/sale-dto';
 import { StockCurrentDTO } from '../models/stock-current-dto';
 import { StockDiaryDTO } from '../models/stock-diary-dto';
@@ -22,6 +22,7 @@ import { StockLineDTO } from '../models/stock-line-dto';
 import { StoreDTO } from '../models/store-dto';
 import { TicketLineDTO } from '../models/ticket-line-dto';
 import { UomDTO } from '../models/uom-dto';
+import { UserRatingDTO } from '../models/user-rating-dto';
 
 /**
  * Command Resource
@@ -468,18 +469,14 @@ class CommandResourceService extends __BaseService {
   }
 
   /**
-   * @param params The `CommandResourceService.CreateRatingAndReviewUsingPOSTParams` containing the following parameters:
-   *
-   * - `userRatingDTO`: userRatingDTO
-   *
-   * - `reviewDTO`: reviewDTO
+   * @param ratingReview ratingReview
+   * @return OK
    */
-  createRatingAndReviewUsingPOSTResponse(params: CommandResourceService.CreateRatingAndReviewUsingPOSTParams): __Observable<__StrictHttpResponse<null>> {
+  createRatingAndReviewUsingPOSTResponse(ratingReview: RatingReview): __Observable<__StrictHttpResponse<RatingReview>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
-    __body = params.userRatingDTO;
-    __body = params.reviewDTO;
+    __body = ratingReview;
     let req = new HttpRequest<any>(
       'POST',
       this.rootUrl + `/api/command/rating-review`,
@@ -493,20 +490,17 @@ class CommandResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<null>;
+        return _r as __StrictHttpResponse<RatingReview>;
       })
     );
   }
   /**
-   * @param params The `CommandResourceService.CreateRatingAndReviewUsingPOSTParams` containing the following parameters:
-   *
-   * - `userRatingDTO`: userRatingDTO
-   *
-   * - `reviewDTO`: reviewDTO
+   * @param ratingReview ratingReview
+   * @return OK
    */
-  createRatingAndReviewUsingPOST(params: CommandResourceService.CreateRatingAndReviewUsingPOSTParams): __Observable<null> {
-    return this.createRatingAndReviewUsingPOSTResponse(params).pipe(
-      __map(_r => _r.body as null)
+  createRatingAndReviewUsingPOST(ratingReview: RatingReview): __Observable<RatingReview> {
+    return this.createRatingAndReviewUsingPOSTResponse(ratingReview).pipe(
+      __map(_r => _r.body as RatingReview)
     );
   }
 
@@ -1540,22 +1534,6 @@ class CommandResourceService extends __BaseService {
 }
 
 module CommandResourceService {
-
-  /**
-   * Parameters for createRatingAndReviewUsingPOST
-   */
-  export interface CreateRatingAndReviewUsingPOSTParams {
-
-    /**
-     * userRatingDTO
-     */
-    userRatingDTO: UserRatingDTO;
-
-    /**
-     * reviewDTO
-     */
-    reviewDTO: ReviewDTO;
-  }
 }
 
 export { CommandResourceService }

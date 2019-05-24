@@ -15,11 +15,13 @@ import { PageOfProduct } from '../models/page-of-product';
 import { UomDTO } from '../models/uom-dto';
 import { Entry } from '../models/entry';
 import { PageOfCategory } from '../models/page-of-category';
+import { Product } from '../models/product';
 import { RatingReview } from '../models/rating-review';
 import { PageOfStockCurrent } from '../models/page-of-stock-current';
 import { PageOfStockDiary } from '../models/page-of-stock-diary';
-import { Product } from '../models/product';
+import { Store } from '../models/store';
 import { ProductDTO } from '../models/product-dto';
+import { UserRating } from '../models/user-rating';
 import { Review } from '../models/review';
 import { PageOfSale } from '../models/page-of-sale';
 import { SaleDTO } from '../models/sale-dto';
@@ -28,10 +30,8 @@ import { StockCurrent } from '../models/stock-current';
 import { StockDiary } from '../models/stock-diary';
 import { StockDiaryDTO } from '../models/stock-diary-dto';
 import { StockLine } from '../models/stock-line';
-import { Store } from '../models/store';
 import { TicketLineDTO } from '../models/ticket-line-dto';
 import { TicketLine } from '../models/ticket-line';
-import { UserRating } from '../models/user-rating';
 
 /**
  * Query Resource
@@ -52,16 +52,20 @@ class QueryResourceService extends __BaseService {
   static readonly findAllUomUsingGETPath = '/api/query/findAllUom';
   static readonly findCategoryAndCountUsingGETPath = '/api/query/findCategoryAndCount';
   static readonly findCategoryIdByUserIdUsingGETPath = '/api/query/findCategoryByUserId/{userId}';
+  static readonly findAllProductByNameUsingGETPath = '/api/query/findProduct/{name}/{storeId}';
   static readonly findProductByCategoryIdAndUserIdUsingGETPath = '/api/query/findProductByCategoryIdAndUserId/{categoryId}/{userId}';
   static readonly findAllProductBySearchTermUsingGETPath = '/api/query/findProductBySearchTerm/{searchTerm}';
-  static readonly findRatingReviewByStoreidAndCustomerNameUsingGETPath = '/api/query/findRatingReview/{storeId}/{name}';
+  static readonly findRatingReviewByStoreidAndCustomerNameUsingGETPath = '/api/query/findRatingReview/{storeId}';
   static readonly findStockCurrentByProductIdUsingGETPath = '/api/query/findStockCurrentByProductId/{productId}';
   static readonly findStockCurrentByProductNameUsingGETPath = '/api/query/findStockCurrentByProductName/{name}';
   static readonly findStockDiaryByProductIdUsingGETPath = '/api/query/findStockDiaryByProductId/{productId}';
+  static readonly findAllStoreByNameUsingGETPath = '/api/query/findStore/{name}';
   static readonly findAllProductByStoreIdUsingGETPath = '/api/query/findproducts/{storeId}';
   static readonly findAllProductUsingGETPath = '/api/query/products';
   static readonly exportProductsUsingGETPath = '/api/query/products/export';
   static readonly findProductUsingGETPath = '/api/query/products/{id}';
+  static readonly findRatingByStoreIdAndCustomerNameUsingGETPath = '/api/query/rating/{storeId}/{name}';
+  static readonly findReviewByStoreIdAndCustomerNameUsingGETPath = '/api/query/review/{storeId}/{name}';
   static readonly findReviewsByStoreIdUsingGETPath = '/api/query/review/{userName}';
   static readonly findAllReviewsUsingGETPath = '/api/query/reviews';
   static readonly findSalesUsingGETPath = '/api/query/sales';
@@ -678,6 +682,53 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
+   * @param params The `QueryResourceService.FindAllProductByNameUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findAllProductByNameUsingGETResponse(params: QueryResourceService.FindAllProductByNameUsingGETParams): __Observable<__StrictHttpResponse<Array<Product>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/findProduct/${params.name}/${params.storeId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<Product>>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.FindAllProductByNameUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findAllProductByNameUsingGET(params: QueryResourceService.FindAllProductByNameUsingGETParams): __Observable<Array<Product>> {
+    return this.findAllProductByNameUsingGETResponse(params).pipe(
+      __map(_r => _r.body as Array<Product>)
+    );
+  }
+
+  /**
    * @param params The `QueryResourceService.FindProductByCategoryIdAndUserIdUsingGETParams` containing the following parameters:
    *
    * - `userId`: userId
@@ -801,19 +852,25 @@ class QueryResourceService extends __BaseService {
    *
    * - `storeId`: storeId
    *
-   * - `name`: name
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
    *
    * @return OK
    */
-  findRatingReviewByStoreidAndCustomerNameUsingGETResponse(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<__StrictHttpResponse<RatingReview>> {
+  findRatingReviewByStoreidAndCustomerNameUsingGETResponse(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<__StrictHttpResponse<Array<RatingReview>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
 
-
+    (params.sort || []).forEach(val => {if (val != null) __params = __params.append('sort', val.toString())});
+    if (params.size != null) __params = __params.set('size', params.size.toString());
+    if (params.page != null) __params = __params.set('page', params.page.toString());
     let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/api/query/findRatingReview/${params.storeId}/${params.name}`,
+      this.rootUrl + `/api/query/findRatingReview/${params.storeId}`,
       __body,
       {
         headers: __headers,
@@ -824,7 +881,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<RatingReview>;
+        return _r as __StrictHttpResponse<Array<RatingReview>>;
       })
     );
   }
@@ -833,13 +890,17 @@ class QueryResourceService extends __BaseService {
    *
    * - `storeId`: storeId
    *
-   * - `name`: name
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
    *
    * @return OK
    */
-  findRatingReviewByStoreidAndCustomerNameUsingGET(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<RatingReview> {
+  findRatingReviewByStoreidAndCustomerNameUsingGET(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<Array<RatingReview>> {
     return this.findRatingReviewByStoreidAndCustomerNameUsingGETResponse(params).pipe(
-      __map(_r => _r.body as RatingReview)
+      __map(_r => _r.body as Array<RatingReview>)
     );
   }
 
@@ -1015,6 +1076,42 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
+   * @param name name
+   * @return OK
+   */
+  findAllStoreByNameUsingGETResponse(name: string): __Observable<__StrictHttpResponse<Array<Store>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/findStore/${name}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<Store>>;
+      })
+    );
+  }
+  /**
+   * @param name name
+   * @return OK
+   */
+  findAllStoreByNameUsingGET(name: string): __Observable<Array<Store>> {
+    return this.findAllStoreByNameUsingGETResponse(name).pipe(
+      __map(_r => _r.body as Array<Store>)
+    );
+  }
+
+  /**
    * @param storeId storeId
    * @return OK
    */
@@ -1168,6 +1265,100 @@ class QueryResourceService extends __BaseService {
   findProductUsingGET(id: number): __Observable<ProductDTO> {
     return this.findProductUsingGETResponse(id).pipe(
       __map(_r => _r.body as ProductDTO)
+    );
+  }
+
+  /**
+   * @param params The `QueryResourceService.FindRatingByStoreIdAndCustomerNameUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findRatingByStoreIdAndCustomerNameUsingGETResponse(params: QueryResourceService.FindRatingByStoreIdAndCustomerNameUsingGETParams): __Observable<__StrictHttpResponse<UserRating>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/rating/${params.storeId}/${params.name}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<UserRating>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.FindRatingByStoreIdAndCustomerNameUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findRatingByStoreIdAndCustomerNameUsingGET(params: QueryResourceService.FindRatingByStoreIdAndCustomerNameUsingGETParams): __Observable<UserRating> {
+    return this.findRatingByStoreIdAndCustomerNameUsingGETResponse(params).pipe(
+      __map(_r => _r.body as UserRating)
+    );
+  }
+
+  /**
+   * @param params The `QueryResourceService.FindReviewByStoreIdAndCustomerNameUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findReviewByStoreIdAndCustomerNameUsingGETResponse(params: QueryResourceService.FindReviewByStoreIdAndCustomerNameUsingGETParams): __Observable<__StrictHttpResponse<Review>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/review/${params.storeId}/${params.name}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Review>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.FindReviewByStoreIdAndCustomerNameUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findReviewByStoreIdAndCustomerNameUsingGET(params: QueryResourceService.FindReviewByStoreIdAndCustomerNameUsingGETParams): __Observable<Review> {
+    return this.findReviewByStoreIdAndCustomerNameUsingGETResponse(params).pipe(
+      __map(_r => _r.body as Review)
     );
   }
 
@@ -2233,6 +2424,22 @@ module QueryResourceService {
   }
 
   /**
+   * Parameters for findAllProductByNameUsingGET
+   */
+  export interface FindAllProductByNameUsingGETParams {
+
+    /**
+     * storeId
+     */
+    storeId: string;
+
+    /**
+     * name
+     */
+    name: string;
+  }
+
+  /**
    * Parameters for findProductByCategoryIdAndUserIdUsingGET
    */
   export interface FindProductByCategoryIdAndUserIdUsingGETParams {
@@ -2300,9 +2507,19 @@ module QueryResourceService {
     storeId: string;
 
     /**
-     * name
+     * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      */
-    name: string;
+    sort?: Array<string>;
+
+    /**
+     * Size of a page
+     */
+    size?: number;
+
+    /**
+     * Page number of the requested page
+     */
+    page?: number;
   }
 
   /**
@@ -2402,6 +2619,38 @@ module QueryResourceService {
      * Page number of the requested page
      */
     page?: number;
+  }
+
+  /**
+   * Parameters for findRatingByStoreIdAndCustomerNameUsingGET
+   */
+  export interface FindRatingByStoreIdAndCustomerNameUsingGETParams {
+
+    /**
+     * storeId
+     */
+    storeId: string;
+
+    /**
+     * name
+     */
+    name: string;
+  }
+
+  /**
+   * Parameters for findReviewByStoreIdAndCustomerNameUsingGET
+   */
+  export interface FindReviewByStoreIdAndCustomerNameUsingGETParams {
+
+    /**
+     * storeId
+     */
+    storeId: string;
+
+    /**
+     * name
+     */
+    name: string;
   }
 
   /**
