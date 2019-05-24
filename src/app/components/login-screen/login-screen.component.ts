@@ -1,5 +1,5 @@
 import { CustomerDTO } from './../../api/models/customer-dto';
-import { CommandResourceService, QueryResourceService } from 'src/app/api/services';
+import { CommandResourceService, } from 'src/app/api/services';
 import {
   ModalController,
   NavController,
@@ -10,6 +10,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
+import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 
 @Component({
   selector: 'app-login-screen',

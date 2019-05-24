@@ -1,17 +1,19 @@
+import { CommandResourceService } from 'src/app/api/services';
 import { RatingReview } from './../../api/models/rating-review';
 import { UserRatingDTO } from './../../api/models/user-rating-dto';
 import { Category } from './../../api/models/category';
 import { CartService } from './../../services/cart.service';
 import { StockCurrent } from './../../api/models/stock-current';
-import { QueryResourceService, CommandResourceService } from 'src/app/api/services';
 import { Store } from './../../api/models/store';
 import { HotelMenuPopoverComponent } from './../../components/hotel-menu-popover/hotel-menu-popover.component';
 import { HotelMenuPageModule } from './hotel-menu.module';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { PopoverController, IonSlide, IonSlides, ToastController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
-import { Product, Review, ReviewDTO, UserRating } from 'src/app/api/models';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { QueryResourceService } from 'src/app/api/services/query-resource.service';
+import { UserRating } from 'src/app/api/models/user-rating';
+import { ReviewDTO } from 'src/app/api/models';
 
 @Component({
   selector: 'app-hotel-menu',
@@ -140,5 +142,22 @@ export class HotelMenuPage implements OnInit {
     updateRating(event) {
       this.rate.rating = event;
       console.log(this.rate.rating);
+    }
+
+    searchProducts(event) {
+      if (event.detail.value !== '') {
+        this.queryResourceService.findAllStockCurrentByProductNameStoreIdUsingGET({name: event.detail.value, storeId: this.storeId})
+          .subscribe(res => {
+            this.stockCurrents = res;
+          }, err => {
+            this.presentToast('No results found');
+          });
+      } else {
+        this.queryResourceService.findStockCurrentByStoreIdUsingGET(this.storeId).subscribe(result => {
+          this.stockCurrents = result;
+        }, err => {
+          console.log('Error fetching product data', err);
+        });
+      }
     }
   }

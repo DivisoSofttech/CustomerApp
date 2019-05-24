@@ -1,9 +1,10 @@
+import { Customer } from './../../api/models/customer';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MakePaymentComponent } from './../../components/make-payment/make-payment.component';
 import { ProductQuantityModalComponent } from 'src/app/components/product-quantity-modal/product-quantity-modal.component';
 import { ModalController } from '@ionic/angular';
 import { Component } from '@angular/core';
-import { TicketLineDTO, ProductDTO, Customer } from 'src/app/api/models';
+import { TicketLineDTO, ProductDTO} from 'src/app/api/models';
 import { CartService } from 'src/app/services/cart.service';
 import { QueryResourceService } from 'src/app/api/services';
 

@@ -9,9 +9,9 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 
 import { CommandResource } from '../models/command-resource';
 import { Order } from '../models/order';
-import { AddressDTO } from '../models/address-dto';
-import { DeliveryInfo } from '../models/delivery-info';
-import { PaymentDTO } from '../models/payment-dto';
+import { OrderAddressDTO } from '../models/order-address-dto';
+import { OrderDeliveryInfo } from '../models/order-delivery-info';
+import { OrderPaymentDTO } from '../models/order-payment-dto';
 
 /**
  * Order Command Resource
@@ -99,7 +99,7 @@ class OrderCommandResourceService extends __BaseService {
    *
    * @return OK
    */
-  createAddressUsingPOSTResponse(params: OrderCommandResourceService.CreateAddressUsingPOSTParams): __Observable<__StrictHttpResponse<AddressDTO>> {
+  createAddressUsingPOSTResponse(params: OrderCommandResourceService.CreateAddressUsingPOSTParams): __Observable<__StrictHttpResponse<OrderAddressDTO>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -128,7 +128,7 @@ class OrderCommandResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<AddressDTO>;
+        return _r as __StrictHttpResponse<OrderAddressDTO>;
       })
     );
   }
@@ -161,9 +161,9 @@ class OrderCommandResourceService extends __BaseService {
    *
    * @return OK
    */
-  createAddressUsingPOST(params: OrderCommandResourceService.CreateAddressUsingPOSTParams): __Observable<AddressDTO> {
+  createAddressUsingPOST(params: OrderCommandResourceService.CreateAddressUsingPOSTParams): __Observable<OrderAddressDTO> {
     return this.createAddressUsingPOSTResponse(params).pipe(
-      __map(_r => _r.body as AddressDTO)
+      __map(_r => _r.body as OrderAddressDTO)
     );
   }
 
@@ -171,7 +171,7 @@ class OrderCommandResourceService extends __BaseService {
    * @param customerId customerId
    * @return OK
    */
-  getAllSavedAddressUsingGETResponse(customerId: string): __Observable<__StrictHttpResponse<Array<AddressDTO>>> {
+  getAllSavedAddressUsingGETResponse(customerId: string): __Observable<__StrictHttpResponse<Array<OrderAddressDTO>>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -189,7 +189,7 @@ class OrderCommandResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<AddressDTO>>;
+        return _r as __StrictHttpResponse<Array<OrderAddressDTO>>;
       })
     );
   }
@@ -197,9 +197,9 @@ class OrderCommandResourceService extends __BaseService {
    * @param customerId customerId
    * @return OK
    */
-  getAllSavedAddressUsingGET(customerId: string): __Observable<Array<AddressDTO>> {
+  getAllSavedAddressUsingGET(customerId: string): __Observable<Array<OrderAddressDTO>> {
     return this.getAllSavedAddressUsingGETResponse(customerId).pipe(
-      __map(_r => _r.body as Array<AddressDTO>)
+      __map(_r => _r.body as Array<OrderAddressDTO>)
     );
   }
 
@@ -374,7 +374,7 @@ module OrderCommandResourceService {
     /**
      * deliveryInfo
      */
-    deliveryInfo: DeliveryInfo;
+    deliveryInfo: OrderDeliveryInfo;
   }
 
   /**
@@ -406,7 +406,7 @@ module OrderCommandResourceService {
     /**
      * paymentDTO
      */
-    paymentDTO: PaymentDTO;
+    paymentDTO: OrderPaymentDTO;
   }
 }
 

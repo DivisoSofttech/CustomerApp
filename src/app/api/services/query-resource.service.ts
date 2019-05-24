@@ -15,18 +15,18 @@ import { PageOfProduct } from '../models/page-of-product';
 import { UomDTO } from '../models/uom-dto';
 import { Entry } from '../models/entry';
 import { PageOfCategory } from '../models/page-of-category';
-import { Product } from '../models/product';
 import { RatingReview } from '../models/rating-review';
 import { PageOfStockCurrent } from '../models/page-of-stock-current';
 import { PageOfStockDiary } from '../models/page-of-stock-diary';
+import { StockCurrent } from '../models/stock-current';
 import { Store } from '../models/store';
+import { Product } from '../models/product';
 import { ProductDTO } from '../models/product-dto';
 import { UserRating } from '../models/user-rating';
 import { Review } from '../models/review';
 import { PageOfSale } from '../models/page-of-sale';
 import { SaleDTO } from '../models/sale-dto';
 import { StockCurrentDTO } from '../models/stock-current-dto';
-import { StockCurrent } from '../models/stock-current';
 import { StockDiary } from '../models/stock-diary';
 import { StockDiaryDTO } from '../models/stock-diary-dto';
 import { StockLine } from '../models/stock-line';
@@ -52,13 +52,13 @@ class QueryResourceService extends __BaseService {
   static readonly findAllUomUsingGETPath = '/api/query/findAllUom';
   static readonly findCategoryAndCountUsingGETPath = '/api/query/findCategoryAndCount';
   static readonly findCategoryIdByUserIdUsingGETPath = '/api/query/findCategoryByUserId/{userId}';
-  static readonly findAllProductByNameUsingGETPath = '/api/query/findProduct/{name}';
   static readonly findProductByCategoryIdAndUserIdUsingGETPath = '/api/query/findProductByCategoryIdAndUserId/{categoryId}/{userId}';
   static readonly findAllProductBySearchTermUsingGETPath = '/api/query/findProductBySearchTerm/{searchTerm}';
   static readonly findRatingReviewByStoreidAndCustomerNameUsingGETPath = '/api/query/findRatingReview/{storeId}';
   static readonly findStockCurrentByProductIdUsingGETPath = '/api/query/findStockCurrentByProductId/{productId}';
   static readonly findStockCurrentByProductNameUsingGETPath = '/api/query/findStockCurrentByProductName/{name}';
   static readonly findStockDiaryByProductIdUsingGETPath = '/api/query/findStockDiaryByProductId/{productId}';
+  static readonly findAllStockCurrentByProductNameStoreIdUsingGETPath = '/api/query/findStocks/{name}/{storeId}';
   static readonly findAllStoreByNameUsingGETPath = '/api/query/findStore/{name}';
   static readonly findAllProductByStoreIdUsingGETPath = '/api/query/findproducts/{storeId}';
   static readonly findAllProductUsingGETPath = '/api/query/products';
@@ -682,42 +682,6 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
-   * @param name name
-   * @return OK
-   */
-  findAllProductByNameUsingGETResponse(name: string): __Observable<__StrictHttpResponse<Array<Product>>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-
-    let req = new HttpRequest<any>(
-      'GET',
-      this.rootUrl + `/api/query/findProduct/${name}`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<Array<Product>>;
-      })
-    );
-  }
-  /**
-   * @param name name
-   * @return OK
-   */
-  findAllProductByNameUsingGET(name: string): __Observable<Array<Product>> {
-    return this.findAllProductByNameUsingGETResponse(name).pipe(
-      __map(_r => _r.body as Array<Product>)
-    );
-  }
-
-  /**
    * @param params The `QueryResourceService.FindProductByCategoryIdAndUserIdUsingGETParams` containing the following parameters:
    *
    * - `userId`: userId
@@ -1061,6 +1025,53 @@ class QueryResourceService extends __BaseService {
   findStockDiaryByProductIdUsingGET(params: QueryResourceService.FindStockDiaryByProductIdUsingGETParams): __Observable<PageOfStockDiary> {
     return this.findStockDiaryByProductIdUsingGETResponse(params).pipe(
       __map(_r => _r.body as PageOfStockDiary)
+    );
+  }
+
+  /**
+   * @param params The `QueryResourceService.FindAllStockCurrentByProductNameStoreIdUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findAllStockCurrentByProductNameStoreIdUsingGETResponse(params: QueryResourceService.FindAllStockCurrentByProductNameStoreIdUsingGETParams): __Observable<__StrictHttpResponse<Array<StockCurrent>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/findStocks/${params.name}/${params.storeId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<StockCurrent>>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.FindAllStockCurrentByProductNameStoreIdUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `name`: name
+   *
+   * @return OK
+   */
+  findAllStockCurrentByProductNameStoreIdUsingGET(params: QueryResourceService.FindAllStockCurrentByProductNameStoreIdUsingGETParams): __Observable<Array<StockCurrent>> {
+    return this.findAllStockCurrentByProductNameStoreIdUsingGETResponse(params).pipe(
+      __map(_r => _r.body as Array<StockCurrent>)
     );
   }
 
@@ -2571,6 +2582,22 @@ module QueryResourceService {
      * Page number of the requested page
      */
     page?: number;
+  }
+
+  /**
+   * Parameters for findAllStockCurrentByProductNameStoreIdUsingGET
+   */
+  export interface FindAllStockCurrentByProductNameStoreIdUsingGETParams {
+
+    /**
+     * storeId
+     */
+    storeId: string;
+
+    /**
+     * name
+     */
+    name: string;
   }
 
   /**

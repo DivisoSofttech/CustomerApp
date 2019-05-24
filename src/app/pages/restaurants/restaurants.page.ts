@@ -1,9 +1,9 @@
+import { Store } from 'src/app/api/models';
 import { Component, OnInit } from '@angular/core';
 import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
 import { NavController, ModalController, ToastController } from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { Store } from 'src/app/api/models';
 import { QueryResourceService } from 'src/app/api/services';
 
 @Component({
