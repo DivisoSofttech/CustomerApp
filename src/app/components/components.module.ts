@@ -1,3 +1,4 @@
+import { AddAddressModalComponent } from './add-address-modal/add-address-modal.component';
 import { MakePaymentComponent } from './make-payment/make-payment.component';
 import { ProductQuantityModalComponent } from './product-quantity-modal/product-quantity-modal.component';
 import { LoginScreenComponent } from './login-screen/login-screen.component';
@@ -16,7 +17,8 @@ import { RatingComponent } from './rating/rating.component';
                   LoginScreenComponent,
                   RatingComponent,
                   ProductQuantityModalComponent,
-                  MakePaymentComponent
+                  MakePaymentComponent,
+                  AddAddressModalComponent
                 ],
   imports: [
     CommonModule,
@@ -29,7 +31,11 @@ import { RatingComponent } from './rating/rating.component';
               LoginScreenComponent,
               RatingComponent,
               ProductQuantityModalComponent,
-              MakePaymentComponent
+              MakePaymentComponent,
+              AddAddressModalComponent
+            ],
+  entryComponents: [
+              AddAddressModalComponent
             ]
 })
 export class ComponentsModule { }

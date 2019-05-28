@@ -18,11 +18,11 @@
   </ion-item>
   <ion-card *ngFor="let store of stores" >
     <ion-item lines="none">
-      <ion-img [src]="'data:' + store.imageContentType + ';base64,' + store.image" class="imageShow">
+      <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image" class="imageShow">
       </ion-img>
       <ion-card-content (click)="showHotelMenu(store.regNo)">
-        <ion-card-title>{{store.name}}</ion-card-title>
-        <ion-card-subtitle>{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>
+        <ion-card-title *ngIf="store.name">{{store.name}}</ion-card-title>
+        <ion-card-subtitle *ngIf="store.openingTime">{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>
         <ion-text><strong>500m</strong></ion-text>
       </ion-card-content>
     </ion-item>

@@ -1,8 +1,11 @@
+import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit, Input } from '@angular/core';
-import { TicketLineDTO, SaleDTO, StockDiaryDTO } from 'src/app/api/models';
+import { TicketLineDTO, SaleDTO, StockDiaryDTO , OrderAddressDTO } from 'src/app/api/models';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
-import { CommandResourceService } from 'src/app/api/services';
+import { CommandResourceService, OrderCommandResourceService, QueryResourceService } from 'src/app/api/services';
 import { CartService } from 'src/app/services/cart.service';
+import { AddAddressModalComponent } from '../add-address-modal/add-address-modal.component';
+
 
 @Component({
   selector: 'app-make-payment',
@@ -16,13 +19,19 @@ export class MakePaymentComponent implements OnInit {
   @Input()
   toBePaid;
   @Input()
-  customerId;
+  customerId: number;
   cashRecieved;
   sale: SaleDTO = {};
+  addresses: OrderAddressDTO[] = [];
+
+  selectedAddress: OrderAddressDTO;
 
   constructor(
     private modalController: ModalController,
     private commandResourceService: CommandResourceService,
+    private queryResourceService: QueryResourceService,
+    private oauthService: OAuthService,
+    private orderCommandResourceService: OrderCommandResourceService,
     private navController: NavController,
     private cartService: CartService,
     private toastController: ToastController
@@ -35,10 +44,45 @@ export class MakePaymentComponent implements OnInit {
     this.cashRecieved = this.toBePaid;
     this.sale.customerId = this.customerId;
     this.sale.grandTotal = this.toBePaid;
+    this.getCurrentAddresses();
   }
 
   returnToSale() {
     this.navController.navigateRoot('/tabs/home');
+  }
+
+  selectAddress(address: any) {
+    if(this.selectedAddress === address) {
+      this.selectAddress = undefined;
+    } else {
+      this.selectedAddress = address;
+    }
+  }
+
+  getCurrentAddresses() {
+    this.oauthService.loadUserProfile()
+    .then((user: any) => {
+      console.log(user);
+      this.orderCommandResourceService.getAllSavedAddressUsingGET(user.preferred_username)
+      .subscribe(addresses => {
+        console.log('Got Addresses ' , addresses);
+        this.addresses = addresses;
+      });
+    });
+  }
+
+
+  async addAddressModal() {
+    const modal = await this.modalController.create({
+      component: AddAddressModalComponent,
+    });
+
+    modal.onDidDismiss()
+    .then(() => {
+      this.getCurrentAddresses();
+    });
+
+    modal.present();
   }
 
   save() {

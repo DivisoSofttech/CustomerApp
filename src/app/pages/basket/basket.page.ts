@@ -60,7 +60,7 @@ export class BasketPage {
       componentProps: {
         ticketLines: this.ticketLines,
         toBePaid: this.total,
-        customerId: this.customer.id
+        customerId: this.customer.id,
       }
     });
     return await modal.present();

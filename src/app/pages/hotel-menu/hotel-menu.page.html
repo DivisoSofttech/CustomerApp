@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>White Stand Menu</ion-title>
+    <ion-title>{{store.name | uppercase}}</ion-title>
   </ion-toolbar>
   <ion-searchbar placeholder="Search products..." (ionChange)="searchProducts($event)"></ion-searchbar>
 </ion-header>
