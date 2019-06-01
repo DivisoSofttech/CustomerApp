@@ -18,7 +18,6 @@ import { OAuthModule } from 'angular-oauth2-oidc';
   entryComponents: [],
   imports: [
     BrowserModule,
- 
     IonicModule.forRoot(),
     AppRoutingModule,
     OAuthModule.forRoot(),

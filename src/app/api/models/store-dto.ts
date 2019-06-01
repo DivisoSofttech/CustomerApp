@@ -2,7 +2,6 @@
 export interface StoreDTO {
   info?: string;
   closingTime?: string;
-  deliveryInfoId?: number;
   email?: string;
   id?: number;
   image?: string;

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{store.name | uppercase}}</ion-title>
+    <ion-title *ngIf="store" >{{store.name | uppercase}}</ion-title>
   </ion-toolbar>
   <ion-searchbar placeholder="Search products..." (ionChange)="searchProducts($event)"></ion-searchbar>
 </ion-header>
@@ -13,7 +13,11 @@
     <div class="overlay">
       <h2><strong>{{store.name | uppercase}}</strong></h2>
       <p>{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</p>
-      <!-- <p>{{store.}}</p> -->
+      <ion-buttons>
+        <rating [rate]="store.totalRating" [readonly]="true"></rating>
+        <ion-button *ngIf="store.userRatings"  disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
+        <ion-button *ngIf="!store.userRatings"  disabled>(0)</ion-button>
+      </ion-buttons>
     </div>
   </div>
   <ion-grid>
@@ -26,6 +30,9 @@
           </ion-segment-button>
           <ion-segment-button value="reviews">
             <ion-label color="primary">Reviews</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="info">
+            <ion-label color="primary">Info</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-col>
@@ -99,6 +106,9 @@
 
 
       </ion-grid>
+    </ion-slide>
+    <ion-slide>
+      <div id="map_canvas"></div>
     </ion-slide>
   </ion-slides>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'menu' === currentSubPage">

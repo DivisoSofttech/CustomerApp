@@ -8,7 +8,7 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   { path: 'login',
-  loadChildren: './pages/login/login.module#LoginPageModule',
+    loadChildren: './pages/login/login.module#LoginPageModule',
   },
   { path: 'hotel-menu/:id',
     loadChildren: './pages/hotel-menu/hotel-menu.module#HotelMenuPageModule',
@@ -19,7 +19,10 @@ const routes: Routes = [
     loadChildren: './pages/profile/profile.module#ProfilePageModule',
     canActivate: [AuthGuardService]
   },
-  { path: 'basket', loadChildren: './pages/basket/basket.module#BasketPageModule' },
+  { path: 'basket',
+    loadChildren: './pages/basket/basket.module#BasketPageModule',
+    canActivate: [AuthGuardService]
+  },
 
 ];
 @NgModule({

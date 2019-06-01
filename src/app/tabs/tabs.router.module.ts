@@ -20,8 +20,9 @@ const routes: Routes = [
             path: '',
             loadChildren: '../pages/restaurants/restaurants.module#RestaurantsPageModule',
             canActivate: [AuthGuardService]
-          }
-        ]
+          },
+        ],
+        canActivate: [AuthGuardService]
       },
       {
         path: 'basket',
@@ -31,7 +32,8 @@ const routes: Routes = [
             loadChildren: '../pages/basket/basket.module#BasketPageModule',
             canActivate: [AuthGuardService]
           }
-        ]
+        ],
+        canActivate: [AuthGuardService]
       },
       {
         path: 'profile',
@@ -41,7 +43,8 @@ const routes: Routes = [
             loadChildren: '../pages/profile/profile.module#ProfilePageModule',
             canActivate: [AuthGuardService]
           }
-        ]
+        ],
+        canActivate: [AuthGuardService]
       },
     ]
   },

@@ -1,10 +1,23 @@
 import { Store } from 'src/app/api/models';
 import { Component, OnInit } from '@angular/core';
 import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import { NavController, ModalController, ToastController } from '@ionic/angular';
+import { NavController, ModalController, ToastController, Platform } from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { QueryResourceService } from 'src/app/api/services';
+import {
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  CameraPosition,
+  MarkerOptions,
+  Marker,
+  Environment,
+  MyLocation,
+  GoogleMapsAnimation
+} from '@ionic-native/google-maps';
+import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
 
 @Component({
   selector: 'app-restaurants',
@@ -13,15 +26,21 @@ import { QueryResourceService } from 'src/app/api/services';
 })
 export class RestaurantsPage implements OnInit {
 
-  latitude;
-  longitude;
+  map: GoogleMap;
   stores: Store[] = [];
   rate = 2;
+  slideOpts = {
+    // initialSlide: 2,
+    slidesPerView: 2,
+    loop: true,
+    autoplay: true,
+    // centeredSlides: true
+  };
   constructor(private navCtrl: NavController,
               private modalController: ModalController,
-              private geolocation: Geolocation,
               private toastCtrl: ToastController,
-              private nativeGeocoder: NativeGeocoder,
+              private platform: Platform,
+              private modalctrl: ModalController,
               private queryResourceService: QueryResourceService) {
 
   }
@@ -37,35 +56,15 @@ export class RestaurantsPage implements OnInit {
     return await modal.present();
   }
 
-  ngOnInit() {
-    this.getLocation();
+  async ngOnInit() {
     this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
       this.stores = res;
     },
     err => {
       console.log('Error fetching stores');
     });
-  }
-  getLocation() {
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.latitude = resp.coords.latitude;
-      this.longitude = resp.coords.longitude;
-      console.log(this.latitude, this.longitude);
-      this.getPlace();
-     }).catch((error) => {
-       console.log('Error getting location', error);
-     });
-  }
-
-  getPlace() {
-    const options: NativeGeocoderOptions = {
-      useLocale: true,
-      maxResults: 5
-    };
-    this.nativeGeocoder.reverseGeocode(this.latitude, this.longitude, options)
-    .then((result: NativeGeocoderResult[]) => console.log(JSON.stringify(result[0])))
-    .catch((error: any) => console.log(error));
-
+    await this.platform.ready();
+    await this.loadMap();
   }
 
   search(event) {
@@ -87,10 +86,6 @@ export class RestaurantsPage implements OnInit {
     }
   }
 
-  rateChange(event) {
-    console.log('rate changed', event);
-  }
-
   async toastView(message) {
     const toast = await this.toastCtrl.create({
       message,
@@ -99,4 +94,51 @@ export class RestaurantsPage implements OnInit {
     });
     await toast.present();
   }
+
+  loadMap() {
+    // This code is necessary for browser
+    Environment.setEnv({
+      API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyAUlvH09qvfqTyR6izVneDPXEzDyHcIB-0',
+      API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyAUlvH09qvfqTyR6izVneDPXEzDyHcIB-0'
+    });
+
+    const mapOptions: GoogleMapOptions = {
+      camera: {
+        target: {
+          lat: 43.0741904,
+          lng: -89.3809802
+        },
+        zoom: 14,
+        tilt: 30
+      }
+    };
+
+    this.map = GoogleMaps.create('map_canvas', mapOptions);
+    this.map.getMyLocation().then((location: MyLocation) => {
+      console.log(JSON.stringify(location, null, 2));
+
+      // Move the map camera to the location with animation
+      this.map.animateCamera({
+        target: location.latLng,
+        zoom: 14,
+        tilt: 30
+      });
+      const marker: Marker = this.map.addMarkerSync({
+        position: location.latLng,
+        animation: GoogleMapsAnimation.BOUNCE
+      });
+      marker.showInfoWindow();
+    })
+    .catch(err => {
+      this.toastView(err.error_message);
+    });
+  }
+
+  async notificationsModal() {
+    const modal = await this.modalController.create({
+      component: NotificationsComponent,
+    });
+    return await modal.present();
+  }
+
 }

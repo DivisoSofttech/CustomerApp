@@ -10,6 +10,7 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 import { CommandResource } from '../models/command-resource';
 import { Order } from '../models/order';
 import { OrderAddressDTO } from '../models/order-address-dto';
+import { PageOfOrderAddress } from '../models/page-of-order-address';
 import { OrderDeliveryInfo } from '../models/order-delivery-info';
 import { OrderPaymentDTO } from '../models/order-payment-dto';
 
@@ -23,9 +24,8 @@ class OrderCommandResourceService extends __BaseService {
   static readonly initiateOrderUsingPOSTPath = '/api/command/order/initiateOrder';
   static readonly createAddressUsingPOSTPath = '/api/command/orders/addresses';
   static readonly getAllSavedAddressUsingGETPath = '/api/command/orders/addresses/{customerId}';
-  static readonly collectDeliveryDetailsUsingPOSTPath = '/api/command/orders/collectDeliveryDetails/{orderId}';
-  static readonly confirmDeliveryUsingPOSTPath = '/api/command/orders/confirmDelivery/{phone}/{taskId}';
-  static readonly createPaymentUsingPOSTPath = '/api/command/orders/makePayment/{taskId}';
+  static readonly collectDeliveryDetailsUsingPOSTPath = '/api/command/orders/collectDeliveryDetails/{taskId}/{orderId}';
+  static readonly createPaymentUsingPOSTPath = '/api/command/orders/makePayment/{taskId}/{orderId}';
 
   constructor(
     config: __Configuration,
@@ -168,17 +168,29 @@ class OrderCommandResourceService extends __BaseService {
   }
 
   /**
-   * @param customerId customerId
+   * @param params The `OrderCommandResourceService.GetAllSavedAddressUsingGETParams` containing the following parameters:
+   *
+   * - `customerId`: customerId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
    * @return OK
    */
-  getAllSavedAddressUsingGETResponse(customerId: string): __Observable<__StrictHttpResponse<Array<OrderAddressDTO>>> {
+  getAllSavedAddressUsingGETResponse(params: OrderCommandResourceService.GetAllSavedAddressUsingGETParams): __Observable<__StrictHttpResponse<PageOfOrderAddress>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
 
+    (params.sort || []).forEach(val => {if (val != null) __params = __params.append('sort', val.toString())});
+    if (params.size != null) __params = __params.set('size', params.size.toString());
+    if (params.page != null) __params = __params.set('page', params.page.toString());
     let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/api/command/orders/addresses/${customerId}`,
+      this.rootUrl + `/api/command/orders/addresses/${params.customerId}`,
       __body,
       {
         headers: __headers,
@@ -189,81 +201,50 @@ class OrderCommandResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<OrderAddressDTO>>;
+        return _r as __StrictHttpResponse<PageOfOrderAddress>;
       })
     );
   }
   /**
-   * @param customerId customerId
+   * @param params The `OrderCommandResourceService.GetAllSavedAddressUsingGETParams` containing the following parameters:
+   *
+   * - `customerId`: customerId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
    * @return OK
    */
-  getAllSavedAddressUsingGET(customerId: string): __Observable<Array<OrderAddressDTO>> {
-    return this.getAllSavedAddressUsingGETResponse(customerId).pipe(
-      __map(_r => _r.body as Array<OrderAddressDTO>)
+  getAllSavedAddressUsingGET(params: OrderCommandResourceService.GetAllSavedAddressUsingGETParams): __Observable<PageOfOrderAddress> {
+    return this.getAllSavedAddressUsingGETResponse(params).pipe(
+      __map(_r => _r.body as PageOfOrderAddress)
     );
   }
 
   /**
    * @param params The `OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams` containing the following parameters:
    *
+   * - `taskId`: taskId
+   *
    * - `orderId`: orderId
    *
    * - `deliveryInfo`: deliveryInfo
+   *
+   * @return OK
    */
-  collectDeliveryDetailsUsingPOSTResponse(params: OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams): __Observable<__StrictHttpResponse<null>> {
+  collectDeliveryDetailsUsingPOSTResponse(params: OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams): __Observable<__StrictHttpResponse<CommandResource>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
+
 
     __body = params.deliveryInfo;
     let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/api/command/orders/collectDeliveryDetails/${params.orderId}`,
-      __body,
-      {
-        headers: __headers,
-        params: __params,
-        responseType: 'json'
-      });
-
-    return this.http.request<any>(req).pipe(
-      __filter(_r => _r instanceof HttpResponse),
-      __map((_r) => {
-        return _r as __StrictHttpResponse<null>;
-      })
-    );
-  }
-  /**
-   * @param params The `OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams` containing the following parameters:
-   *
-   * - `orderId`: orderId
-   *
-   * - `deliveryInfo`: deliveryInfo
-   */
-  collectDeliveryDetailsUsingPOST(params: OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams): __Observable<null> {
-    return this.collectDeliveryDetailsUsingPOSTResponse(params).pipe(
-      __map(_r => _r.body as null)
-    );
-  }
-
-  /**
-   * @param params The `OrderCommandResourceService.ConfirmDeliveryUsingPOSTParams` containing the following parameters:
-   *
-   * - `taskId`: taskId
-   *
-   * - `phone`: phone
-   *
-   * @return OK
-   */
-  confirmDeliveryUsingPOSTResponse(params: OrderCommandResourceService.ConfirmDeliveryUsingPOSTParams): __Observable<__StrictHttpResponse<CommandResource>> {
-    let __params = this.newParams();
-    let __headers = new HttpHeaders();
-    let __body: any = null;
-
-
-    let req = new HttpRequest<any>(
-      'POST',
-      this.rootUrl + `/api/command/orders/confirmDelivery/${params.phone}/${params.taskId}`,
+      this.rootUrl + `/api/command/orders/collectDeliveryDetails/${params.taskId}/${params.orderId}`,
       __body,
       {
         headers: __headers,
@@ -279,16 +260,18 @@ class OrderCommandResourceService extends __BaseService {
     );
   }
   /**
-   * @param params The `OrderCommandResourceService.ConfirmDeliveryUsingPOSTParams` containing the following parameters:
+   * @param params The `OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams` containing the following parameters:
    *
    * - `taskId`: taskId
    *
-   * - `phone`: phone
+   * - `orderId`: orderId
+   *
+   * - `deliveryInfo`: deliveryInfo
    *
    * @return OK
    */
-  confirmDeliveryUsingPOST(params: OrderCommandResourceService.ConfirmDeliveryUsingPOSTParams): __Observable<CommandResource> {
-    return this.confirmDeliveryUsingPOSTResponse(params).pipe(
+  collectDeliveryDetailsUsingPOST(params: OrderCommandResourceService.CollectDeliveryDetailsUsingPOSTParams): __Observable<CommandResource> {
+    return this.collectDeliveryDetailsUsingPOSTResponse(params).pipe(
       __map(_r => _r.body as CommandResource)
     );
   }
@@ -300,6 +283,8 @@ class OrderCommandResourceService extends __BaseService {
    *
    * - `paymentDTO`: paymentDTO
    *
+   * - `orderId`: orderId
+   *
    * @return OK
    */
   createPaymentUsingPOSTResponse(params: OrderCommandResourceService.CreatePaymentUsingPOSTParams): __Observable<__StrictHttpResponse<CommandResource>> {
@@ -308,9 +293,10 @@ class OrderCommandResourceService extends __BaseService {
     let __body: any = null;
 
     __body = params.paymentDTO;
+
     let req = new HttpRequest<any>(
       'POST',
-      this.rootUrl + `/api/command/orders/makePayment/${params.taskId}`,
+      this.rootUrl + `/api/command/orders/makePayment/${params.taskId}/${params.orderId}`,
       __body,
       {
         headers: __headers,
@@ -331,6 +317,8 @@ class OrderCommandResourceService extends __BaseService {
    * - `taskId`: taskId
    *
    * - `paymentDTO`: paymentDTO
+   *
+   * - `orderId`: orderId
    *
    * @return OK
    */
@@ -362,9 +350,40 @@ module OrderCommandResourceService {
   }
 
   /**
+   * Parameters for getAllSavedAddressUsingGET
+   */
+  export interface GetAllSavedAddressUsingGETParams {
+
+    /**
+     * customerId
+     */
+    customerId: string;
+
+    /**
+     * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     */
+    sort?: Array<string>;
+
+    /**
+     * Size of a page
+     */
+    size?: number;
+
+    /**
+     * Page number of the requested page
+     */
+    page?: number;
+  }
+
+  /**
    * Parameters for collectDeliveryDetailsUsingPOST
    */
   export interface CollectDeliveryDetailsUsingPOSTParams {
+
+    /**
+     * taskId
+     */
+    taskId: string;
 
     /**
      * orderId
@@ -375,22 +394,6 @@ module OrderCommandResourceService {
      * deliveryInfo
      */
     deliveryInfo: OrderDeliveryInfo;
-  }
-
-  /**
-   * Parameters for confirmDeliveryUsingPOST
-   */
-  export interface ConfirmDeliveryUsingPOSTParams {
-
-    /**
-     * taskId
-     */
-    taskId: string;
-
-    /**
-     * phone
-     */
-    phone: number;
   }
 
   /**
@@ -407,6 +410,11 @@ module OrderCommandResourceService {
      * paymentDTO
      */
     paymentDTO: OrderPaymentDTO;
+
+    /**
+     * orderId
+     */
+    orderId: number;
   }
 }
 

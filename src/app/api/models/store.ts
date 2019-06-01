@@ -6,7 +6,7 @@ import { UserRating } from './user-rating';
 export interface Store {
   location?: string;
   closingTime?: string;
-  deliveryInfo?: DeliveryInfo;
+  deliveryInfos?: Array<DeliveryInfo>;
   email?: string;
   id?: number;
   image?: string;

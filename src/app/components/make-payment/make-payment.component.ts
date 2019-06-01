@@ -1,6 +1,6 @@
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit, Input } from '@angular/core';
-import { TicketLineDTO, SaleDTO, StockDiaryDTO , OrderAddressDTO } from 'src/app/api/models';
+import { TicketLineDTO, SaleDTO, StockDiaryDTO , OrderAddressDTO, OrderAddress } from 'src/app/api/models';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { CommandResourceService, OrderCommandResourceService, QueryResourceService } from 'src/app/api/services';
 import { CartService } from 'src/app/services/cart.service';
@@ -22,7 +22,7 @@ export class MakePaymentComponent implements OnInit {
   customerId: number;
   cashRecieved;
   sale: SaleDTO = {};
-  addresses: OrderAddressDTO[] = [];
+  addresses: OrderAddress[] = [];
 
   selectedAddress: OrderAddressDTO;
 
@@ -66,7 +66,7 @@ export class MakePaymentComponent implements OnInit {
       this.orderCommandResourceService.getAllSavedAddressUsingGET(user.preferred_username)
       .subscribe(addresses => {
         console.log('Got Addresses ' , addresses);
-        this.addresses = addresses;
+        this.addresses = addresses.content;
       });
     });
   }

@@ -12,6 +12,7 @@ import { ContactDTO } from '../models/contact-dto';
 import { CustomerDTO } from '../models/customer-dto';
 import { CustomerAggregator } from '../models/customer-aggregator';
 import { ProductDTO } from '../models/product-dto';
+import { PageOfRatingReview } from '../models/page-of-rating-review';
 import { RatingReview } from '../models/rating-review';
 import { ReplyDTO } from '../models/reply-dto';
 import { ReviewDTO } from '../models/review-dto';
@@ -469,14 +470,26 @@ class CommandResourceService extends __BaseService {
   }
 
   /**
-   * @param ratingReview ratingReview
+   * @param params The `CommandResourceService.CreateRatingAndReviewUsingPOSTParams` containing the following parameters:
+   *
+   * - `ratingReview`: ratingReview
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
    * @return OK
    */
-  createRatingAndReviewUsingPOSTResponse(ratingReview: RatingReview): __Observable<__StrictHttpResponse<RatingReview>> {
+  createRatingAndReviewUsingPOSTResponse(params: CommandResourceService.CreateRatingAndReviewUsingPOSTParams): __Observable<__StrictHttpResponse<PageOfRatingReview>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
-    __body = ratingReview;
+    __body = params.ratingReview;
+    (params.sort || []).forEach(val => {if (val != null) __params = __params.append('sort', val.toString())});
+    if (params.size != null) __params = __params.set('size', params.size.toString());
+    if (params.page != null) __params = __params.set('page', params.page.toString());
     let req = new HttpRequest<any>(
       'POST',
       this.rootUrl + `/api/command/rating-review`,
@@ -490,17 +503,26 @@ class CommandResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<RatingReview>;
+        return _r as __StrictHttpResponse<PageOfRatingReview>;
       })
     );
   }
   /**
-   * @param ratingReview ratingReview
+   * @param params The `CommandResourceService.CreateRatingAndReviewUsingPOSTParams` containing the following parameters:
+   *
+   * - `ratingReview`: ratingReview
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
    * @return OK
    */
-  createRatingAndReviewUsingPOST(ratingReview: RatingReview): __Observable<RatingReview> {
-    return this.createRatingAndReviewUsingPOSTResponse(ratingReview).pipe(
-      __map(_r => _r.body as RatingReview)
+  createRatingAndReviewUsingPOST(params: CommandResourceService.CreateRatingAndReviewUsingPOSTParams): __Observable<PageOfRatingReview> {
+    return this.createRatingAndReviewUsingPOSTResponse(params).pipe(
+      __map(_r => _r.body as PageOfRatingReview)
     );
   }
 
@@ -1534,6 +1556,32 @@ class CommandResourceService extends __BaseService {
 }
 
 module CommandResourceService {
+
+  /**
+   * Parameters for createRatingAndReviewUsingPOST
+   */
+  export interface CreateRatingAndReviewUsingPOSTParams {
+
+    /**
+     * ratingReview
+     */
+    ratingReview: RatingReview;
+
+    /**
+     * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     */
+    sort?: Array<string>;
+
+    /**
+     * Size of a page
+     */
+    size?: number;
+
+    /**
+     * Page number of the requested page
+     */
+    page?: number;
+  }
 }
 
 export { CommandResourceService }

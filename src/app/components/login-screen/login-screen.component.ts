@@ -84,7 +84,7 @@ export class LoginScreenComponent implements OnInit {
           });
         }
         if (this.oauthService.hasValidAccessToken()) {
-          this.navCtrl.navigateRoot('/tabs/profile');
+          this.navCtrl.navigateRoot('/tabs/home');
           this.dismiss();
         }
       })
@@ -168,8 +168,6 @@ export class LoginScreenComponent implements OnInit {
     }, err => {
       this.presentToast('Error Registering User');
     });
-
-
   }
 
   dataChanged(agreement) {

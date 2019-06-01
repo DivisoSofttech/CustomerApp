@@ -14,6 +14,19 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 import { UserRating } from 'src/app/api/models/user-rating';
 import { ReviewDTO } from 'src/app/api/models';
+import {
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  CameraPosition,
+  MarkerOptions,
+  Marker,
+  Environment,
+  MyLocation,
+  GoogleMapsAnimation,
+  LatLng
+} from '@ionic-native/google-maps';
 
 @Component({
   selector: 'app-hotel-menu',
@@ -30,9 +43,11 @@ export class HotelMenuPage implements OnInit {
               private commandResourceService: CommandResourceService,
               private queryResourceService: QueryResourceService) { }
     storeId;
+    map: GoogleMap;
     store: Store;
     // delivery
     simple = true;
+    mapLoaded = false;
     currentSubPage = 'menu';
     cardExpand: boolean[] = [];
     usr: any;
@@ -60,7 +75,7 @@ export class HotelMenuPage implements OnInit {
       });
       // const params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams = {storeId: this.}
       this.queryResourceService.findRatingReviewByStoreidAndCustomerNameUsingGET({storeId: this.storeId}).subscribe(result => {
-        this.rateReview = result;
+        this.rateReview = result.content;
       }, err => {
         console.log('Error fetching review data', err);
       });
@@ -84,19 +99,28 @@ export class HotelMenuPage implements OnInit {
     segmentChanged(ev: any) {
       if (ev.detail.value === 'menu') {
         this.slides.slideTo(0);
-      } else {
+      } else if (ev.detail.value === 'reviews') {
         this.slides.slideTo(1);
+      } else if (ev.detail.value === 'info') {
+        this.slides.slideTo(2);
       }
     }
 
     slideChange() {
-      if (this.currentSubPage === 'menu') {
-        this.currentSubPage = 'reviews';
-        this.slides.slideTo(1);
-      } else {
-        this.currentSubPage = 'menu';
-        this.slides.slideTo(0);
-      }
+      let index: any;
+      this.slides.getActiveIndex().then(num => {
+        index = num;
+        if (index === 0) {
+          this.currentSubPage = 'menu';
+        } else if (index === 1) {
+          this.currentSubPage = 'reviews';
+        } else {
+          this.currentSubPage = 'info';
+          if (!this.mapLoaded) {
+            this.loadMap();
+          }
+        }
+      });
     }
 
     postReview() {
@@ -107,8 +131,8 @@ export class HotelMenuPage implements OnInit {
         const raterev: RatingReview = {review: this.review,  rating: this.rate};
         raterev.rating.userName = this.usr.preferred_username;
         raterev.review.userName = this.usr.preferred_username;
-        this.commandResourceService.createRatingAndReviewUsingPOST(raterev).subscribe(result => {
-          console.log(result);
+        this.commandResourceService.createRatingAndReviewUsingPOST({ratingReview: raterev}).subscribe(result => {
+          this.rateReview = result.content;
         }, err => {
           this.presentToast('Error while posting review. Try again later');
         });
@@ -142,6 +166,31 @@ export class HotelMenuPage implements OnInit {
     updateRating(event) {
       this.rate.rating = event;
       console.log(this.rate.rating);
+    }
+
+    loadMap() {
+      // This code is necessary for browser
+      Environment.setEnv({
+        API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyAUlvH09qvfqTyR6izVneDPXEzDyHcIB-0',
+        API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyAUlvH09qvfqTyR6izVneDPXEzDyHcIB-0'
+      });
+      const latLng: string[] = this.store.location.split(',');
+      const mapOptions: GoogleMapOptions = {
+        camera: {
+          target: {
+            lat: +latLng[0],
+            lng: +latLng[1]
+          },
+          zoom: 14,
+          tilt: 30
+        }
+      };
+      this.map = GoogleMaps.create('map_canvas', mapOptions);
+      const marker: Marker = this.map.addMarkerSync({
+        position: new LatLng(+latLng[0], +latLng[1]),
+        animation: GoogleMapsAnimation.BOUNCE
+      });
+      marker.showInfoWindow();
     }
 
     searchProducts(event) {

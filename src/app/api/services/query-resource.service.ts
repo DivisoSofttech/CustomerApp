@@ -15,7 +15,7 @@ import { PageOfProduct } from '../models/page-of-product';
 import { UomDTO } from '../models/uom-dto';
 import { Entry } from '../models/entry';
 import { PageOfCategory } from '../models/page-of-category';
-import { RatingReview } from '../models/rating-review';
+import { PageOfRatingReview } from '../models/page-of-rating-review';
 import { PageOfStockCurrent } from '../models/page-of-stock-current';
 import { PageOfStockDiary } from '../models/page-of-stock-diary';
 import { StockCurrent } from '../models/stock-current';
@@ -81,6 +81,7 @@ class QueryResourceService extends __BaseService {
   static readonly findAllStockLinesUsingGETPath = '/api/query/stocklines';
   static readonly findStoreByRegisterNumberUsingGETPath = '/api/query/store/{regNo}';
   static readonly findAllStoresUsingGETPath = '/api/query/stores';
+  static readonly findStoresByTypeUsingGETPath = '/api/query/storesByDeliveryType/{deliveryType}';
   static readonly findAllTicketlinesUsingGETPath = '/api/query/ticket-lines';
   static readonly findOneTicketLinesUsingGETPath = '/api/query/ticket-lines/{id}';
   static readonly findAllTicketLinesBySaleIdUsingGETPath = '/api/query/ticket-lines/{saleId}';
@@ -814,7 +815,7 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findRatingReviewByStoreidAndCustomerNameUsingGETResponse(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<__StrictHttpResponse<Array<RatingReview>>> {
+  findRatingReviewByStoreidAndCustomerNameUsingGETResponse(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<__StrictHttpResponse<PageOfRatingReview>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -835,7 +836,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<RatingReview>>;
+        return _r as __StrictHttpResponse<PageOfRatingReview>;
       })
     );
   }
@@ -852,9 +853,9 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findRatingReviewByStoreidAndCustomerNameUsingGET(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<Array<RatingReview>> {
+  findRatingReviewByStoreidAndCustomerNameUsingGET(params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams): __Observable<PageOfRatingReview> {
     return this.findRatingReviewByStoreidAndCustomerNameUsingGETResponse(params).pipe(
-      __map(_r => _r.body as Array<RatingReview>)
+      __map(_r => _r.body as PageOfRatingReview)
     );
   }
 
@@ -2053,6 +2054,42 @@ class QueryResourceService extends __BaseService {
    */
   findAllStoresUsingGET(params: QueryResourceService.FindAllStoresUsingGETParams): __Observable<Array<Store>> {
     return this.findAllStoresUsingGETResponse(params).pipe(
+      __map(_r => _r.body as Array<Store>)
+    );
+  }
+
+  /**
+   * @param deliveryType deliveryType
+   * @return OK
+   */
+  findStoresByTypeUsingGETResponse(deliveryType: string): __Observable<__StrictHttpResponse<Array<Store>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/storesByDeliveryType/${deliveryType}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<Store>>;
+      })
+    );
+  }
+  /**
+   * @param deliveryType deliveryType
+   * @return OK
+   */
+  findStoresByTypeUsingGET(deliveryType: string): __Observable<Array<Store>> {
+    return this.findStoresByTypeUsingGETResponse(deliveryType).pipe(
       __map(_r => _r.body as Array<Store>)
     );
   }
