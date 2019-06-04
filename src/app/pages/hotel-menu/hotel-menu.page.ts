@@ -155,8 +155,9 @@ export class HotelMenuPage implements OnInit {
       this.presentToast('Product added to basket');
     }
 
-    add(i) {
+    add(i, stock: StockCurrent) {
       this.cardExpand[i]++;
+      this.cartService.addProduct(stock.product, stock);
     }
     remove(i) {
       this.cardExpand[i]--;
