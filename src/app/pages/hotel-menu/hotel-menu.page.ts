@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 import { UserRating } from 'src/app/api/models/user-rating';
-import { ReviewDTO } from 'src/app/api/models';
+import { ReviewDTO, TicketLineDTO } from 'src/app/api/models';
 import {
   GoogleMaps,
   GoogleMap,
@@ -46,10 +46,11 @@ export class HotelMenuPage implements OnInit {
     map: GoogleMap;
     store: Store;
     // delivery
+    cart: TicketLineDTO[] = this.cartService.ticketLines;
     simple = true;
     mapLoaded = false;
     currentSubPage = 'menu';
-    cardExpand: boolean[] = [];
+    cardExpand: number[] = [];
     usr: any;
     rateReview: RatingReview[];
     ratings: UserRating[];
@@ -68,19 +69,18 @@ export class HotelMenuPage implements OnInit {
       this.queryResourceService.findStockCurrentByStoreIdUsingGET(this.storeId).subscribe(result => {
         this.stockCurrents = result;
         result.forEach(() => {
-          this.cardExpand.push(false);
+          this.cardExpand.push(0);
         });
       }, err => {
         console.log('Error fetching product data', err);
       });
-      // const params: QueryResourceService.FindRatingReviewByStoreidAndCustomerNameUsingGETParams = {storeId: this.}
       this.queryResourceService.findRatingReviewByStoreidAndCustomerNameUsingGET({storeId: this.storeId}).subscribe(result => {
         this.rateReview = result.content;
       }, err => {
         console.log('Error fetching review data', err);
       });
-      this.queryResourceService.findAllCategoriesUsingGET({}).subscribe(success => {
-        this.categories = success;
+      this.queryResourceService.findCategoryByStoreIdUsingGET({userId: this.storeId}).subscribe(success => {
+        this.categories = success.content;
       });
       this.oauthService.loadUserProfile().then(user => {
         this.usr = user;
@@ -150,17 +150,16 @@ export class HotelMenuPage implements OnInit {
       await toast.present();
     }
 
-    expandOrCollapse(index) {
-      if (this.cardExpand[index]) {
-        this.cardExpand[index] = false;
-      } else {
-        this.cardExpand[index] = true;
-      }
-    }
-
     addToCart(stock: StockCurrent) {
       this.cartService.addProduct(stock.product, stock);
       this.presentToast('Product added to basket');
+    }
+
+    add(i) {
+      this.cardExpand[i]++;
+    }
+    remove(i) {
+      this.cardExpand[i]--;
     }
 
     updateRating(event) {
@@ -195,7 +194,8 @@ export class HotelMenuPage implements OnInit {
 
     searchProducts(event) {
       if (event.detail.value !== '') {
-        this.queryResourceService.findAllStockCurrentByProductNameStoreIdUsingGET({name: event.detail.value, storeId: this.storeId})
+        const query: string = event.detail.value;
+        this.queryResourceService.findAllStockCurrentByProductNameStoreIdUsingGET({name: query.toLowerCase(), storeId: this.storeId})
           .subscribe(res => {
             this.stockCurrents = res;
           }, err => {

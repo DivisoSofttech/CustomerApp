@@ -24,7 +24,7 @@
   </ion-item> -->
   <div id="map_canvas">
   </div>
-  <ion-slides [options]="slideOpts">
+  <ion-slides #slides [options]="slideOpts" autoplayDisableOnInteraction = "false" (ionSlideDidChange)="slides.startAutoplay();">
     <ion-slide>
       <ion-card>
         <ion-img src="/assets/images/slides/slide-1.png"></ion-img>

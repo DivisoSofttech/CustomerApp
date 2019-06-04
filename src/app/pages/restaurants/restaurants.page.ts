@@ -1,7 +1,7 @@
 import { Store } from 'src/app/api/models';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import { NavController, ModalController, ToastController, Platform } from '@ionic/angular';
+import { NavController, ModalController, ToastController, Platform, IonSlides } from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { QueryResourceService } from 'src/app/api/services';
@@ -18,6 +18,7 @@ import {
   GoogleMapsAnimation
 } from '@ionic-native/google-maps';
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
+import { LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-restaurants',
@@ -30,12 +31,11 @@ export class RestaurantsPage implements OnInit {
   stores: Store[] = [];
   rate = 2;
   slideOpts = {
-    // initialSlide: 2,
     slidesPerView: 2,
     loop: true,
     autoplay: true,
-    // centeredSlides: true
   };
+  @ViewChild('slides') slides: IonSlides;
   constructor(private navCtrl: NavController,
               private modalController: ModalController,
               private toastCtrl: ToastController,
@@ -44,7 +44,20 @@ export class RestaurantsPage implements OnInit {
               private queryResourceService: QueryResourceService) {
 
   }
+  ionViewWillLeave() {
+    console.log('hello will leave');
+    this.slides.stopAutoplay();
+  }
+  ionViewDideave() {
+    console.log('hello did leave');
+    this.slides.stopAutoplay();
+  }
+  ionViewDidEnter() {
+    console.log('hello did enter');
+    this.slides.startAutoplay();
+  }
   showHotelMenu(storeId) {
+    this.slides.stopAutoplay();
     this.navCtrl.navigateForward('/hotel-menu/' + storeId);
   }
   async presentFilterModal() {
@@ -69,7 +82,8 @@ export class RestaurantsPage implements OnInit {
 
   search(event) {
     if (event.detail.value !== '') {
-      this.queryResourceService.findAllStoreByNameUsingGET(event.detail.value).subscribe(res => {
+      const query: string = event.detail.value;
+      this.queryResourceService.findAllStoreByNameUsingGET(query.toLowerCase()).subscribe(res => {
         if (res.length > 0) {
           this.stores = res;
         }
