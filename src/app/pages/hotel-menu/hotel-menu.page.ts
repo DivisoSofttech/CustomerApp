@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+import { OrderLine } from './../../api/models/order-line';
 import { CommandResourceService } from 'src/app/api/services';
 import { RatingReview } from './../../api/models/rating-review';
 import { UserRatingDTO } from './../../api/models/user-rating-dto';
@@ -46,7 +48,10 @@ export class HotelMenuPage implements OnInit {
     map: GoogleMap;
     store: Store;
     // delivery
-    cart: TicketLineDTO[] = this.cartService.orderLines;
+    private subscriptionCart: Subscription;
+    private subscriptionPrice: Subscription;
+    cartSize;
+    totalPrice;
     simple = true;
     mapLoaded = false;
     currentSubPage = 'menu';
@@ -61,7 +66,7 @@ export class HotelMenuPage implements OnInit {
     @ViewChild('slides') slides: IonSlides;
     ngOnInit() {
       this.storeId = this.route.snapshot.paramMap.get('id');
-      this.cartService.storeId=this.storeId;
+      this.cartService.storeId = this.storeId;
       this.queryResourceService.findStoreByRegisterNumberUsingGET(this.storeId).subscribe(result => {
         this.store = result;
       }, err => {
@@ -86,6 +91,8 @@ export class HotelMenuPage implements OnInit {
       this.oauthService.loadUserProfile().then(user => {
         this.usr = user;
       });
+      this.subscriptionCart = this.cartService.observableTickets.subscribe(orderLines => this.cartSize = orderLines.length);
+      this.subscriptionPrice = this.cartService.observablePrice.subscribe(price => this.totalPrice = price);
     }
     async presentPopover(ev: any) {
       const popover = await this.popoverController.create({
@@ -151,17 +158,15 @@ export class HotelMenuPage implements OnInit {
       await toast.present();
     }
 
-    addToCart(stock: StockCurrent) {
-      this.cartService.addProduct(stock.product, stock);
-      this.presentToast('Product added to basket');
-    }
-
     add(i, stock: StockCurrent) {
       this.cardExpand[i]++;
       this.cartService.addProduct(stock.product, stock);
     }
-    remove(i) {
-      this.cardExpand[i]--;
+    remove(i, stock: StockCurrent) {
+      if (this.cardExpand[i] !== 0) {
+        this.cardExpand[i]--;
+        this.cartService.removeProduct(stock);
+      }
     }
 
     updateRating(event) {

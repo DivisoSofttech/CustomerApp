@@ -49,7 +49,7 @@
       <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
         class="imageShow">
       </ion-img>
-      <ion-card-content (click)="showHotelMenu(store.regNo)">
+      <ion-card-content *ngIf="store.regNo"  (click)="showHotelMenu(store.regNo)">
         <ion-card-title *ngIf="store.name">{{store.name}}</ion-card-title>
         <ion-card-subtitle *ngIf="store.openingTime">
           {{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>
