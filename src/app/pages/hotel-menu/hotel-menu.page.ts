@@ -46,7 +46,7 @@ export class HotelMenuPage implements OnInit {
     map: GoogleMap;
     store: Store;
     // delivery
-    cart: TicketLineDTO[] = this.cartService.ticketLines;
+    cart: TicketLineDTO[] = this.cartService.orderLines;
     simple = true;
     mapLoaded = false;
     currentSubPage = 'menu';

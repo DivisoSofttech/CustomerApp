@@ -6,14 +6,14 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CartService {
-  orderLines:OrderLine[]=[];
+  orderLines: OrderLine [] = [];
   storeId;
   observableTickets: BehaviorSubject<OrderLine[]>;
   constructor() {
     this.observableTickets = new BehaviorSubject<OrderLine[]>(this.orderLines);
   }
 
-  addProduct(product: Product,stockCurrent: StockCurrent) {
+  addProduct(product: Product, stockCurrent: StockCurrent) {
     let added = false;
     this.orderLines.forEach(orderLine => {
       if (orderLine.productId === product.id) {
