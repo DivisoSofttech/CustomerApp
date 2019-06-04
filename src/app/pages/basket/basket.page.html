@@ -5,21 +5,21 @@
       <ion-title>Basket</ion-title>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button *ngIf="ticketLines.length > 0" (click)="clearCart()">
+      <ion-button *ngIf="orderLines.length > 0" (click)="clearCart()">
         CLEAR
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="ticketLines.length > 0">
+<ion-content *ngIf="orderLines.length > 0">
   <ion-grid class="bg-grey">
     <ion-row justify-content-center class="ion-margin-top">
       <ion-col size="8" text-center>
         <ion-label>
           Order total
         </ion-label>
-        <ion-text cl>{{'(' +ticketLines.length +' items)'}}</ion-text>
+        <ion-text cl>{{'(' +orderLines.length +' items)'}}</ion-text>
 
       </ion-col>
     </ion-row>
@@ -46,7 +46,7 @@
       </ion-col>
     </ion-row>
     <ion-list can-swipe="true" *ngIf="products.length > 0">
-      <ion-item-sliding *ngFor="let ticket of ticketLines, let i = index">
+      <ion-item-sliding *ngFor="let ticket of orderLines, let i = index">
         <ion-item-options side="start">
           <ion-item-option (click)="productQuantity(ticket)">
             <ion-icon name="create" slot="icon-only"></ion-icon>
@@ -79,7 +79,7 @@
   </ion-grid>
 </ion-content>
 
-<ion-content *ngIf="ticketLines.length === 0">
+<ion-content *ngIf="orderLines.length === 0">
   <ion-grid class="bg-grey">
     <ion-row justify-content-center class="ion-margin-top">
       <ion-col size="8" text-center>

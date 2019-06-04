@@ -61,6 +61,7 @@ export class HotelMenuPage implements OnInit {
     @ViewChild('slides') slides: IonSlides;
     ngOnInit() {
       this.storeId = this.route.snapshot.paramMap.get('id');
+      this.cartService.storeId=this.storeId;
       this.queryResourceService.findStoreByRegisterNumberUsingGET(this.storeId).subscribe(result => {
         this.store = result;
       }, err => {

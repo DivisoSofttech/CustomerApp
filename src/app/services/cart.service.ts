@@ -1,52 +1,52 @@
-import { TicketLineDTO } from './../api/models/ticket-line-dto';
 import { Injectable } from '@angular/core';
-import { Product, Stock, StockCurrent } from '../api/models';
+import { Product, Stock, StockCurrent, OrderLine } from '../api/models';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  ticketLines: TicketLineDTO[] = [];
-  observableTickets: BehaviorSubject<TicketLineDTO[]>;
+  orderLines:OrderLine[]=[];
+  storeId;
+  observableTickets: BehaviorSubject<OrderLine[]>;
   constructor() {
-    this.observableTickets = new BehaviorSubject<TicketLineDTO[]>(this.ticketLines);
+    this.observableTickets = new BehaviorSubject<OrderLine[]>(this.orderLines);
   }
 
   addProduct(product: Product,stockCurrent: StockCurrent) {
     let added = false;
-    this.ticketLines.forEach(ticket => {
-      if (ticket.productId === product.id) {
-        ticket.quantity++;
-        ticket.total += ticket.price;
+    this.orderLines.forEach(orderLine => {
+      if (orderLine.productId === product.id) {
+        orderLine.quantity++;
+        orderLine.total += orderLine.pricePerUnit;
         this.updateCart();
         added = true;
       }
     });
     if (!added) {
-      const ticketLine: TicketLineDTO = {
+      const orderLine: OrderLine = {
         productId: product.id,
         quantity: 1,
-        price: stockCurrent.sellPrice,
+        pricePerUnit: stockCurrent.sellPrice,
         total: stockCurrent.sellPrice
       };
-      this.ticketLines.push(ticketLine);
+      this.orderLines.push(orderLine);
       this.updateCart();
     }
   }
 
   removeTicket(index) {
-    this.ticketLines.splice(index, 1);
+    this.orderLines.splice(index, 1);
     this.updateCart();
   }
 
   updateCart() {
-    console.log(this.ticketLines);
-    this.observableTickets.next(this.ticketLines);
+    console.log(this.orderLines);
+    this.observableTickets.next(this.orderLines);
   }
 
   emptyCart() {
-    this.ticketLines = [];
-    this.observableTickets.next(this.ticketLines);
+    this.orderLines = [];
+    this.observableTickets.next(this.orderLines);
   }
 }
