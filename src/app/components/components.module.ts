@@ -10,6 +10,7 @@ import { IonicModule } from '@ionic/angular';
 import { FilterComponent } from './filter/filter.component';
 import { FormsModule } from '@angular/forms';
 import { RatingComponent } from './rating/rating.component';
+import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { RatingComponent } from './rating/rating.component';
                   ProductQuantityModalComponent,
                   MakePaymentComponent,
                   AddAddressModalComponent,
+                  DeliveryInfoComponent,
                   NotificationsComponent
                 ],
   imports: [
@@ -35,7 +37,8 @@ import { RatingComponent } from './rating/rating.component';
               ProductQuantityModalComponent,
               MakePaymentComponent,
               AddAddressModalComponent,
-              NotificationsComponent
+              NotificationsComponent,
+              DeliveryInfoComponent
             ],
   entryComponents: [
               AddAddressModalComponent

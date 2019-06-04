@@ -10,25 +10,10 @@
 
 <ion-content>
   <ion-grid>
-    <ion-row>
-      <ion-col size="12" text-center>
-        <address *ngFor="let address of addresses" [ngClass]="{selectedClass:address===selectedAddress}" (click)="selectAddress(address)">
-          <span>{{address.houseNoOrBuildingName}}</span><br/>
-          <span>{{address.phone}}</span><br/>
-          <span>{{address.alternatePhone}}</span><br/>
-          <span>{{address.city}}</span><br/>
-          <span>{{address.pincode}}</span><br/>
-          <span>{{address.state}}</span>
-        </address>
-      </ion-col>
-      <ion-col size="12">
-        <ion-button expand="block" (click)="addAddressModal()">Add New Address</ion-button>
-      </ion-col>
-    </ion-row>
     <ion-row class="ion-margin-vertical">
       <ion-col text-center>
         <ion-text>
-          <h1>{{toBePaid  | number:'1.2-2'}}</h1>
+          <h1>{{toBePaid | number:'1.2-2'}}</h1>
           <p>Total amount Due</p>
         </ion-text>
       </ion-col>
@@ -36,17 +21,19 @@
   </ion-grid>
 
 
-  <ion-button expand="block" margin-bottom text-center color="light" class="ion-padding-vertical" (click)="save()">
+  <ion-button expand="block" margin-bottom text-center color="light"
+    class="ion-padding-vertical" (click)="save()">
     <ion-icon name="cash" slot="icon-only" margin></ion-icon>
     <p>COD</p>
   </ion-button>
-
-  <ion-button expand="block" margin-bottom text-center color="light" class="ion-padding-vertical" (click)="save()">
+  <ion-button expand="block" margin-bottom text-center color="light"
+    class="ion-padding-vertical" (click)="save()">
     <ion-icon name="globe" slot="icon-only" margin></ion-icon>
     <p>Net Banking</p>
   </ion-button>
 
-  <ion-button expand="full" margin-top text-center color="light" class="ion-padding-vertical" (click)="save()">
+  <ion-button expand="full" margin-top text-center color="light"
+    class="ion-padding-vertical" (click)="save()">
     <ion-icon name="card" slot="icon-only" margin></ion-icon>
     <p>CARD</p>
   </ion-button>

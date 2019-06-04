@@ -9,6 +9,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { BasketPage } from './basket.page';
 import { ProductQuantityModalComponent } from 'src/app/components/product-quantity-modal/product-quantity-modal.component';
+import { DeliveryInfoComponent } from 'src/app/components/delivery-info/delivery-info.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,6 @@ const routes: Routes = [
     ComponentsModule
   ],
   declarations: [BasketPage],
-  entryComponents: [ProductQuantityModalComponent, MakePaymentComponent]
+  entryComponents: [ProductQuantityModalComponent, DeliveryInfoComponent]
 })
 export class BasketPageModule {}
