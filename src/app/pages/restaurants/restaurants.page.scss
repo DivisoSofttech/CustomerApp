@@ -36,3 +36,15 @@
     width: 100%;
     background-color: #edf0f2;
   }
+
+  .closedLabel {
+    color: red;
+  }
+
+  ion-icon[name='heart'] {
+    color: black;
+  }
+
+  ion-text.category {
+    font-size: 13px;
+  }

@@ -10,8 +10,8 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="12" text-center>
-        <address *ngFor="let address of addresses" [ngClass]="{selectedClass:address===selectedAddress}" (click)="selectAddress(address)">
+      <ion-col text-center>
+        <address  size="12" *ngFor="let address of addresses" [ngClass]="{selectedClass:address===selectedAddress}" (click)="selectAddress(address)" text-center>
           <span>{{address.houseNoOrBuildingName}}</span><br/>
           <span>{{address.phone}}</span><br/>
           <span>{{address.alternatePhone}}</span><br/>
@@ -48,3 +48,7 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<ion-footer>
+  <app-footer></app-footer>
+</ion-footer>

@@ -11,6 +11,7 @@ import { FilterComponent } from './filter/filter.component';
 import { FormsModule } from '@angular/forms';
 import { RatingComponent } from './rating/rating.component';
 import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
                   MakePaymentComponent,
                   AddAddressModalComponent,
                   DeliveryInfoComponent,
-                  NotificationsComponent
+                  NotificationsComponent,
+                  FooterComponent
                 ],
   imports: [
     CommonModule,
@@ -38,10 +40,12 @@ import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
               MakePaymentComponent,
               AddAddressModalComponent,
               NotificationsComponent,
-              DeliveryInfoComponent
+              DeliveryInfoComponent,
+              FooterComponent
             ],
   entryComponents: [
-              AddAddressModalComponent
+              AddAddressModalComponent,
+              FooterComponent
             ]
 })
 export class ComponentsModule { }

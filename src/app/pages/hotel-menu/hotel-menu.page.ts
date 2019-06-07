@@ -63,6 +63,7 @@ export class HotelMenuPage implements OnInit {
     rate: UserRatingDTO = {rating: 1};
     review: ReviewDTO = {userName: '', review: '', reviewedDate: '', storeId: 0};
     stockCurrents: StockCurrent[];
+    now:number;
     @ViewChild('slides') slides: IonSlides;
     ngOnInit() {
       this.storeId = this.route.snapshot.paramMap.get('id');
@@ -93,6 +94,7 @@ export class HotelMenuPage implements OnInit {
       });
       this.subscriptionCart = this.cartService.observableTickets.subscribe(orderLines => this.cartSize = orderLines.length);
       this.subscriptionPrice = this.cartService.observablePrice.subscribe(price => this.totalPrice = price);
+      this.timeTracker();
     }
     async presentPopover(ev: any) {
       const popover = await this.popoverController.create({
@@ -216,4 +218,17 @@ export class HotelMenuPage implements OnInit {
         });
       }
     }
+
+     // I dont Know/not sure whether this 
+  // function will cause any Performance issues
+  timeTracker() {
+    setInterval(() => {
+      let date = new Date()
+      this.now  = this.getTimeFixed(date.getHours() + '.' + date.getMinutes());
+    }, 1000);
+  }
+
+  getTimeFixed(str: string): number {
+    return parseFloat(str.replace(':' , '.'));
+  }
   }

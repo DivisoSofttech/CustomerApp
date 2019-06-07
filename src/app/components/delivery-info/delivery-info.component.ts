@@ -57,6 +57,12 @@ export class DeliveryInfoComponent implements OnInit {
     modal.present();
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.getCurrentAddresses();
+   }
+
+   dismiss() {
+     this.modalController.dismiss();
+   }
 
 }

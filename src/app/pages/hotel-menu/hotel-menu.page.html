@@ -3,19 +3,31 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="store" >{{store.name | uppercase}}</ion-title>
+    <ion-title *ngIf="store">{{store.name | uppercase}}</ion-title>
   </ion-toolbar>
   <ion-searchbar placeholder="Search products..." (ionChange)="searchProducts($event)"></ion-searchbar>
 </ion-header>
 <ion-content *ngIf="store">
   <div class="container">
+    <ion-card color="danger"
+      *ngIf="now > getTimeFixed(store.closingTime.slice(11,16)) || now < getTimeFixed(store.openingTime.slice(11,16))">
+      <ion-card-content>
+          <ion-card-title>Closed</ion-card-title>      
+          <ion-card-subtitle *ngIf="now < getTimeFixed(store.openingTime.slice(11,16))">
+           Time till Opening {{getTimeFixed(store.openingTime.slice(11,16)) - now | number:'2.2-2'}} hours
+          </ion-card-subtitle>
+          <ion-card-subtitle *ngIf="now > getTimeFixed(store.closingTime.slice(11,16))">
+              Time till Opening {{getTimeFixed(store.openingTime.slice(11,16)) - now | number:'2.2-2'}} hours
+          </ion-card-subtitle>   
+      </ion-card-content>
+    </ion-card>
     <ion-img [src]="'data:' + store.imageContentType + ';base64,' + store.image" class="mainImg"></ion-img>
     <div class="overlay">
       <h2><strong>{{store.name | uppercase}}</strong></h2>
       <p>{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</p>
       <ion-buttons>
         <rating [rate]="store.totalRating" [readonly]="true"></rating>
-        <ion-button *ngIf="rateReview"  disabled>{{'(' + rateReview.length + ')'}}</ion-button>
+        <ion-button *ngIf="rateReview" disabled>{{'(' + rateReview.length + ')'}}</ion-button>
       </ion-buttons>
     </div>
   </div>
@@ -56,11 +68,22 @@
                 <ion-row>
                   <ion-col>
                     <ion-buttons>
-                      <ion-button (click)="remove(i, stock)" color="medium"><ion-icon name="remove"></ion-icon></ion-button>
+                      <ion-button (click)="remove(i, stock)" color="medium">
+                        <ion-icon name="remove"></ion-icon>
+                      </ion-button>
                       <ion-button fill="none" disabled>{{cardExpand[i]}}</ion-button>
-                      <ion-button (click)="add(i, stock)" color="medium"><ion-icon name="add"></ion-icon></ion-button>
+                      <ion-button (click)="add(i, stock)" color="medium">
+                        <ion-icon name="add"></ion-icon>
+                      </ion-button>
                     </ion-buttons>
                   </ion-col>
+                  <ion-col size="2">
+                      <ion-buttons>
+                         <ion-button fill="none">
+                             <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+                         </ion-button>
+                      </ion-buttons>
+                     </ion-col>
                 </ion-row>
               </ion-grid>
             </ion-card-content>
@@ -75,7 +98,7 @@
             <ion-card>
               <ion-item lines="none" color="cyan">
                 <img src="assets/images/user.png" slot="start" class="reviewProfile" />
-                <ion-card-subtitle *ngIf="usr"  slot="start"><strong>{{usr.preferred_username | uppercase}}</strong>
+                <ion-card-subtitle *ngIf="usr" slot="start"><strong>{{usr.preferred_username | uppercase}}</strong>
                   <rating [rate]="rate.rating" (rateChange)="updateRating($event)"></rating>
                 </ion-card-subtitle>
               </ion-item>
@@ -128,7 +151,9 @@
           <ion-label>{{'Total: ' + totalPrice}}</ion-label>
         </ion-col>
         <ion-col size="4" text-center>
-          <ion-label class="button-cart" [routerLink]="['/tabs/basket']" routerLinkActive="router-link-active" ><ion-icon name="basket" slot="icon-only"></ion-icon></ion-label>
+          <ion-label class="button-cart" [routerLink]="['/tabs/basket']" routerLinkActive="router-link-active">
+            <ion-icon name="basket" slot="icon-only"></ion-icon>
+          </ion-label>
         </ion-col>
       </ion-row>
     </ion-grid>
