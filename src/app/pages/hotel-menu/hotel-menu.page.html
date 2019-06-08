@@ -51,7 +51,7 @@
   </ion-grid>
   <ion-slides #slides (ionSlideDidChange)="slideChange()">
     <ion-slide class="product-slide">
-      <div>
+      <div >
         <ion-card *ngFor="let stock of stockCurrents, let i = index;" no-padding>
           <ion-item lines="none">
             <ion-img [src]="'data:' + stock.product.imageContentType + ';base64,' + stock.product.image"

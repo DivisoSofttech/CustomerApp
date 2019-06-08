@@ -15,7 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 import { UserRating } from 'src/app/api/models/user-rating';
-import { ReviewDTO, TicketLineDTO } from 'src/app/api/models';
+import { ReviewDTO, TicketLineDTO, Product } from 'src/app/api/models';
 import {
   GoogleMaps,
   GoogleMap,
@@ -63,6 +63,8 @@ export class HotelMenuPage implements OnInit {
     rate: UserRatingDTO = {rating: 1};
     review: ReviewDTO = {userName: '', review: '', reviewedDate: '', storeId: 0};
     stockCurrents: StockCurrent[];
+    products: Product[] = [];
+    selectedCategory: string = 'All';
     now:number;
     @ViewChild('slides') slides: IonSlides;
     ngOnInit() {
@@ -96,13 +98,26 @@ export class HotelMenuPage implements OnInit {
       this.subscriptionPrice = this.cartService.observablePrice.subscribe(price => this.totalPrice = price);
       this.timeTracker();
     }
+
     async presentPopover(ev: any) {
       const popover = await this.popoverController.create({
         component: HotelMenuPopoverComponent,
-        componentProps: {categories: this.categories},
+        componentProps: {categories: this.categories , storeId: this.storeId
+        ,selectedCategory: this.selectedCategory},
         event: ev,
         translucent: true
       });
+      popover.onDidDismiss()
+      .then((data:any) => {
+        console.log('jjksjkjskj' , data.data.result);
+        if(data.data.result !== undefined) {
+          this.stockCurrents= data.data.result;
+          this.selectedCategory = data.data.selectedCategory;
+        } else {
+          this.presentToast('Error while Getting data');
+        }
+
+      })
       return await popover.present();
     }
 
@@ -157,6 +172,7 @@ export class HotelMenuPage implements OnInit {
         cssClass: 'toast',
         duration: 1500
       });
+    
       await toast.present();
     }
 
