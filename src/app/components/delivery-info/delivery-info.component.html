@@ -10,6 +10,7 @@
 <ion-content>
   <ion-grid>
     <ion-row>
+<<<<<<< HEAD
       <ion-col size="12" text-center>
         <address *ngFor="let address of addresses"
           [ngClass]="{selectedClass:address===selectedAddress}"
@@ -86,3 +87,47 @@
             </ion-grid>
 
           </ion-content>
+=======
+      <ion-col text-center>
+        <address  size="12" *ngFor="let address of addresses" [ngClass]="{selectedClass:address===selectedAddress}" (click)="selectAddress(address)" text-center>
+          <span>{{address.houseNoOrBuildingName}}</span><br/>
+          <span>{{address.phone}}</span><br/>
+          <span>{{address.alternatePhone}}</span><br/>
+          <span>{{address.city}}</span><br/>
+          <span>{{address.pincode}}</span><br/>
+          <span>{{address.state}}</span>
+        </address>
+      </ion-col>
+      <ion-col size="12">
+        <ion-button expand="block" (click)="addAddressModal()">Add New Address</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-radio-group>
+            <ion-list-header>
+              <ion-label>Delivery Type</ion-label>
+            </ion-list-header>
+        
+            <ion-item>
+              <ion-label>Collection</ion-label>
+              <ion-radio slot="start" value="biff" checked></ion-radio>
+            </ion-item>
+        
+            <ion-item>
+              <ion-label>Delivery</ion-label>
+              <ion-radio slot="start" value="griff"></ion-radio>
+            </ion-item>
+        
+          </ion-radio-group>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <app-footer></app-footer>
+</ion-footer>
+>>>>>>> 1d46e21948f18f278bb78e839a2d7c12fa0ca5c7

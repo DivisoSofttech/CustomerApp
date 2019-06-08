@@ -24,7 +24,7 @@
   </ion-item> -->
   <div id="map_canvas">
   </div>
-  <ion-slides [options]="slideOpts">
+  <ion-slides #slides [options]="slideOpts" autoplayDisableOnInteraction = "false" (ionSlideDidChange)="slides.startAutoplay();">
     <ion-slide>
       <ion-card>
         <ion-img src="/assets/images/slides/slide-1.png"></ion-img>
@@ -46,28 +46,45 @@
   </h4>
   <ion-card *ngFor="let store of stores">
     <ion-item lines="none">
+      <ion-text slot="end" no-margin class="closedLabel" *ngIf="store.closingTime && store.openingTime">
+          <p 
+          *ngIf="now > getTimeFixed(store.closingTime.slice(11,16)) || now < getTimeFixed(store.openingTime.slice(11,16))">Closed</p>
+          </ion-text>
       <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
         class="imageShow">
       </ion-img>
-      <ion-card-content (click)="showHotelMenu(store.regNo)">
+      <ion-card-content *ngIf="store.regNo"  (click)="showHotelMenu(store.regNo)">
         <ion-card-title *ngIf="store.name">{{store.name}}</ion-card-title>
         <ion-card-subtitle *ngIf="store.openingTime">
           {{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>
         <ion-text><strong>500m</strong></ion-text>
       </ion-card-content>
     </ion-item>
+      <ion-item>
+        <ion-label>
+            <ion-text class="category" *ngFor="let category of categories[store.regNo]">{{category.name}}  </ion-text>
+        </ion-label>
+      </ion-item>
     <div class="card-footer">
       <ion-row>
         <ion-col size="7">
           <rating [rate]="store.totalRating" [readonly]="true"></rating>
         </ion-col>
-        <ion-col size="5">
+        <ion-col size="3">
           <ion-buttons>
             <ion-button *ngIf="store.userRatings"  disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
             <ion-button *ngIf="!store.userRatings"  disabled>(0)</ion-button>
             </ion-buttons>
         </ion-col>
+        <ion-col size="2">
+         <ion-buttons>
+            <ion-button fill="none">
+                <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+            </ion-button>
+         </ion-buttons>
+        </ion-col>
       </ion-row>
+    
     </div>
   </ion-card>
 </ion-content>

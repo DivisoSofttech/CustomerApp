@@ -6,14 +6,17 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CartService {
-  orderLines:OrderLine[]=[];
+  orderLines: OrderLine [] = [];
+  totalPrice = 0;
   storeId;
   observableTickets: BehaviorSubject<OrderLine[]>;
+  observablePrice: BehaviorSubject<number>;
   constructor() {
     this.observableTickets = new BehaviorSubject<OrderLine[]>(this.orderLines);
+    this.observablePrice = new BehaviorSubject<number>(this.totalPrice);
   }
 
-  addProduct(product: Product,stockCurrent: StockCurrent) {
+  addProduct(product: Product, stockCurrent: StockCurrent) {
     let added = false;
     this.orderLines.forEach(orderLine => {
       if (orderLine.productId === product.id) {
@@ -35,18 +38,35 @@ export class CartService {
     }
   }
 
+  removeProduct(stockCurrent: StockCurrent) {
+    this.orderLines.forEach(orderLine => {
+      if (orderLine.productId === stockCurrent.product.id) {
+        orderLine.quantity--;
+        orderLine.total -= orderLine.pricePerUnit;
+        if (orderLine.quantity === 0) {
+          this.removeTicket(this.orderLines.indexOf(orderLine));
+        }
+        this.updateCart();
+      }
+    });
+  }
+
   removeTicket(index) {
     this.orderLines.splice(index, 1);
     this.updateCart();
   }
 
   updateCart() {
-    console.log(this.orderLines);
+    this.totalPrice = 0;
+    this.orderLines.forEach(order => {
+      this.totalPrice += order.total;
+    });
     this.observableTickets.next(this.orderLines);
+    this.observablePrice.next(this.totalPrice);
   }
 
   emptyCart() {
     this.orderLines = [];
-    this.observableTickets.next(this.orderLines);
+    this.updateCart();
   }
 }

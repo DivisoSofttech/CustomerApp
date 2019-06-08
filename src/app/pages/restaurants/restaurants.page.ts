@@ -1,7 +1,7 @@
-import { Store } from 'src/app/api/models';
-import { Component, OnInit } from '@angular/core';
+import { Store, Category } from 'src/app/api/models';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import { NavController, ModalController, ToastController, Platform } from '@ionic/angular';
+import { NavController, ModalController, ToastController, Platform, IonSlides } from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { QueryResourceService } from 'src/app/api/services';
@@ -18,6 +18,7 @@ import {
   GoogleMapsAnimation
 } from '@ionic-native/google-maps';
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
+import { LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-restaurants',
@@ -26,50 +27,87 @@ import { NotificationsComponent } from 'src/app/components/notifications/notific
 })
 export class RestaurantsPage implements OnInit {
 
+  now: number;
+
   map: GoogleMap;
   stores: Store[] = [];
+  categories: any = {};
   rate = 2;
   slideOpts = {
-    // initialSlide: 2,
     slidesPerView: 2,
     loop: true,
     autoplay: true,
-    // centeredSlides: true
   };
+  @ViewChild('slides') slides: IonSlides;
   constructor(private navCtrl: NavController,
-              private modalController: ModalController,
-              private toastCtrl: ToastController,
-              private platform: Platform,
-              private modalctrl: ModalController,
-              private queryResourceService: QueryResourceService) {
+    private modalController: ModalController,
+    private toastCtrl: ToastController,
+    private platform: Platform,
+    private modalctrl: ModalController,
+    private queryResourceService: QueryResourceService) {
 
   }
+  ionViewWillLeave() {
+    console.log('hello will leave');
+    this.slides.stopAutoplay();
+  }
+  ionViewDideave() {
+    console.log('hello did leave');
+    this.slides.stopAutoplay();
+  }
+  ionViewDidEnter() {
+    console.log('hello did enter');
+    this.slides.startAutoplay();
+  }
   showHotelMenu(storeId) {
+    this.slides.stopAutoplay();
     this.navCtrl.navigateForward('/hotel-menu/' + storeId);
   }
+
   async presentFilterModal() {
     const modal = await this.modalController.create({
-      component : FilterComponent,
-      cssClass : 'half-height',
-      showBackdrop : true
+      component: FilterComponent,
+      cssClass: 'half-height',
+      showBackdrop: true
     });
     return await modal.present();
   }
 
+  // I dont Know/not sure whether this 
+  // function will cause any Performance issues
+  timeTracker() {
+    setInterval(() => {
+      let date = new Date()
+      this.now  = this.getTimeFixed(date.getHours() + '.' + date.getMinutes());
+    }, 1000);
+  }
+
+  getTimeFixed(str: string): number {
+    return parseFloat(str.replace(':' , '.'));
+  }
+
   async ngOnInit() {
+    this.timeTracker();
     this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
       this.stores = res;
+      this.stores.forEach(store => {
+        this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
+            this.categories[store.regNo] = success.content;
+            console.log('------------------------------------------',this.categories);
+        });
+      })
     },
-    err => {
-      console.log('Error fetching stores');
-    });
+      err => {
+        console.log('Error fetching stores');
+      });
     await this.platform.ready();
     await this.loadMap();
   }
 
   search(event) {
     if (event.detail.value !== '') {
-      this.queryResourceService.findAllStoreByNameUsingGET(event.detail.value).subscribe(res => {
+      const query: string = event.detail.value;
+      this.queryResourceService.findAllStoreByNameUsingGET(query.toLowerCase()).subscribe(res => {
         if (res.length > 0) {
           this.stores = res;
         }
@@ -80,9 +118,9 @@ export class RestaurantsPage implements OnInit {
       this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
         this.stores = res;
       },
-      err => {
-        console.log('Error fetching stores');
-      });
+        err => {
+          console.log('Error fetching stores');
+        });
     }
   }
 
@@ -129,9 +167,9 @@ export class RestaurantsPage implements OnInit {
       });
       marker.showInfoWindow();
     })
-    .catch(err => {
-      this.toastView(err.error_message);
-    });
+      .catch(err => {
+        this.toastView(err.error_message);
+      });
   }
 
   async notificationsModal() {

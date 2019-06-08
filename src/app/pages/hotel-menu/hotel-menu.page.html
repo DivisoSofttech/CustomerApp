@@ -3,20 +3,28 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="store" >{{store.name | uppercase}}</ion-title>
+    <ion-title *ngIf="store">{{store.name | uppercase}}</ion-title>
   </ion-toolbar>
   <ion-searchbar placeholder="Search products..." (ionChange)="searchProducts($event)"></ion-searchbar>
 </ion-header>
 <ion-content *ngIf="store">
   <div class="container">
+    <ion-card color="danger"
+      *ngIf="now > getTimeFixed(store.closingTime.slice(11,16)) || now < getTimeFixed(store.openingTime.slice(11,16))">
+      <ion-card-content>
+          <ion-card-title>Closed</ion-card-title>      
+          <ion-card-subtitle>
+            {{ timeDifference(store.openingTime , store.closingTime)}} hours to open
+          </ion-card-subtitle>
+      </ion-card-content>
+    </ion-card>
     <ion-img [src]="'data:' + store.imageContentType + ';base64,' + store.image" class="mainImg"></ion-img>
     <div class="overlay">
       <h2><strong>{{store.name | uppercase}}</strong></h2>
       <p>{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</p>
       <ion-buttons>
         <rating [rate]="store.totalRating" [readonly]="true"></rating>
-        <ion-button *ngIf="store.userRatings"  disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
-        <ion-button *ngIf="!store.userRatings"  disabled>(0)</ion-button>
+        <ion-button *ngIf="rateReview" disabled>{{'(' + rateReview.length + ')'}}</ion-button>
       </ion-buttons>
     </div>
   </div>
@@ -37,33 +45,46 @@
         </ion-segment>
       </ion-col>
     </ion-row>
-    <!-- <ion-row *ngIf="'menu' === currentSubPage">
-      <ion-col size="6">
-        <ion-item lines="none">
-          <ion-label>
-            veg only
-          </ion-label>
-          <ion-toggle color="primary"></ion-toggle>
-        </ion-item>
-      </ion-col>
-    </ion-row> -->
   </ion-grid>
   <ion-slides #slides (ionSlideDidChange)="slideChange()">
-    <ion-slide>
-      <div>
-        <ion-card *ngFor="let stock of stockCurrents,let i = index">
-          <ion-item lines="none" (click)="expandOrCollapse(i)">
+    <ion-slide class="product-slide">
+      <div >
+        <ion-card *ngFor="let stock of stockCurrents, let i = index;" no-padding>
+          <ion-item lines="none">
             <ion-img [src]="'data:' + stock.product.imageContentType + ';base64,' + stock.product.image"
               class="imageShow">
             </ion-img>
             <ion-card-content>
-              <ion-card-title>{{stock.product.name}}</ion-card-title>
-              <ion-text><strong>&#x20b9;{{stock.sellPrice}}</strong></ion-text>
+              <ion-grid>
+                <ion-row>
+                  <ion-col class="title-card">
+                    <ion-card-title>{{stock.product.name}}</ion-card-title>
+                    <ion-text><strong>&#8364;{{stock.sellPrice}}</strong></ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-buttons>
+                      <ion-button (click)="remove(i, stock)" color="medium">
+                        <ion-icon name="remove"></ion-icon>
+                      </ion-button>
+                      <ion-button fill="none" disabled>{{cardExpand[i]}}</ion-button>
+                      <ion-button (click)="add(i, stock)" color="medium">
+                        <ion-icon name="add"></ion-icon>
+                      </ion-button>
+                    </ion-buttons>
+                  </ion-col>
+                  <ion-col size="2">
+                      <ion-buttons>
+                         <ion-button fill="none">
+                             <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+                         </ion-button>
+                      </ion-buttons>
+                     </ion-col>
+                </ion-row>
+              </ion-grid>
             </ion-card-content>
           </ion-item>
-          <ion-button  *ngIf="cardExpand[i]" color="primary" expand="full" (click)="addToCart(stock)" >
-            Add to Basket
-          </ion-button>
         </ion-card>
       </div>
     </ion-slide>
@@ -74,7 +95,7 @@
             <ion-card>
               <ion-item lines="none" color="cyan">
                 <img src="assets/images/user.png" slot="start" class="reviewProfile" />
-                <ion-card-subtitle *ngIf="usr"  slot="start"><strong>{{usr.preferred_username | uppercase}}</strong>
+                <ion-card-subtitle *ngIf="usr" slot="start"><strong>{{usr.preferred_username | uppercase}}</strong>
                   <rating [rate]="rate.rating" (rateChange)="updateRating($event)"></rating>
                 </ion-card-subtitle>
               </ion-item>
@@ -109,11 +130,29 @@
     </ion-slide>
     <ion-slide>
       <div id="map_canvas"></div>
+      <ion-label *ngIf="store.info" text-start>{{store.info}}</ion-label>
     </ion-slide>
   </ion-slides>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'menu' === currentSubPage">
+  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="'menu' === currentSubPage">
     <ion-fab-button (click)="presentPopover($event)">
       <ion-icon name="pizza"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+  <div class="cart-view" *ngIf="currentSubPage === 'menu'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4">
+          <ion-label>{{cartSize + ' Items'}}</ion-label>
+        </ion-col>
+        <ion-col size="4">
+          <ion-label>{{'Total: ' + totalPrice}}</ion-label>
+        </ion-col>
+        <ion-col size="4" text-center>
+          <ion-label class="button-cart" [routerLink]="['/tabs/basket']" routerLinkActive="router-link-active">
+            <ion-icon name="basket" slot="icon-only"></ion-icon>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

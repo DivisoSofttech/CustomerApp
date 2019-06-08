@@ -79,3 +79,38 @@
     width: 100%;
     height: 175px;
   }
+
+  .cart-view {
+    height: 55px;
+    width:100%;
+    background-color: #5978ee;
+    position: absolute;
+    bottom: 0;
+    opacity: 1;
+    z-index: 1000000000;
+    position: fixed;
+  }
+
+  .cart-view ion-label {
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 55px;
+    padding-left: 10px;
+  }
+
+  .button-cart {
+    cursor: pointer;
+    text-align: end;
+    font-weight: normal;
+    font-size: 25px;
+  }
+
+  .product-slide {
+    padding-bottom: 100px;
+  }
+
+  .title-card ion-card-title {
+    font-size: 16px;
+  }
