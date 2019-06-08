@@ -11,6 +11,7 @@ import { FilterComponent } from './filter/filter.component';
 import { FormsModule } from '@angular/forms';
 import { RatingComponent } from './rating/rating.component';
 import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
+import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/payment-successfull-info.component'
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
                   MakePaymentComponent,
                   AddAddressModalComponent,
                   DeliveryInfoComponent,
-                  NotificationsComponent
+                  NotificationsComponent,
+                  PaymentSuccessfullInfoComponent
                 ],
   imports: [
     CommonModule,
@@ -38,10 +40,11 @@ import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
               MakePaymentComponent,
               AddAddressModalComponent,
               NotificationsComponent,
-              DeliveryInfoComponent
+              DeliveryInfoComponent,
+              PaymentSuccessfullInfoComponent
             ],
   entryComponents: [
-              AddAddressModalComponent
+              AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent
             ]
 })
 export class ComponentsModule { }

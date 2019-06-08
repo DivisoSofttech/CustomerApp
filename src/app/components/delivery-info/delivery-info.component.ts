@@ -1,3 +1,5 @@
+import { MakePaymentComponent } from './../make-payment/make-payment.component';
+import { OrderDeliveryInfo } from './../../api/models/order-delivery-info';
 import { ModalController } from '@ionic/angular';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit } from '@angular/core';
@@ -13,13 +15,58 @@ import { AddAddressModalComponent } from '../add-address-modal/add-address-modal
 export class DeliveryInfoComponent implements OnInit {
 
 
-  orderLines:OrderLine[]=[];
+  orderLines: OrderLine[] = [];
   addresses: OrderAddress[] = [];
   customerId;
   taskId;
   orderId;
   selectedAddress: OrderAddressDTO;
+  deliveryType;
+  expectedDelivery;
+  grandTotal:number;
+  deliveryCharges:number;
   constructor(private oauthService: OAuthService, private modalController: ModalController, private orderCommandService: OrderCommandResourceService) { }
+
+
+
+  collectDeliveryInfo() {
+    this.deliveryCharges=50;
+    const deliveryDetails: OrderDeliveryInfo = {
+      deliveryCharge: 50,
+      deliveryType: this.deliveryType,
+      deliveryAddress: { 'id': this.selectedAddress.id, 'phone': this.selectedAddress.phone }
+    }
+    console.log('Next Id in Delivery info '+this.taskId);
+    console.log('Order Id in Delivery info '+this.orderId);
+    console.log('Delivery type is '+this.deliveryType);
+    this.orderCommandService.collectDeliveryDetailsUsingPOST({ taskId: this.taskId, orderId: this.orderId, deliveryInfo: deliveryDetails })
+      .subscribe(result => {
+        console.log('Result is Next id deliveryinfo ' + result.nextTaskId);
+        console.log('Self rel id  is '+result.selfId);
+        this.taskId=result.nextTaskId;
+        this.presentModal();
+      },
+        err => {
+          console.log('Error performing collectDeliveryInfo ');
+        }
+
+      );
+  }
+
+  async presentModal(){
+    this.dismiss();
+    const modal = await this.modalController.create({
+      component: MakePaymentComponent,
+      componentProps: {
+        orderLines: this.orderLines,
+        taskId: this.taskId,
+        orderId: this.orderId,
+        toBePaid:this.grandTotal+this.deliveryCharges
+      }
+    });
+    
+    return await modal.present();
+  }
 
 
   selectAddress(address: any) {
@@ -31,16 +78,16 @@ export class DeliveryInfoComponent implements OnInit {
   }
 
   getCurrentAddresses() {
-    this.oauthService.loadUserProfile()
-      .then((user: any) => {
-        console.log(user);
-        this.orderCommandService.getAllSavedAddressUsingGET({ customerId: user.preferred_username })
+    //this.oauthService.loadUserProfile()
+      //.then((user: any) => {
+        //console.log(user);
+        this.orderCommandService.getAllSavedAddressUsingGET({ customerId: this.customerId })
           .subscribe(addresses => {
-            console.log('User is from loadprofile 2' + user.preferred_username);
+            console.log('Customer id is ' + this.customerId);
             console.log('Got Addresses ', addresses);
             this.addresses = addresses.content;
           });
-      });
+      //});
   }
 
 
@@ -57,6 +104,12 @@ export class DeliveryInfoComponent implements OnInit {
     modal.present();
   }
 
-  ngOnInit() { }
+  dismiss() {
+    this.modalController.dismiss();
+  }
+  ngOnInit() {
+    this.expectedDelivery = '35 Min';
+    this.getCurrentAddresses();
+  }
 
 }

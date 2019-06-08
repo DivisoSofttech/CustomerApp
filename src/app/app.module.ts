@@ -1,3 +1,4 @@
+import { ComponentsModule } from 'src/app/components/components.module';
 import { AuthInterceptor } from './services/security/auth-interceptor';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { OAuthModule } from 'angular-oauth2-oidc';
+import { PayPal } from '@ionic-native/paypal/ngx';
 
 
 @NgModule({
@@ -32,6 +34,8 @@ import { OAuthModule } from 'angular-oauth2-oidc';
       useClass: AuthInterceptor,
       multi: true
     },
+    ComponentsModule,
+    PayPal
   ],
   bootstrap: [AppComponent]
 })

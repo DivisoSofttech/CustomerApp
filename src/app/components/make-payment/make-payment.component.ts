@@ -5,6 +5,8 @@ import { ModalController, NavController, ToastController } from '@ionic/angular'
 import { CommandResourceService, OrderCommandResourceService, QueryResourceService } from 'src/app/api/services';
 import { CartService } from 'src/app/services/cart.service';
 import { AddAddressModalComponent } from '../add-address-modal/add-address-modal.component';
+import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
+import { PaymentSuccessfullInfoComponent } from '../payment-successfull-info/payment-successfull-info.component';
 
 
 @Component({
@@ -20,64 +22,101 @@ export class MakePaymentComponent implements OnInit {
   toBePaid;
   @Input()
   customerId: number;
-  cashRecieved;
-  customerName;
-  customerUserId;
-  sale: SaleDTO = {};
- 
+  orderId;
+  taskId;
+
 
   constructor(
     private modalController: ModalController,
     private navController: NavController,
-    private toastController: ToastController
-  ) {}
+    private toastController: ToastController,
+    private orderCommandResource: OrderCommandResourceService,
+    private payPal: PayPal
+  ) { }
 
   dismiss() {
     this.modalController.dismiss();
   }
   ngOnInit() {
-    this.cashRecieved = this.toBePaid;
-    this.sale.customerId = this.customerId;
-    this.sale.grandTotal = this.toBePaid;
+
   }
 
   returnToSale() {
     this.navController.navigateRoot('/tabs/home');
   }
 
-  
+
   save() {
-    // if (this.cashRecieved >= this.toBePaid) {
-    //   this.commandResourceService
-    //     .createSaleUsingPOST(this.sale)
-    //     .subscribe(success => {
-    //       console.log(success);
-    //       this.sale = success;
-    //       this.ticketLines.forEach(ticket => {
-    //         ticket.saleId = this.sale.id;
-    //         this.commandResourceService
-    //           .createTickerLineUsingPOST(ticket)
-    //           .subscribe(res => {
-    //             ticket = res;
-    //             const stockDiary: StockDiaryDTO = {};
-    //             // stockDiary.dateOfCreation = '' + new Date();
-    //             stockDiary.isBuy = false;
-    //             stockDiary.units = -1 * ticket.quantity;
-    //             stockDiary.price = ticket.price;
-    //             stockDiary.productId = ticket.productId;
-    //             this.commandResourceService
-    //               .createStockOfProductUsingPOST(stockDiary)
-    //               .subscribe(result => {
-    //                 console.log(result);
-    //               });
-    //           });
-    //       });
-    //       this.returnToSale();
-    //       this.cartService.emptyCart();
-    //       this.toastView();
-    //       this.dismiss();
-    //     });
-    // }
+
+  }
+
+  makePayment(type: string, ref, status: string) {
+    this.orderCommandResource.createPaymentUsingPOST({ orderId: this.orderId, paymentDTO: { amount: this.toBePaid, paymentType: type, ref: ref, status: status, tax: 0, total: this.toBePaid }, taskId: this.taskId })
+      .subscribe(result => {
+        console.log('Payment Success with the result ' + result);
+        this.toastView();
+        this.presentModal();
+      },
+        er => {
+          console.log('there is an error comleting your payment ');
+        }
+      );
+  }
+
+  payViaCashOnDelivery() {
+
+    console.log('Payment done via COD');
+    this.makePayment('COD', '', 'success');
+  }
+
+  payViaNetBanking() {
+
+    this.payPal.init({
+      PayPalEnvironmentProduction: 'YOUR_PRODUCTION_CLIENT_ID',
+      PayPalEnvironmentSandbox: 'AQ1oQup1GH_ihZOolhFZX2f_hdsD1K-t5MJ99of_6390pyaB7b-aO33GxUqqe2kz7G4EkNitDXoCN2it'
+    }).then(() => {
+      // Environments: PayPalEnvironmentNoNetwork, PayPalEnvironmentSandbox, PayPalEnvironmentProduction
+      this.payPal.prepareToRender('PayPalEnvironmentSandbox', new PayPalConfiguration({
+        // Only needed if you get an "Internal Service Error" after PayPal login!
+        //payPalShippingAddressOption: 2 // PayPalShippingAddressOptionPayPal
+      })).then(() => {
+        let payment = new PayPalPayment(this.toBePaid, 'INR', 'Order placed', 'sale');
+        this.payPal.renderSinglePaymentUI(payment).then(res=> {
+          
+          
+          this.makePayment('NETBANKING',res.response.id,'sucess');
+          // Successfully paid
+
+          // Example sandbox response
+          //
+          // {
+          //   "client": {
+          //     "environment": "sandbox",
+          //     "product_name": "PayPal iOS SDK",
+          //     "paypal_sdk_version": "2.16.0",
+          //     "platform": "iOS"
+          //   },
+          //   "response_type": "payment",
+          //   "response": {
+          //     "id": "PAY-1AB23456CD789012EF34GHIJ",
+          //     "state": "approved",
+          //     "create_time": "2016-10-03T13:33:33Z",
+          //     "intent": "sale"
+          //   }
+          // }
+        }, () => {
+          // Error or render dialog closed without being successful
+        });
+      }, () => {
+        // Error in configuration
+      });
+    }, () => {
+      // Error in initialization, maybe PayPal isn't supported or something else
+    });
+
+
+
+
   }
 
   async toastView() {
@@ -87,6 +126,18 @@ export class MakePaymentComponent implements OnInit {
       duration: 2000
     });
     toast.present();
+  }
+
+  async presentModal() {
+    this.dismiss();
+    const modal = await this.modalController.create({
+      component: PaymentSuccessfullInfoComponent,
+      componentProps: {
+        total: this.toBePaid
+      }
+    });
+
+    return await modal.present();
   }
 
 }
