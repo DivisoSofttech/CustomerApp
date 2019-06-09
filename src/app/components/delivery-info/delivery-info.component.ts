@@ -25,6 +25,7 @@ export class DeliveryInfoComponent implements OnInit {
   expectedDelivery;
   grandTotal:number;
   deliveryCharges:number;
+  total:number;
   constructor(private oauthService: OAuthService, private modalController: ModalController, private orderCommandService: OrderCommandResourceService) { }
 
 
@@ -110,6 +111,9 @@ export class DeliveryInfoComponent implements OnInit {
   ngOnInit() {
     this.expectedDelivery = '35 Min';
     this.getCurrentAddresses();
+    console.log('Product total is '+this.grandTotal);
+    this.total=this.grandTotal+50
+    console.log('Total is '+this.total);
   }
 
 }

@@ -1,3 +1,4 @@
+import { FooterComponent } from './footer/footer.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { AddAddressModalComponent } from './add-address-modal/add-address-modal.component';
 import { MakePaymentComponent } from './make-payment/make-payment.component';
@@ -24,7 +25,8 @@ import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/paymen
                   AddAddressModalComponent,
                   DeliveryInfoComponent,
                   NotificationsComponent,
-                  PaymentSuccessfullInfoComponent
+                  PaymentSuccessfullInfoComponent,
+                  FooterComponent
                 ],
   imports: [
     CommonModule,
@@ -41,10 +43,11 @@ import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/paymen
               AddAddressModalComponent,
               NotificationsComponent,
               DeliveryInfoComponent,
-              PaymentSuccessfullInfoComponent
+              PaymentSuccessfullInfoComponent,
+              FooterComponent
             ],
   entryComponents: [
-              AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent
+              AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent
             ]
 })
 export class ComponentsModule { }
