@@ -1,3 +1,4 @@
+
 import { FooterComponent } from './footer/footer.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { AddAddressModalComponent } from './add-address-modal/add-address-modal.component';
@@ -13,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { RatingComponent } from './rating/rating.component';
 import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
 import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/payment-successfull-info.component'
+import { Loading } from './loading';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,9 @@ import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/paymen
     CommonModule,
     IonicModule.forRoot(),
     FormsModule
+  ],
+  providers: [
+    Loading
   ],
   exports:  [
               HotelMenuPopoverComponent,

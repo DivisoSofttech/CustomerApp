@@ -10,11 +10,11 @@
 <ion-content *ngIf="store">
   <div class="container">
     <ion-card color="danger"
-      *ngIf="now > getTimeFixed(store.closingTime.slice(11,16)) || now < getTimeFixed(store.openingTime.slice(11,16))">
+      *ngIf="11 > getTimeFixed(store.closingTime.slice(11,16)) || now < getTimeFixed(store.openingTime.slice(11,16))">
       <ion-card-content>
           <ion-card-title>Closed</ion-card-title>      
           <ion-card-subtitle>
-            {{ timeDifference(store.openingTime , store.closingTime)}} hours to open
+            Serving in {{ timeDifference(store.openingTime , store.closingTime)}} hours
           </ion-card-subtitle>
       </ion-card-content>
     </ion-card>

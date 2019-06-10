@@ -29,6 +29,7 @@ import {
   GoogleMapsAnimation,
   LatLng
 } from '@ionic-native/google-maps';
+import { Loading } from 'src/app/components/loading';
 
 @Component({
   selector: 'app-hotel-menu',
@@ -43,7 +44,8 @@ export class HotelMenuPage implements OnInit {
     private toastController: ToastController,
     private oauthService: OAuthService,
     private commandResourceService: CommandResourceService,
-    private queryResourceService: QueryResourceService) { }
+    private queryResourceService: QueryResourceService,
+    private loadingCreator: Loading) { }
   storeId;
   map: GoogleMap;
   store: Store;
@@ -66,37 +68,45 @@ export class HotelMenuPage implements OnInit {
   products: Product[] = [];
   selectedCategory: string = 'All';
   now: number;
+  loading: HTMLIonLoadingElement;
   @ViewChild('slides') slides: IonSlides;
+
   ngOnInit() {
-    this.storeId = this.route.snapshot.paramMap.get('id');
-    this.cartService.storeId = this.storeId;
-    this.queryResourceService.findStoreByRegisterNumberUsingGET(this.storeId).subscribe(result => {
-      this.store = result;
-    }, err => {
-      console.log('Error fetching store data', err);
-    });
-    this.queryResourceService.findStockCurrentByStoreIdUsingGET(this.storeId).subscribe(result => {
-      this.stockCurrents = result;
-      result.forEach(() => {
-        this.cardExpand.push(0);
+    this.loadingCreator.createLoader()
+    .then(data => {
+      this.loading = data;
+      this.loading.present();
+      this.storeId = this.route.snapshot.paramMap.get('id');
+      this.cartService.storeId = this.storeId;
+      this.queryResourceService.findStoreByRegisterNumberUsingGET(this.storeId).subscribe(result => {
+        this.store = result;
+      }, err => {
+        console.log('Error fetching store data', err);
       });
-    }, err => {
-      console.log('Error fetching product data', err);
-    });
-    this.queryResourceService.findRatingReviewByStoreidAndCustomerNameUsingGET({ storeId: this.storeId }).subscribe(result => {
-      this.rateReview = result.content;
-    }, err => {
-      console.log('Error fetching review data', err);
-    });
-    this.queryResourceService.findCategoryByStoreIdUsingGET({ userId: this.storeId }).subscribe(success => {
-      this.categories = success.content;
-    });
-    this.oauthService.loadUserProfile().then(user => {
-      this.usr = user;
-    });
-    this.subscriptionCart = this.cartService.observableTickets.subscribe(orderLines => this.cartSize = orderLines.length);
-    this.subscriptionPrice = this.cartService.observablePrice.subscribe(price => this.totalPrice = price);
-    this.timeTracker();
+      this.queryResourceService.findStockCurrentByStoreIdUsingGET(this.storeId).subscribe(result => {
+        this.stockCurrents = result;
+        result.forEach(() => {
+          this.cardExpand.push(0);
+          this.loading.dismiss();
+        });
+      }, err => {
+        console.log('Error fetching product data', err);
+      });
+      this.queryResourceService.findRatingReviewByStoreidAndCustomerNameUsingGET({ storeId: this.storeId }).subscribe(result => {
+        this.rateReview = result.content;
+      }, err => {
+        console.log('Error fetching review data', err);
+      });
+      this.queryResourceService.findCategoryByStoreIdUsingGET({ userId: this.storeId }).subscribe(success => {
+        this.categories = success.content;
+      });
+      this.oauthService.loadUserProfile().then(user => {
+        this.usr = user;
+      });
+      this.subscriptionCart = this.cartService.observableTickets.subscribe(orderLines => this.cartSize = orderLines.length);
+      this.subscriptionPrice = this.cartService.observablePrice.subscribe(price => this.totalPrice = price);
+      this.timeTracker();  
+    })
   }
 
   async presentPopover(ev: any) {
@@ -111,7 +121,6 @@ export class HotelMenuPage implements OnInit {
     });
     popover.onDidDismiss()
       .then((data: any) => {
-        console.log('jjksjkjskj', data.data.result);
         if (data.data.result !== undefined) {
           this.stockCurrents = data.data.result;
           this.selectedCategory = data.data.selectedCategory;
