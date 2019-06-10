@@ -1,7 +1,7 @@
 import { Store, Category } from 'src/app/api/models';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import { NavController, ModalController, ToastController, Platform, IonSlides } from '@ionic/angular';
+import { NavController, ModalController, ToastController, Platform, IonSlides, LoadingController } from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { QueryResourceService } from 'src/app/api/services';
@@ -19,6 +19,7 @@ import {
 } from '@ionic-native/google-maps';
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
 import { LowerCasePipe } from '@angular/common';
+import { Loading } from 'src/app/components/loading';
 
 @Component({
   selector: 'app-restaurants',
@@ -28,6 +29,7 @@ import { LowerCasePipe } from '@angular/common';
 export class RestaurantsPage implements OnInit {
 
   now: number;
+  loading: HTMLIonLoadingElement;
 
   map: GoogleMap;
   stores: Store[] = [];
@@ -44,9 +46,10 @@ export class RestaurantsPage implements OnInit {
     private toastCtrl: ToastController,
     private platform: Platform,
     private modalctrl: ModalController,
-    private queryResourceService: QueryResourceService) {
-
+    private queryResourceService: QueryResourceService,
+    private loadingCreator: Loading) {
   }
+
   ionViewWillLeave() {
     console.log('hello will leave');
     this.slides.stopAutoplay();
@@ -87,21 +90,40 @@ export class RestaurantsPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.timeTracker();
-    this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
-      this.stores = res;
-      this.stores.forEach(store => {
-        this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
-            this.categories[store.regNo] = success.content;
-            console.log('------------------------------------------',this.categories);
+
+    this.loadingCreator.createLoader()
+    .then(async (data) => {
+      this.loading = data;
+      this.loading.present();
+      this.timeTracker();
+      this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
+        this.stores = res;
+        this.stores.forEach(store => {
+          this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
+              this.categories[store.regNo] = success.content;
+              console.log('------------------------------------------',this.categories);
+              this.loading.dismiss();
+          },
+          err=> {
+            this.loading.dismiss();
+          });
+        })
+      },
+        err => {
+          console.log('Error fetching stores');
+          this.loading.dismiss();
         });
-      })
-    },
-      err => {
-        console.log('Error fetching stores');
-      });
-    await this.platform.ready();
-    await this.loadMap();
+      await this.platform.ready();
+      await this.loadMap();  
+    })
+  }
+
+  categoryString(categories) {
+    let str = '';
+    if(categories != undefined) {
+      str = Array.prototype.map.call(categories, s => s.name).toString(); 
+    }
+    return str;
   }
 
   search(event) {
@@ -178,5 +200,6 @@ export class RestaurantsPage implements OnInit {
     });
     return await modal.present();
   }
+
 
 }

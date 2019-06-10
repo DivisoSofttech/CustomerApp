@@ -61,8 +61,8 @@
       </ion-card-content>
     </ion-item>
       <ion-item>
-        <ion-label>
-            <ion-text class="category" *ngFor="let category of categories[store.regNo]">{{category.name}}  </ion-text>
+        <ion-label text-center>
+            <ion-text class="category" >{{categoryString(categories[store.regNo])}}  </ion-text>
         </ion-label>
       </ion-item>
     <div class="card-footer">

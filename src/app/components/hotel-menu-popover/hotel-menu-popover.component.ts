@@ -2,6 +2,7 @@ import { Category } from './../../api/models/category';
 import { Component, OnInit, Input } from '@angular/core';
 import { QueryResourceService } from 'src/app/api/services';
 import { PopoverController, LoadingController } from '@ionic/angular';
+import { Loading } from '../loading';
 
 @Component({
   selector: 'app-hotel-menu-popover',
@@ -19,23 +20,16 @@ export class HotelMenuPopoverComponent implements OnInit {
   constructor(
     private popoverController: PopoverController,
     private queryResourceService: QueryResourceService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private loadingCreator: Loading
   ) {}
-
-  async createLoader() {
-
-    this.loading = await this.loadingController.create({
-      spinner: 'circles',
-      translucent: true,
-      cssClass: 'loading'
-    });
-  }
 
   selectCategory(category: Category) {
 
     this.selectedCategory = category.name;
-    this.createLoader()
-    .then(() => {
+    this.loadingCreator.createLoader()
+    .then((data) => {
+      this.loading = data;
       this.loading.present();
       this.queryResourceService.findProductByStoreIdAndCategoryIdUsingGET(
         {
@@ -57,8 +51,9 @@ export class HotelMenuPopoverComponent implements OnInit {
 
   dismiss() {
     this.selectedCategory = 'All';
-    this.createLoader()
-    .then(()=> {
+    this.loadingCreator.createLoader()
+    .then((data)=> {
+      this.loading = data;
       this.loading.present();
       this.queryResourceService.findStockCurrentByStoreIdUsingGET(this.storeId).subscribe(data=> {
         this.loading.dismiss();

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
+import { CartService } from 'src/app/services/cart.service';
 
 @Component({
   selector: 'app-payment-successfull-info',
@@ -11,9 +12,13 @@ export class PaymentSuccessfullInfoComponent implements OnInit {
   total;
 
 
-  constructor(private modalController:ModalController) { }
+  constructor(private modalController:ModalController,
+    private cartService: CartService,
+    private navController: NavController) { }
 
   dismiss(){
+    this.cartService.emptyCart();
+    this.navController.navigateBack('/tabs/home');
     this.modalController.dismiss();
   }
 

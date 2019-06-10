@@ -22,6 +22,7 @@ import { PageOfStockDiary } from '../models/page-of-stock-diary';
 import { Store } from '../models/store';
 import { PageOfStore } from '../models/page-of-store';
 import { Product } from '../models/product';
+import { PageOfOrder } from '../models/page-of-order';
 import { ProductDTO } from '../models/product-dto';
 import { UserRating } from '../models/user-rating';
 import { Review } from '../models/review';
@@ -66,6 +67,7 @@ class QueryResourceService extends __BaseService {
   static readonly findAllStoreByNameUsingGETPath = '/api/query/findStore/{name}';
   static readonly findStoreByTypeNameUsingGETPath = '/api/query/findStoreByTypeName/{name}';
   static readonly findAllProductByStoreIdUsingGETPath = '/api/query/findproducts/{storeId}';
+  static readonly findOrdersByCustomerIdUsingGETPath = '/api/query/ordersByCustomerId/{customerId}';
   static readonly findAllProductUsingGETPath = '/api/query/products';
   static readonly exportProductsUsingGETPath = '/api/query/products/export';
   static readonly findProductUsingGETPath = '/api/query/products/{id}';
@@ -1389,6 +1391,42 @@ class QueryResourceService extends __BaseService {
   findAllProductByStoreIdUsingGET(storeId: string): __Observable<Array<Product>> {
     return this.findAllProductByStoreIdUsingGETResponse(storeId).pipe(
       __map(_r => _r.body as Array<Product>)
+    );
+  }
+
+  /**
+   * @param customerId customerId
+   * @return OK
+   */
+  findOrdersByCustomerIdUsingGETResponse(customerId: string): __Observable<__StrictHttpResponse<PageOfOrder>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/ordersByCustomerId/${customerId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<PageOfOrder>;
+      })
+    );
+  }
+  /**
+   * @param customerId customerId
+   * @return OK
+   */
+  findOrdersByCustomerIdUsingGET(customerId: string): __Observable<PageOfOrder> {
+    return this.findOrdersByCustomerIdUsingGETResponse(customerId).pipe(
+      __map(_r => _r.body as PageOfOrder)
     );
   }
 

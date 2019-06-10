@@ -1,11 +1,12 @@
 import { MakePaymentComponent } from './../make-payment/make-payment.component';
 import { OrderDeliveryInfo } from './../../api/models/order-delivery-info';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit } from '@angular/core';
 import { OrderAddressDTO, OrderAddress, OrderLine } from 'src/app/api/models';
 import { OrderCommandResourceService } from 'src/app/api/services';
 import { AddAddressModalComponent } from '../add-address-modal/add-address-modal.component';
+import { Loading } from '../loading';
 
 @Component({
   selector: 'app-delivery-info',
@@ -20,38 +21,50 @@ export class DeliveryInfoComponent implements OnInit {
   customerId;
   taskId;
   orderId;
-  selectedAddress: OrderAddressDTO;
+  selectedAddressId:number;
   deliveryType;
   expectedDelivery;
   grandTotal:number;
   deliveryCharges:number;
   total:number;
-  constructor(private oauthService: OAuthService, private modalController: ModalController, private orderCommandService: OrderCommandResourceService) { }
+  loading: HTMLIonLoadingElement;
+  constructor(private oauthService: OAuthService, private modalController: ModalController, 
+    private orderCommandService: OrderCommandResourceService,
+    private loadingCreator: Loading,
+    private toastController: ToastController) { }
 
 
 
   collectDeliveryInfo() {
-    this.deliveryCharges=50;
-    const deliveryDetails: OrderDeliveryInfo = {
-      deliveryCharge: 50,
-      deliveryType: this.deliveryType,
-      deliveryAddress: { 'id': this.selectedAddress.id, 'phone': this.selectedAddress.phone }
-    }
-    console.log('Next Id in Delivery info '+this.taskId);
-    console.log('Order Id in Delivery info '+this.orderId);
-    console.log('Delivery type is '+this.deliveryType);
-    this.orderCommandService.collectDeliveryDetailsUsingPOST({ taskId: this.taskId, orderId: this.orderId, deliveryInfo: deliveryDetails })
-      .subscribe(result => {
-        console.log('Result is Next id deliveryinfo ' + result.nextTaskId);
-        console.log('Self rel id  is '+result.selfId);
-        this.taskId=result.nextTaskId;
-        this.presentModal();
-      },
-        err => {
-          console.log('Error performing collectDeliveryInfo ');
-        }
-
-      );
+    console.log('Selected id' , this.selectedAddressId);
+    let selectedAddress: OrderAddress;
+    this.addresses.forEach(addr => {
+      if(addr.id == this.selectedAddressId) {
+          selectedAddress = addr;
+          console.log(selectedAddress);
+          this.deliveryCharges=50;
+          const deliveryDetails: OrderDeliveryInfo = {
+            deliveryCharge: 50,
+            deliveryType: this.deliveryType,
+            deliveryAddress: { 'id': selectedAddress.id, 'phone': selectedAddress.phone }
+          }
+          console.log('Next Id in Delivery info '+this.taskId);
+          console.log('Order Id in Delivery info '+this.orderId);
+          console.log('Delivery type is '+this.deliveryType);
+          this.orderCommandService.collectDeliveryDetailsUsingPOST({ taskId: this.taskId, orderId: this.orderId, deliveryInfo: deliveryDetails })
+            .subscribe(result => {
+              console.log('Result is Next id deliveryinfo ' + result.nextTaskId);
+              console.log('Self rel id  is '+result.selfId);
+              this.taskId=result.nextTaskId;
+              this.presentModal();
+            },
+              err => {
+                console.log('Error performing collectDeliveryInfo ');
+              }
+      
+            );      
+      }
+    });
   }
 
   async presentModal(){
@@ -70,24 +83,25 @@ export class DeliveryInfoComponent implements OnInit {
   }
 
 
-  selectAddress(address: any) {
-    if (this.selectedAddress === address) {
-      this.selectAddress = undefined;
-    } else {
-      this.selectedAddress = address;
-    }
-  }
-
   getCurrentAddresses() {
     //this.oauthService.loadUserProfile()
       //.then((user: any) => {
         //console.log(user);
-        this.orderCommandService.getAllSavedAddressUsingGET({ customerId: this.customerId })
+        this.loadingCreator.createLoader()
+        .then(data => {
+          this.loading = data;
+          this.loading.present();
+          this.orderCommandService.getAllSavedAddressUsingGET({ customerId: this.customerId })
           .subscribe(addresses => {
             console.log('Customer id is ' + this.customerId);
             console.log('Got Addresses ', addresses);
             this.addresses = addresses.content;
+            this.loading.dismiss();
+          },
+          err => {
+            this.loading.dismiss();
           });
+        })
       //});
   }
 

@@ -8,80 +8,76 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-item>
+    <ion-label>Select Address</ion-label>
+      <ion-select [(ngModel)]="selectedAddressId">
+          <ion-select-option value="{{address.id}}" *ngFor="let address of addresses">
+            {{address.name}}
+          </ion-select-option>
+        </ion-select>  
+  </ion-item>
   <ion-grid>
     <ion-row>
-      <ion-col size="12" text-center>
-        <address *ngFor="let address of addresses"
-          [ngClass]="{selectedClass:address===selectedAddress}"
-          (click)="selectAddress(address)">
-          <span>{{address.houseNoOrBuildingName}}</span><br/>
-            <span>{{address.phone}}</span><br/>
-              <span>{{address.alternatePhone}}</span><br/>
-                <span>{{address.city}}</span><br/>
-                  <span>{{address.pincode}}</span><br/>
-                    <span>{{address.state}}</span>
-                  </address>
-                </ion-col>
-                <ion-col size="12">
-                  <ion-button expand="block" (click)="addAddressModal()">Add New
-                    Address</ion-button>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col>
-                  <ion-item>
-                    <ion-label slot="start">Expected Delivery </ion-label>
-                    <ion-label slot="end">{{expectedDelivery}}</ion-label>
-                  </ion-item>
-                  <ion-item>
-                    <ion-label slot="start">
-                      Product Total
-                    </ion-label>
-                    <ion-label slot="end">
-                      {{grandTotal}}
-                    </ion-label>
-                  </ion-item>
-                  <ion-item>
-                    <ion-label slot="start">
-                      Delivery Charges
-                    </ion-label>
-                    <ion-label slot="end">
-                      50  
-                    </ion-label>
-                  </ion-item>
-                  <ion-item class="bold">
-                    <ion-label slot="start">Total </ion-label>
-                    <ion-label slot="end">{{total}}</ion-label>
-                  </ion-item>
-                </ion-col>
+      <ion-col size="12">
+        <ion-button expand="block" (click)="addAddressModal()">Add New
+          Address</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label slot="start">Expected Delivery </ion-label>
+          <ion-label slot="end">{{expectedDelivery}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label slot="start">
+            Product Total
+          </ion-label>
+          <ion-label slot="end">
+            {{grandTotal}}
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label slot="start">
+            Delivery Charges
+          </ion-label>
+          <ion-label slot="end">
+            50
+          </ion-label>
+        </ion-item>
+        <ion-item class="bold">
+          <ion-label slot="start">Total </ion-label>
+          <ion-label slot="end">{{total}}</ion-label>
+        </ion-item>
+      </ion-col>
 
-                <ion-col>
-                  <ion-list>
-                    <ion-radio-group [(ngModel)]="deliveryType">
-                      <ion-list-header>
-                        <ion-label>Delivery Type</ion-label>
-                      </ion-list-header>
+      <ion-col>
+        <ion-list>
+          <ion-radio-group [(ngModel)]="deliveryType">
+            <ion-list-header>
+              <ion-label>Delivery Type</ion-label>
+            </ion-list-header>
 
-                      <ion-item>
-                        <ion-label>Collection</ion-label>
-                        <ion-radio slot="start" value="collection" checked></ion-radio>
-                      </ion-item>
+            <ion-item>
+              <ion-label>Collection</ion-label>
+              <ion-radio slot="start" value="collection" checked></ion-radio>
+            </ion-item>
 
-                      <ion-item>
-                        <ion-label>Delivery</ion-label>
-                        <ion-radio slot="start" value="delivery"></ion-radio>
-                      </ion-item>
+            <ion-item>
+              <ion-label>Delivery</ion-label>
+              <ion-radio slot="start" value="delivery"></ion-radio>
+            </ion-item>
 
-                    </ion-radio-group>
-                  </ion-list>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col>
-                  <ion-button expand="block" (click)="collectDeliveryInfo()">Continue</ion-button>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-            <ion-footer>
-              <app-footer></app-footer>
-            </ion-footer>
+          </ion-radio-group>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="collectDeliveryInfo()">Continue</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-footer>
+    <app-footer></app-footer>
+  </ion-footer>
