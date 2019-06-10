@@ -31,20 +31,18 @@ export class MakePaymentComponent implements OnInit {
     private navController: NavController,
     private toastController: ToastController,
     private orderCommandResource: OrderCommandResourceService,
-    private payPal: PayPal
+    private payPal: PayPal,
   ) { }
 
   dismiss() {
     this.modalController.dismiss();
   }
-  ngOnInit() {
-
-  }
+  
+  ngOnInit() {}
 
   returnToSale() {
     this.navController.navigateRoot('/tabs/home');
   }
-
 
   save() {
 

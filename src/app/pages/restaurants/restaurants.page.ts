@@ -118,6 +118,14 @@ export class RestaurantsPage implements OnInit {
     })
   }
 
+  categoryString(categories) {
+    let str = '';
+    if(categories != undefined) {
+      str = Array.prototype.map.call(categories, s => s.name).toString(); 
+    }
+    return str;
+  }
+
   search(event) {
     if (event.detail.value !== '') {
       const query: string = event.detail.value;

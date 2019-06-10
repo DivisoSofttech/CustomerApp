@@ -28,6 +28,7 @@ export { OrderPayment } from './models/order-payment';
 export { OrderPaymentDTO } from './models/order-payment-dto';
 export { PageOfCategory } from './models/page-of-category';
 export { PageOfCustomer } from './models/page-of-customer';
+export { PageOfOrder } from './models/page-of-order';
 export { PageOfOrderAddress } from './models/page-of-order-address';
 export { PageOfProduct } from './models/page-of-product';
 export { PageOfRatingReview } from './models/page-of-rating-review';

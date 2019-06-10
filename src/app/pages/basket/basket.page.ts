@@ -38,6 +38,7 @@ export class BasketPage {
     //this.orderLines = ORDERLINES;
     //this.products = PRODUCTS;
     //this.customer = { 'id': 1, 'name': 'maya' };
+    this.products = [];
     this.authService.loadUserProfile().then(user => {
       this.user = user;
       const param: QueryResourceService.FindCustomerByNameUsingGETParams = { name: this.user.preferred_username };
