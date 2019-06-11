@@ -17,71 +17,34 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-card>
-    <ion-item>
-      <ion-card-subtitle *ngIf="profile" slot="start" slot="start">
-        <strong>{{profile.preferred_username | uppercase}}</strong>
-      </ion-card-subtitle>
-
-      <img src="assets/images/user.png" slot="end" class="img" />
-    </ion-item>
-    <ion-item>
-      <ion-card-subtitle size="3" slot="start" slot="start">{{profile.email}}</ion-card-subtitle>
-      <ion-button class="editButton">edit</ion-button>
-    </ion-item>
-  </ion-card>
-
+ <app-profile-details [profile]=profile [store]=s></app-profile-details>
   <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true" value="history">
     <ion-segment-button value="history">
       <ion-label color="primary">History</ion-label>
     </ion-segment-button>
     <ion-segment-button value="frequently odered">
-      <ion-label color="primary">Frequently Odered</ion-label>
+      <ion-label color="primary">Frequently Ordered</ion-label>
     </ion-segment-button>
   </ion-segment>
 
-  <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage">
-    <ion-item lines="none">
-      <ion-img src="/assets/images/pizza.jpg" class="imageShow">
-      </ion-img>
-      <ion-card-content>
-        <ion-card-title>Pizza</ion-card-title>
-        <ion-text><strong>100Rs</strong></ion-text>
-      </ion-card-content>
-    </ion-item>
-  </ion-card>
-  <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage">
+  <!-- <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage"> -->
 
-    <ion-item lines="none">
-      <ion-img src="/assets/images/fry.jpg" class="imageShow">
-      </ion-img>
-      <ion-card-content>
-        <ion-card-title>Fry</ion-card-title>
-        <ion-text><strong>100Rs</strong></ion-text>
-      </ion-card-content>
-    </ion-item>
-  </ion-card>
+      <ion-item lines="full" class="order" *ngFor="let order of orders" margin>
+        <div slot="end" *ngIf="stores[order.storeId] != null">
+            <ion-img 
+            [src]="'data:' + stores[order.storeId].imageContentType + ';base64,' + stores[order.storeId].image"
+            class="mainImg"></ion-img>  
+        </div>
+        <ion-text slot="start">
+          <p><b>Date :</b> {{order.date}}</p>
+          <p><b>Order id :</b> {{order.orderId}}</p>
+          <p><b>Product Name :</b> </p>
+          <p><b>Delivered On :</b><p> </p>
+          <p  *ngIf="stores[order.storeId] != null"><b>Store Name : </b>{{stores[order.storeId].name}}</p>
+        </ion-text>
+      </ion-item>       
 
-  <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage">
-    <ion-item lines="none">
-      <ion-img src="/assets/images/icecream.jpg" class="imageShow">
-      </ion-img>
-      <ion-card-content>
-        <ion-card-title>Ice cream</ion-card-title>
-
-        <ion-text><strong>100Rs</strong></ion-text>
-      </ion-card-content>
-    </ion-item>
-  </ion-card>
-  <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage">
-
-    <ion-item lines="none">
-      <ion-img src="/assets/images/frutsalad.jpg" class="imageShow">
-      </ion-img>
-      <ion-card-content>
-        <ion-card-title>Frut flower</ion-card-title>
-        <ion-text><strong>100Rs</strong></ion-text>
-      </ion-card-content>
-    </ion-item>
-  </ion-card>
+    <ion-infinite-scroll (ionInfinite)="loadMoreOrders($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
 </ion-content>

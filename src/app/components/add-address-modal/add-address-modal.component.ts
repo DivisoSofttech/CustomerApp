@@ -15,7 +15,7 @@ export class AddAddressModalComponent implements OnInit {
   @Input() customerId;
 
   constructor(
-    private moadlController: ModalController,
+    private modalController: ModalController,
     private orderCommandResourceService: OrderCommandResourceService,
     private oauthService: OAuthService
   ) { }
@@ -23,7 +23,7 @@ export class AddAddressModalComponent implements OnInit {
   ngOnInit() {}
 
   dismiss() {
-    this.moadlController.dismiss();
+    this.modalController.dismiss();
   }
 
   saveAddress() {
@@ -47,7 +47,7 @@ export class AddAddressModalComponent implements OnInit {
       )
       .subscribe(address => {
         console.log('Address Saved' , address);
-        this.moadlController.dismiss();
+        this.modalController.dismiss();
       });
     })
   }

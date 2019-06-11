@@ -15,6 +15,8 @@ import { RatingComponent } from './rating/rating.component';
 import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
 import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/payment-successfull-info.component'
 import { Loading } from './loading';
+import { ProfileDetailsComponent } from './profile-details/profile-details.component';
+import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { Loading } from './loading';
                   DeliveryInfoComponent,
                   NotificationsComponent,
                   PaymentSuccessfullInfoComponent,
-                  FooterComponent
+                  FooterComponent,
+                  ProfileDetailsComponent
                 ],
   imports: [
     CommonModule,
@@ -49,7 +52,8 @@ import { Loading } from './loading';
               NotificationsComponent,
               DeliveryInfoComponent,
               PaymentSuccessfullInfoComponent,
-              FooterComponent
+              FooterComponent,
+              ProfileDetailsComponent,
             ],
   entryComponents: [
               AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent

@@ -16,6 +16,9 @@ import { Loading } from '../loading';
 export class DeliveryInfoComponent implements OnInit {
 
 
+  // Delete this later
+  tmpAddress: OrderAddress = {};
+
   orderLines: OrderLine[] = [];
   addresses: OrderAddress[] = [];
   customerId;
@@ -39,14 +42,15 @@ export class DeliveryInfoComponent implements OnInit {
     console.log('Selected id' , this.selectedAddressId);
     let selectedAddress: OrderAddress;
     this.addresses.forEach(addr => {
-      if(addr.id == this.selectedAddressId) {
+      // if(addr.id == this.selectedAddressId) {
+        if(true) {
           selectedAddress = addr;
           console.log(selectedAddress);
           this.deliveryCharges=50;
           const deliveryDetails: OrderDeliveryInfo = {
             deliveryCharge: 50,
             deliveryType: this.deliveryType,
-            deliveryAddress: { 'id': selectedAddress.id, 'phone': selectedAddress.phone }
+            deliveryAddress: { 'id': this.tmpAddress.id, 'phone': this.tmpAddress.phone }
           }
           console.log('Next Id in Delivery info '+this.taskId);
           console.log('Order Id in Delivery info '+this.orderId);
@@ -82,6 +86,12 @@ export class DeliveryInfoComponent implements OnInit {
     return await modal.present();
   }
 
+  checkForm() {
+    if(this.tmpAddress.name != undefined && this.tmpAddress.phone && this.tmpAddress.houseNoOrBuildingName) {
+      return false;
+    } 
+    return true;
+  }
 
   getCurrentAddresses() {
     //this.oauthService.loadUserProfile()

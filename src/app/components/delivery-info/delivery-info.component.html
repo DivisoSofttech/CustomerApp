@@ -8,23 +8,44 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-item>
+  <!-- <ion-item>
     <ion-label>Select Address</ion-label>
       <ion-select [(ngModel)]="selectedAddressId">
           <ion-select-option value="{{address.id}}" *ngFor="let address of addresses">
             {{address.name}}
           </ion-select-option>
         </ion-select>  
-  </ion-item>
+  </ion-item> -->
+
+
   <ion-grid>
     <ion-row>
-      <ion-col size="12">
+
+      <!-- <ion-col size="12">
         <ion-button expand="block" (click)="addAddressModal()">Add New
           Address</ion-button>
-      </ion-col>
+      </ion-col> -->
+
     </ion-row>
     <ion-row>
       <ion-col>
+
+        <!-- Remove this later-->
+        <ion-item>
+          <ion-label slot="start">Name <span class="redStar">*</span></ion-label>
+          <ion-input placeholder="" [(ngModel)]="tmpAddress.name"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label slot="start">House No <span class="redStar">*</span></ion-label>
+          <ion-input placeholder="" [(ngModel)]="tmpAddress.houseNoOrBuildingName"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label slot="start">Phone <span class="redStar">*</span></ion-label>
+          <ion-input placeholder="" [(ngModel)]="tmpAddress.phone"></ion-input>
+        </ion-item>
+        <!-- Remove this later-->
+
+
         <ion-item>
           <ion-label slot="start">Expected Delivery </ion-label>
           <ion-label slot="end">{{expectedDelivery}}</ion-label>
@@ -74,7 +95,9 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" (click)="collectDeliveryInfo()">Continue</ion-button>
+        <ion-button expand="block" (click)="collectDeliveryInfo()"
+        [disabled]="checkForm()"
+        >Continue</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

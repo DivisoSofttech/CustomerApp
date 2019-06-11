@@ -1395,17 +1395,29 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
-   * @param customerId customerId
+   * @param params The `QueryResourceService.FindOrdersByCustomerIdUsingGETParams` containing the following parameters:
+   *
+   * - `customerId`: customerId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
    * @return OK
    */
-  findOrdersByCustomerIdUsingGETResponse(customerId: string): __Observable<__StrictHttpResponse<PageOfOrder>> {
+  findOrdersByCustomerIdUsingGETResponse(params: QueryResourceService.FindOrdersByCustomerIdUsingGETParams): __Observable<__StrictHttpResponse<PageOfOrder>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
 
+    (params.sort || []).forEach(val => {if (val != null) __params = __params.append('sort', val.toString())});
+    if (params.size != null) __params = __params.set('size', params.size.toString());
+    if (params.page != null) __params = __params.set('page', params.page.toString());
     let req = new HttpRequest<any>(
       'GET',
-      this.rootUrl + `/api/query/ordersByCustomerId/${customerId}`,
+      this.rootUrl + `/api/query/ordersByCustomerId/${params.customerId}`,
       __body,
       {
         headers: __headers,
@@ -1421,11 +1433,20 @@ class QueryResourceService extends __BaseService {
     );
   }
   /**
-   * @param customerId customerId
+   * @param params The `QueryResourceService.FindOrdersByCustomerIdUsingGETParams` containing the following parameters:
+   *
+   * - `customerId`: customerId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
    * @return OK
    */
-  findOrdersByCustomerIdUsingGET(customerId: string): __Observable<PageOfOrder> {
-    return this.findOrdersByCustomerIdUsingGETResponse(customerId).pipe(
+  findOrdersByCustomerIdUsingGET(params: QueryResourceService.FindOrdersByCustomerIdUsingGETParams): __Observable<PageOfOrder> {
+    return this.findOrdersByCustomerIdUsingGETResponse(params).pipe(
       __map(_r => _r.body as PageOfOrder)
     );
   }
@@ -3068,6 +3089,32 @@ module QueryResourceService {
      * name
      */
     name: string;
+
+    /**
+     * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     */
+    sort?: Array<string>;
+
+    /**
+     * Size of a page
+     */
+    size?: number;
+
+    /**
+     * Page number of the requested page
+     */
+    page?: number;
+  }
+
+  /**
+   * Parameters for findOrdersByCustomerIdUsingGET
+   */
+  export interface FindOrdersByCustomerIdUsingGETParams {
+
+    /**
+     * customerId
+     */
+    customerId: string;
 
     /**
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
