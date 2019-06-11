@@ -39,35 +39,36 @@ export class DeliveryInfoComponent implements OnInit {
 
 
   collectDeliveryInfo() {
-    console.log('Selected id' , this.selectedAddressId);
+    this.deliveryCharges=50;
+    const deliveryDetails: OrderDeliveryInfo = {
+      deliveryCharge: 50,
+      deliveryType: this.deliveryType,
+      deliveryAddress: { 'id': this.tmpAddress.id, 'phone': this.tmpAddress.phone }
+    }
+    console.log('Next Id in Delivery info '+this.taskId);
+    console.log('Order Id in Delivery info '+this.orderId);
+    console.log('Delivery type is '+this.deliveryType);
+    this.orderCommandService.collectDeliveryDetailsUsingPOST({ taskId: this.taskId, orderId: this.orderId, deliveryInfo: deliveryDetails })
+      .subscribe(result => {
+        console.log('Result is Next id deliveryinfo ' + result.nextTaskId);
+        console.log('Self rel id  is '+result.selfId);
+        this.taskId=result.nextTaskId;
+        this.presentModal();
+      },
+        err => {
+          console.log('Error performing collectDeliveryInfo ');
+        }
+
+      );      
+
     let selectedAddress: OrderAddress;
     this.addresses.forEach(addr => {
       // if(addr.id == this.selectedAddressId) {
+        console.log('Selected id' , this.selectedAddressId);
         if(true) {
           selectedAddress = addr;
           console.log(selectedAddress);
-          this.deliveryCharges=50;
-          const deliveryDetails: OrderDeliveryInfo = {
-            deliveryCharge: 50,
-            deliveryType: this.deliveryType,
-            deliveryAddress: { 'id': this.tmpAddress.id, 'phone': this.tmpAddress.phone }
-          }
-          console.log('Next Id in Delivery info '+this.taskId);
-          console.log('Order Id in Delivery info '+this.orderId);
-          console.log('Delivery type is '+this.deliveryType);
-          this.orderCommandService.collectDeliveryDetailsUsingPOST({ taskId: this.taskId, orderId: this.orderId, deliveryInfo: deliveryDetails })
-            .subscribe(result => {
-              console.log('Result is Next id deliveryinfo ' + result.nextTaskId);
-              console.log('Self rel id  is '+result.selfId);
-              this.taskId=result.nextTaskId;
-              this.presentModal();
-            },
-              err => {
-                console.log('Error performing collectDeliveryInfo ');
-              }
-      
-            );      
-      }
+        }
     });
   }
 
@@ -133,7 +134,9 @@ export class DeliveryInfoComponent implements OnInit {
     this.modalController.dismiss();
   }
   ngOnInit() {
-    this.expectedDelivery = '35 Min';
+    var dt = new Date();
+    dt.setMinutes( dt.getMinutes() + 35 );
+    this.expectedDelivery = dt.getHours() + '.' + dt.getMinutes();
     this.getCurrentAddresses();
     console.log('Product total is '+this.grandTotal);
     this.total=this.grandTotal+50
