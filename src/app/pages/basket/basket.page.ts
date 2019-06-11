@@ -10,6 +10,7 @@ import { QueryResourceService, OrderCommandResourceService } from 'src/app/api/s
 import { DeliveryInfoComponent } from 'src/app/components/delivery-info/delivery-info.component';
 import { ORDERLINES } from '../../mock-orderlines';
 import { PRODUCTS } from '../../mock-products';
+import { PaymentSuccessfullInfoComponent } from 'src/app/components/payment-successfull-info/payment-successfull-info.component';
 @Component({
   selector: 'app-basket',
   templateUrl: './basket.page.html',
@@ -93,6 +94,20 @@ export class BasketPage {
 
 
   }
+
+  // For Testing lasat Page PaymentSuccessfullInfo
+  // Remove After Testing
+  async presentModalTest() {
+    const modal = await this.modalController.create({
+      component: PaymentSuccessfullInfoComponent,
+      componentProps: {
+        total: 2000
+      }
+    });
+
+    return await modal.present();
+  }
+
 
   async presentModal() {
     const modal = await this.modalController.create({

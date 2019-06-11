@@ -1,28 +1,8 @@
-.profileImage{
-    
-        margin: auto;
-        border-radius: 50%;
-        border: 5px solid white;
-        width: 200px;
-        height: 200px;
-        box-shadow:3px 3px 5px 0px #2c2a2a;
-    
-}
-img {
 
-    width: 20vw;
-    height: 20vw;
-    border-radius: 50%;
-    margin: 3vw;
-    margin-left: 53%;
-      }
 p{
     margin: 0%;
 }
-.editButton{
-    margin-left: 69%;
 
-}
 
 .reviewProfile{
     display: block;
@@ -57,3 +37,11 @@ p{
     height: 106px;
     width: 145px;
   } 
+
+  ion-item ion-img {
+    width: 20vw;
+    height: 20vw;
+  }
+  ion-text * {
+    font-size:11px;
+  }
