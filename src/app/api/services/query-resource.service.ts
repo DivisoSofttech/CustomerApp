@@ -8,9 +8,9 @@ import { Observable as __Observable } from 'rxjs';
 import { map as __map, filter as __filter } from 'rxjs/operators';
 
 import { ContactDTO } from '../models/contact-dto';
-import { PageOfCustomer } from '../models/page-of-customer';
 import { CustomerDTO } from '../models/customer-dto';
 import { CategoryDTO } from '../models/category-dto';
+import { PageOfCustomer } from '../models/page-of-customer';
 import { PageOfProduct } from '../models/page-of-product';
 import { UomDTO } from '../models/uom-dto';
 import { Entry } from '../models/entry';
@@ -184,7 +184,7 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findCustomerByNameUsingGETResponse(params: QueryResourceService.FindCustomerByNameUsingGETParams): __Observable<__StrictHttpResponse<PageOfCustomer>> {
+  findCustomerByNameUsingGETResponse(params: QueryResourceService.FindCustomerByNameUsingGETParams): __Observable<__StrictHttpResponse<CustomerDTO>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -205,7 +205,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<PageOfCustomer>;
+        return _r as __StrictHttpResponse<CustomerDTO>;
       })
     );
   }
@@ -222,9 +222,9 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findCustomerByNameUsingGET(params: QueryResourceService.FindCustomerByNameUsingGETParams): __Observable<PageOfCustomer> {
+  findCustomerByNameUsingGET(params: QueryResourceService.FindCustomerByNameUsingGETParams): __Observable<CustomerDTO> {
     return this.findCustomerByNameUsingGETResponse(params).pipe(
-      __map(_r => _r.body as PageOfCustomer)
+      __map(_r => _r.body as CustomerDTO)
     );
   }
 

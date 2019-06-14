@@ -44,7 +44,7 @@ export class BasketPage {
       this.user = user;
       const param: QueryResourceService.FindCustomerByNameUsingGETParams = { name: this.user.preferred_username };
       this.queryResourceService.findCustomerByNameUsingGET(param).subscribe(res => {
-        this.customer = res.content[0];
+        this.customer = res;
 
       });
     });

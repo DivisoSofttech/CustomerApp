@@ -35,22 +35,22 @@ export class LoginScreenComponent implements OnInit {
     private queryResourceService: QueryResourceService,
     private commandResourceService: CommandResourceService,
     private toastController: ToastController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.agreement = false;
     this.kcAdminClient = new KeycloakAdminClient();
     this.kcAdminClient.setConfig({
-        baseUrl: 'http://35.237.193.86:8080/auth'
+      baseUrl: 'http://35.196.86.249:8080/auth'
 
-     });
+    });
     this.configureKeycloakAdmin();
   }
 
   configureKeycloakAdmin() {
     this.kcAdminClient.auth({
       username: 'admin',
-      password: 'admin',
+      password: 'karma123',
       grantType: 'password',
       clientId: 'admin-cli'
     });
@@ -72,16 +72,16 @@ export class LoginScreenComponent implements OnInit {
         const claims = this.oauthService.getIdentityClaims();
         if (claims) {
           console.log(claims);
-          const param: QueryResourceService.FindCustomerByNameUsingGETParams = {name: this.username};
-          this.queryResourceService.findCustomerByNameUsingGET(param).subscribe(res => {
-            if (res.content.length === 0) {
-              const customer: CustomerDTO = {name: this.username};
-              this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
-            }
-          }, err => {
-            const customer: CustomerDTO = {name: this.username};
-            this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
-          });
+          // const param: QueryResourceService.FindCustomerByNameUsingGETParams = {name: this.username};
+          // this.queryResourceService.findCustomerByNameUsingGET(param).subscribe(res => {
+          //   if (res.content.length === 0) {
+          //     const customer: CustomerDTO = {name: this.username};
+          //     this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
+          //   }
+          // }, err => {
+          //   const customer: CustomerDTO = {name: this.username};
+          //   this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
+          // });
         }
         if (this.oauthService.hasValidAccessToken()) {
           this.navCtrl.navigateRoot('/tabs/home');
@@ -162,11 +162,21 @@ export class LoginScreenComponent implements OnInit {
       attributes: map
 
     }).then(res => {
-      this.presentToast('Registration Successful');
-      const customer: CustomerDTO = {name: this.username};
-      this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
-    }, err => {
-      this.presentToast('Error Registering User');
+        this.oauthService.fetchTokenUsingPasswordFlowAndLoadUserProfile(
+          this.username,
+          this.password,
+          new HttpHeaders()
+        ).then(() => {
+          this.commandResourceService.createCustomerUsingPOST({
+            
+          })
+            .subscribe(data => {
+              console.log("User Created", data);
+              this.presentToast('Registration Successful');
+            });
+        }, err => {
+          this.presentToast('Error Registering User');
+        });
     });
   }
 
