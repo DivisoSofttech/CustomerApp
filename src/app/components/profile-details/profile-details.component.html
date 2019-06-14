@@ -1,24 +1,12 @@
-<ion-card *ngIf="profile && editMode == false">
+<ion-card >
   <ion-item>
     <ion-card-subtitle slot="start">
       <strong>{{profile.preferred_username | uppercase}}</strong>
     </ion-card-subtitle>
     <img src="assets/images/user.png" slot="end" class="img" />
   </ion-item>
-  <ion-item *ngIf="profile && editMode == false">
+  <ion-item>
     <ion-card-subtitle size="3" slot="start">{{profile.email}}</ion-card-subtitle>
     <ion-button class="editButton" (click)="edit()">edit</ion-button>
   </ion-item>
 </ion-card>
-
-<ion-item *ngIf="profile && editMode == true">
-  <img src="assets/images/user.png" slot="end" class="img" />
-  <ion-input [(ngModel)]="profile.preferred_username"></ion-input>
-</ion-item>
-<ion-item *ngIf="profile && editMode == true">
-  <ion-input  [(ngModel)]="profile.email"></ion-input>
-</ion-item>
-<div *ngIf="profile && editMode == true" margin>
-  <ion-button slot="start" expand="block" color="success" (click)="cancel()">Cancel</ion-button>
-  <ion-button slot="start" expand="block" color="primary" (click)="update()">Save</ion-button>
-</div>

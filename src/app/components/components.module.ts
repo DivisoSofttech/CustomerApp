@@ -17,6 +17,9 @@ import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/paymen
 import { Loading } from './loading';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
+import { ProfileEditComponent } from './profile-edit/profile-edit.component';
+import { Camera } from '@ionic-native/camera/ngx';
+import { ImageSelectorComponent } from './image-selector/image-selector.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,9 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
                   NotificationsComponent,
                   PaymentSuccessfullInfoComponent,
                   FooterComponent,
-                  ProfileDetailsComponent
+                  ProfileDetailsComponent,
+                  ProfileEditComponent,
+                  ImageSelectorComponent
                 ],
   imports: [
     CommonModule,
@@ -39,7 +44,8 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
     FormsModule
   ],
   providers: [
-    Loading
+    Loading,
+    Camera
   ],
   exports:  [
               HotelMenuPopoverComponent,
@@ -54,9 +60,13 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
               PaymentSuccessfullInfoComponent,
               FooterComponent,
               ProfileDetailsComponent,
+              ProfileEditComponent,
+              ImageSelectorComponent
             ],
   entryComponents: [
-              AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent
+              AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent,
+              ProfileEditComponent,
+              ImageSelectorComponent
             ]
 })
 export class ComponentsModule { }

@@ -17,7 +17,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
- <app-profile-details [profile]=profile [store]=s></app-profile-details>
+ <app-profile-details *ngIf="profile != null
+ " [profile]=profile></app-profile-details>
   <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true" value="history">
     <ion-segment-button value="history">
       <ion-label color="primary">History</ion-label>
