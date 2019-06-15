@@ -60,7 +60,7 @@ export class ImageSelectorComponent implements OnInit {
     freader.readAsDataURL(this.fileToUpload);
 
   }
-
+z
 
   async dismiss() {
     await this.modalController.dismiss(

@@ -1,35 +1,33 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons>
-      <ion-button (click)="dismiss()">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+      <ion-buttons>
+          <ion-button (click)="dismiss()" slot="start">
+            <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+          <ion-title no-padding>Edit Profile</ion-title>
+        </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
 
   <div>
-      <img (click)="selectImage()" src="assets/images/user.png" slot="end" class="img" />
+    <img (click)="selectImage($event)" *ngIf="!customer.photo" src="assets/images/user.png" slot="end" class="img" />
+    <ion-img (click)="selectImage($event)" *ngIf="customer.photo" [src]="'data:' + customer.photoContentType + ';base64,' + customer.photo" slot="end">
+    </ion-img>
   </div>
 
   <ion-item>
-    <ion-label>Name</ion-label>
-    <ion-input *ngIf="customer != undefined" [(ngModel)]="customer.name"></ion-input>
+    <ion-input placeholder="Enter Your Name" text-center *ngIf="customer != undefined" [(ngModel)]="customer.name"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label>Email</ion-label>
-    <ion-input *ngIf="customer != undefined" [(ngModel)]="profileKeycloak.email"></ion-input>
+    <ion-input placeholder="Enter Your Email" text-center *ngIf="profileKeycloak != undefined" [(ngModel)]="profileKeycloak.email"></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label>Username</ion-label>
-    <ion-input *ngIf="customer != undefined" [(ngModel)]="profileKeycloak.preferred_username" disabled></ion-input>
+    <ion-input text-center *ngIf="profileKeycloak != undefined" [(ngModel)]="profileKeycloak.preferred_username" disabled></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label>Phone</ion-label>
-    <ion-input *ngIf="contact != undefined" [(ngModel)]="contact.mobileNumber"></ion-input>
-    <ion-input *ngIf="contact == undefined" [(ngModel)]="mobileNumber"></ion-input>
+    <ion-input placeholder="Enter Your Mobile Number" text-center *ngIf="contact != undefined" [(ngModel)]="contact.mobileNumber"></ion-input>
   </ion-item>
   <ion-fab  vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="update()">

@@ -11,7 +11,6 @@ export class Loading {
     async createLoader() {
         return await this.loadingController.create({
           spinner: "lines",
-          duration: 5000,
           animated: true,
           message: 'loading',
           translucent: true,

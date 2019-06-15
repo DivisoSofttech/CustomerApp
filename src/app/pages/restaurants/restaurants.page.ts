@@ -42,12 +42,12 @@ export class RestaurantsPage implements OnInit {
   };
   @ViewChild('slides') slides: IonSlides;
   constructor(private navCtrl: NavController,
-    private modalController: ModalController,
-    private toastCtrl: ToastController,
-    private platform: Platform,
-    private modalctrl: ModalController,
-    private queryResourceService: QueryResourceService,
-    private loadingCreator: Loading) {
+              private modalController: ModalController,
+              private toastCtrl: ToastController,
+              private platform: Platform,
+              private modalctrl: ModalController,
+              private queryResourceService: QueryResourceService,
+              private loadingCreator: Loading) {
   }
 
   ionViewWillLeave() {
@@ -76,11 +76,11 @@ export class RestaurantsPage implements OnInit {
     return await modal.present();
   }
 
-  // I dont Know/not sure whether this 
+  // I dont Know/not sure whether this
   // function will cause any Performance issues
   timeTracker() {
     setInterval(() => {
-      let date = new Date()
+      const date = new Date();
       this.now  = this.getTimeFixed(date.getHours() + '.' + date.getMinutes());
     }, 1000);
   }
@@ -101,27 +101,27 @@ export class RestaurantsPage implements OnInit {
         this.stores.forEach(store => {
           this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
               this.categories[store.regNo] = success.content;
-              console.log('------------------------------------------',this.categories);
+              console.log('------------------------------------------', this.categories);
               this.loading.dismiss();
           },
-          err=> {
+          err => {
             this.loading.dismiss();
           });
-        })
+        });
       },
         err => {
           console.log('Error fetching stores');
           this.loading.dismiss();
         });
       await this.platform.ready();
-      await this.loadMap();  
-    })
+      await this.loadMap();
+    });
   }
 
   categoryString(categories) {
     let str = '';
-    if(categories != undefined) {
-      str = Array.prototype.map.call(categories, s => s.name).toString(); 
+    if (categories != undefined) {
+      str = Array.prototype.map.call(categories, s => s.name).toString();
     }
     return str;
   }
