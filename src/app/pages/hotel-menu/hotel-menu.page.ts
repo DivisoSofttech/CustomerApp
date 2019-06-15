@@ -1,6 +1,5 @@
 import { FavouriteService } from './../../services/favourite/favourite.service';
 import { Subscription } from 'rxjs';
-import { OrderLine } from './../../api/models/order-line';
 import { CommandResourceService } from 'src/app/api/services';
 import { RatingReview } from './../../api/models/rating-review';
 import { UserRatingDTO } from './../../api/models/user-rating-dto';
@@ -21,17 +20,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 import { UserRating } from 'src/app/api/models/user-rating';
-import { ReviewDTO, TicketLineDTO, Product } from 'src/app/api/models';
+import { ReviewDTO, Product } from 'src/app/api/models';
 import {
   GoogleMaps,
   GoogleMap,
-  GoogleMapsEvent,
   GoogleMapOptions,
-  CameraPosition,
-  MarkerOptions,
   Marker,
   Environment,
-  MyLocation,
   GoogleMapsAnimation,
   LatLng
 } from '@ionic-native/google-maps';
@@ -43,7 +38,6 @@ import { Loading } from 'src/app/components/loading';
   styleUrls: ['./hotel-menu.page.scss']
 })
 export class HotelMenuPage implements OnInit {
-
   storeId;
   map: GoogleMap;
   store: Store;

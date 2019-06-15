@@ -1,6 +1,6 @@
 import { ProfileEditComponent } from './../../components/profile-edit/profile-edit.component';
 import { CustomerDTO } from './../../api/models/customer-dto';
-import { FavouriteService, Favorites, Favourite } from './../../services/favourite/favourite.service';
+import { FavouriteService, Favourite } from './../../services/favourite/favourite.service';
 import { ToastController, AlertController, NavController, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
