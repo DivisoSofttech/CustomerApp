@@ -180,4 +180,13 @@ export class ProfilePage implements OnInit {
     await alert.present();
   }
 
+  route(favourite: Favourite) {
+    var routeURL = favourite.route + "#" + favourite.data.id;
+    this.navController.navigateForward(routeURL)
+  }
+
+  removeFavourite(fav) {
+    this.favourite.removeFromFavorite(fav.data , fav.type);
+  }
+
 }

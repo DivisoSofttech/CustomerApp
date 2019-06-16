@@ -49,7 +49,7 @@
   <ion-slides #slides (ionSlideDidChange)="slideChange()">
     <ion-slide class="product-slide">
       <div>
-        <ion-card *ngFor="let stock of stockCurrents, let i = index;" no-padding>
+        <ion-card *ngFor="let stock of stockCurrents, let i = index;" id="{{stock.product.id}}" no-padding>
           <ion-item lines="none">
             <ion-img [src]="'data:' + stock.product.imageContentType + ';base64,' + stock.product.image"
               class="imageShow">
@@ -77,8 +77,12 @@
                   <ion-col size="2">
                       <ion-buttons>
                          <ion-button fill="none" (click)="addToFavourite(stock.product)"
-                         [disabled]="isFavourite(stock.product)">
+                         *ngIf="!isFavourite(stock.product)">
                              <ion-icon slot="icon-only"  name="heart-empty"></ion-icon>
+                         </ion-button>
+                         <ion-button fill="none" (click)="removeFromFavourite(stock.product)"
+                         *ngIf="isFavourite(stock.product)">
+                             <ion-icon color="danger" slot="icon-only"  name="heart"></ion-icon>
                          </ion-button>
                       </ion-buttons>
                      </ion-col>

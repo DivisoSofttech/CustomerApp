@@ -68,7 +68,7 @@ export class HotelMenuPage implements OnInit {
   loading: HTMLIonLoadingElement;
   @ViewChild('slides') slides: IonSlides;
 
-  favouriteProducts: Product[] = [];
+  favouriteProductsID = [];
 
   
   constructor(
@@ -91,17 +91,13 @@ export class HotelMenuPage implements OnInit {
       this.loading.present();
       this.storeId = this.route.snapshot.paramMap.get('id');
       this.cartService.storeId = this.storeId;
-      // this.favourite.getFavouriteProducts().subscribe(fav => {
-      //   if (fav != null) {
-      //     this.favouriteProducts = fav;
-      //   }
-      // });
       this.queryResourceService
         .findStockCurrentByStoreIdUsingGET(this.storeId)
         .subscribe(
           result => {
             if (result != null) {
               this.stockCurrents = result;
+              this.getFavourites();
             }
             this.loading.dismiss();
             result.forEach(() => {
@@ -332,14 +328,22 @@ export class HotelMenuPage implements OnInit {
   }
 
   addToFavourite(product) {
-    console.log('adding to favourite', this.favouriteProducts);
-    this.favourite.addToFavouriteProduct(product , this.router.url);
-    // this.favourite.getFavourites().subscribe(data => {
-    //   this.favourites = data;
-    // });
+    console.log('adding to favourite', this.favouriteProductsID);
+    this.favourite.addToFavouriteProduct(product , this.router.url.split('#')[0]);
+    this.getFavourites();
+  }
+
+  removeFromFavourite(product) {
+    this.favourite.removeFromFavorite(product , 'product');
+    this.getFavourites();
+  }
+
+  getFavourites() {
+    this.favouriteProductsID = this.favourite.getFavouriteProductsID();
+    console.log(this.favouriteProductsID);
   }
 
   isFavourite(product: Product) {
-    return this.favouriteProducts.includes(product);
+    return this.favouriteProductsID.includes(product.id);
   }
 }

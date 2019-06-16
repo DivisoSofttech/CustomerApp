@@ -19,6 +19,9 @@ export class FavouriteService {
 
   username;
 
+  private productsId = [];
+  private storesId = [];
+
   private favourites: Favourite[] = [];
 
   private favouriteSubject: BehaviorSubject<Favourite[]> = new BehaviorSubject(this.favourites);
@@ -27,11 +30,16 @@ export class FavouriteService {
     private storage: Storage,
     private oauthService: OAuthService
   ) { 
+    console.log("Favourite Service Created")
     this.oauthService.loadUserProfile()
     .then((data: any) => {
       this.username = data.preferred_username;
       this.storage.get(this.username +  '_favourites')
       .then(p => {
+        console.log(p);
+        if(p != null) {
+          this.favourites = p;
+        }
         if(p==null) {this.storage.set(this.username +  '_favourites' , this.favourites);}
         this.favouriteSubject.next(p);
       })
@@ -56,20 +64,37 @@ export class FavouriteService {
     this.refresh();
   }
 
+  removeFromFavorite(data , type) {
+    const tmpArray = this.favourites.filter(favourite => !(favourite.data.id == data.id
+      && favourite.type == type));
+    this.favourites = tmpArray;
+    this.refresh();
+  }
+
 
   getFavourites(): BehaviorSubject<Favourite[]>
   {
     return this.favouriteSubject;
   }
 
-  isFavouriteProduct(product: Product) {
+  
+  getFavouriteProductsID(){
+    const idArray = [];
+    for(let fav of this.favourites) {
+      if(fav.type == 'product')
+      idArray.push(fav.data.id);
+    }
 
+    return idArray;
   }
 
-  isFavouriteStore(store: Store) {
+  getFavouriteStoresID() {
+    const idArray = [];
+    for(let fav of this.favourites) {
+      if(fav.type == 'store')
+      idArray.push(fav.data.id);
+    }
 
+    return idArray
   }
-
-  getFavouriteProducts(){}
-  getFavouriteStores() {}
 }
