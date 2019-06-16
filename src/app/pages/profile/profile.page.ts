@@ -111,7 +111,7 @@ export class ProfilePage implements OnInit {
   async edit() {
     const modal = await this.modalController.create({
       component: ProfileEditComponent,
-      componentProps: { profileKeycloak: this.profile }
+      componentProps: { profileKeycloak: this.profile}
     });
 
     modal.onDidDismiss()
