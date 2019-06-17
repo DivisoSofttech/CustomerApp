@@ -1,8 +1,11 @@
-import { ToastController, AlertController, NavController, IonInfiniteScroll } from '@ionic/angular';
+import { ProfileEditComponent } from './../../components/profile-edit/profile-edit.component';
+import { CustomerDTO } from './../../api/models/customer-dto';
+import { FavouriteService, Favourite } from './../../services/favourite/favourite.service';
+import { ToastController, AlertController, NavController, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { QueryResourceService } from 'src/app/api/services';
-import { Order } from 'src/app/api/models';
+import { Order, Product } from 'src/app/api/models';
 import { Loading } from 'src/app/components/loading';
 
 @Component({
@@ -10,66 +13,135 @@ import { Loading } from 'src/app/components/loading';
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage {
-  
+export class ProfilePage implements OnInit {
+
   currentSubPage = 'history';
   profile: any = {};
-  orders: Order[] = [];
   stores: any = {};
   maximumPage;
   currentOrderPageNumber = 0;
+  showFavourite = false;
+
+  favourites: Favourite[] = [];
+
+  orders: Order[] = [];
+  customer: CustomerDTO = {};
+
+  loadingElement: HTMLIonLoadingElement;
 
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
-  segmentChanged(ev: any) {
-    this.currentSubPage = ev.detail.value;
-  }
-  constructor(private oauthService: OAuthService,
-              private queryResourceService: QueryResourceService,
-              private toastController: ToastController,
-              private alertController: AlertController,
-              private navController: NavController) { }
+  @ViewChild('profileImage') profileImage: ElementRef;
 
-  ionViewWillEnter() {
-    this.oauthService.loadUserProfile().then((user:any) => {
-      this.profile = user;
-      this.queryResourceService.findOrdersByCustomerIdUsingGET({
-        customerId: this.profile.preferred_username,
-        page: 0
-      })
-      .subscribe(orders => {
-        this.orders = orders.content;
-        this.maximumPage = orders.totalPages;
-        this.orders.forEach(order => {
-          if(order.orderId != null) {
-            this.queryResourceService.findStoreByRegisterNumberUsingGET(order.storeId)
-            .subscribe(store => {
-              this.stores[order.storeId] = store;
-            });  
-          }
+  segmentChanged(ev: any) {
+    this.showFavourite = !this.showFavourite;
+  }
+
+  constructor(private oauthService: OAuthService,
+    private queryResourceService: QueryResourceService,
+    private toastController: ToastController,
+    private alertController: AlertController,
+    private modalController: ModalController,
+    private navController: NavController,
+    private favourite: FavouriteService,
+    private loading: Loading) { }
+
+  ngOnInit() {
+
+    this.loading.createLoader()
+      .then(data => {
+        this.loadingElement = data;
+        this.loadingElement.present();
+        this.favourite.getFavourites()
+          .subscribe(data => {
+            console.log(data);
+            if (data != null) {
+              this.favourites = data;
+            }
+          });
+
+        this.oauthService.loadUserProfile().then((user: any) => {
+          this.profile = user;
+          this.queryResourceService.findCustomerByReferenceUsingGET(this.profile.preferred_username)
+            .subscribe(customer => {
+              console.log(customer);
+              this.customer = customer;
+              this.setBackground(customer);
+            });
+          this.queryResourceService.findOrdersByCustomerIdUsingGET({
+            customerId: this.profile.preferred_username,
+            page: 0
+          })
+            .subscribe(orders => {
+              this.loadingElement.dismiss();
+              if (orders.content.length > 0) {
+                this.orders = orders.content;
+                console.log('No orders', this.orders.length);
+              }
+              this.maximumPage = orders.totalPages;
+              this.orders.forEach(order => {
+                if (order.orderId != null) {
+                  this.queryResourceService.findStoreByRegisterNumberUsingGET(order.storeId)
+                    .subscribe(store => {
+                      this.stores[order.storeId] = store;
+                    });
+                }
+              });
+            },
+              err => {
+                this.loadingElement.dismiss();
+              });
+          console.log(user);
         });
-      })
-      console.log(user);
+      });
+
+
+  }
+
+  setBackground(customer) {
+    if(customer.photo != null) {
+      var img = "url('data:" +  customer.photoContentType + ";base64," + customer.photo + "')";
+      this.profileImage.nativeElement.style.backgroundImage = img;
+      this.profileImage.nativeElement.style.display="block";
+    } else {
+      this.profileImage.nativeElement.style.display="hidden";
+    }
+  }
+
+  async edit() {
+    const modal = await this.modalController.create({
+      component: ProfileEditComponent,
+      componentProps: { profileKeycloak: this.profile}
     });
+
+    modal.onDidDismiss()
+      .then((data: any) => {
+        this.customer = data.data.customer;
+        this.setBackground(data.data.customer);
+      });
+
+    modal.present();
   }
 
   loadMoreOrders(event) {
-    console.log("Load more");
+    console.log('Load more');
     this.currentOrderPageNumber = this.currentOrderPageNumber + 1;
     this.queryResourceService.findOrdersByCustomerIdUsingGET({
       customerId: this.profile.preferred_username,
       page: this.currentOrderPageNumber,
-      size:2
+      size: 2
     })
-    .subscribe(orders => {
-      console.log("Getting orders" , orders);
-      orders.content.forEach(order => {
-        this.orders.push(order);
-      })
-    })
+      .subscribe(orders => {
+        if (orders.content.length > 0) {
+          console.log('Getting orders', orders);
+          orders.content.forEach(order => {
+            this.orders.push(order);
+          });
+        }
+      });
     if (this.currentOrderPageNumber === this.maximumPage) {
-      console.log("maximum reached");
-      this.infiniteScroll.disabled=true;
+      console.log('maximum reached');
+      this.infiniteScroll.disabled = true;
       this.infiniteScroll.complete();
     }
   }
@@ -106,6 +178,15 @@ export class ProfilePage {
     });
 
     await alert.present();
+  }
+
+  route(favourite: Favourite) {
+    var routeURL = favourite.route + "#" + favourite.data.id;
+    this.navController.navigateForward(routeURL)
+  }
+
+  removeFavourite(fav) {
+    this.favourite.removeFromFavorite(fav.data , fav.type);
   }
 
 }

@@ -10,18 +10,26 @@
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
 
+.vertical-align-center {
+
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+
 ion-modal.half-height {
 
     &.bottom {
     align-items: flex-end;
     }
     
-     --min-height: 86%;;
-  
+    
     
         .modal-wrapper {
             position: absolute;
-            bottom: -0%;
+            bottom: 0%;
+            height: 55vh;
         }
     
     
@@ -30,7 +38,7 @@ ion-modal.half-height {
         display: block;
         contain: content;
         .inner-content {
-        max-height: 80vh;
+        max-height: 40vh;
         overflow: auto;
         padding: 10px;
         }

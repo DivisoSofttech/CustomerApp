@@ -11,3 +11,7 @@ img {
 div {
     padding: 20px;
 }
+
+ion-input:focus {
+    border-bottom: 1px solid green;
+}

@@ -21,6 +21,7 @@ import {
 } from '@ionic-native/google-maps';
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
 import { Loading } from 'src/app/components/loading';
+import { FavouriteService } from 'src/app/services/favourite/favourite.service';
 
 @Component({
   selector: 'app-restaurants',
@@ -46,16 +47,19 @@ export class RestaurantsPage implements OnInit {
     autoplay: true
   };
   @ViewChild('slides') slides: IonSlides;
-  constructor(
-    private locationService: LocationService,
-    private navCtrl: NavController,
-    private modalController: ModalController,
-    private toastCtrl: ToastController,
-    private platform: Platform,
-    private modalctrl: ModalController,
-    private queryResourceService: QueryResourceService,
-    private loadingCreator: Loading
-  ) {}
+
+
+  favouriteRestaurantsID = [];
+
+  constructor(private navCtrl: NavController,
+              private modalController: ModalController,
+              private toastCtrl: ToastController,
+              private platform: Platform,
+              private locationService: LocationService,
+              private queryResourceService: QueryResourceService,
+              private loadingCreator: Loading,
+              private favourite: FavouriteService) {
+  }
 
   ionViewWillLeave() {
     console.log('hello will leave');
@@ -67,6 +71,8 @@ export class RestaurantsPage implements OnInit {
   }
   ionViewDidEnter() {
     console.log('hello did enter');
+    this.getFavourites();
+    this.stores = this.stores;
     this.slides.startAutoplay();
   }
   showHotelMenu(storeId) {
@@ -82,13 +88,14 @@ export class RestaurantsPage implements OnInit {
     });
     return await modal.present();
   }
+  
 
   // I dont Know/not sure whether this
   // function will cause any Performance issues
   timeTracker() {
     setInterval(() => {
       const date = new Date();
-      this.now = this.getTimeFixed(date.getHours() + '.' + date.getMinutes());
+      this.now  = this.getTimeFixed(date.getHours() + '.' + date.getMinutes());
     }, 1000);
   }
 
@@ -101,27 +108,20 @@ export class RestaurantsPage implements OnInit {
       this.loading = data;
       this.loading.present();
       this.timeTracker();
-      this.queryResourceService.findAllStoresUsingGET({}).subscribe(
-        res => {
-          this.stores = res;
-          this.stores.forEach(store => {
-            this.queryResourceService
-              .findCategoryByStoreIdUsingGET({ userId: store.regNo })
-              .subscribe(
-                success => {
-                  this.categories[store.regNo] = success.content;
-                  console.log(
-                    '------------------------------------------',
-                    this.categories
-                  );
-                  this.loading.dismiss();
-                },
-                err => {
-                  this.loading.dismiss();
-                }
-              );
+      this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
+        this.stores = res;
+        this.getFavourites();
+        this.stores.forEach(store => {
+          this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
+              this.categories[store.regNo] = success.content;
+              console.log('------------------------------------------', this.categories);
+              this.loading.dismiss();
+          },
+          err => {
+            this.loading.dismiss();
           });
-        },
+        });
+      },
         err => {
           console.log('Error fetching stores');
           this.loading.dismiss();
@@ -275,4 +275,25 @@ export class RestaurantsPage implements OnInit {
       });
     });
   }
+  addToFavourite(store: Store) {
+    console.log('adding to favourite', this.favouriteRestaurantsID);
+    this.favourite.addToFavouriteStore(store , "/hotel-menu/" + store.regNo);
+    this.getFavourites();
+  }
+
+  removeFromFavourite(store) {
+    this.favourite.removeFromFavorite(store , 'store');
+    this.getFavourites();
+  }
+
+  getFavourites() {
+    this.favouriteRestaurantsID = this.favourite.getFavouriteStoresID();
+    console.log(this.favouriteRestaurantsID);
+  }
+
+  isFavourite(store: Store) {
+    return this.favouriteRestaurantsID.includes(store.id);
+  }
+
+
 }

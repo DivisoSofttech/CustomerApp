@@ -3,6 +3,20 @@ p{
     margin: 0%;
 }
 
+.h30 {
+
+  height: 30vh;
+}
+
+ion-icon[name='close-circle'] {
+  width: 40vw;
+  height: 40vw;
+  margin: auto;
+  display: block;
+  margin-top: 3vh;
+  color: grey;
+}
+
 
 .reviewProfile{
     display: block;
@@ -41,7 +55,47 @@ p{
   ion-item ion-img {
     width: 20vw;
     height: 20vw;
+    padding: 3vw;
   }
   ion-text * {
-    font-size:11px;
+    margin: 0px;
+    color: grey;
   }
+
+  .profileImage{
+    
+    width: 40vw;
+    height: 40vw;
+    border-radius: 50%;
+    margin: auto;
+    margin-bottom: 10px;
+    border: 1px solid grey;
+    padding: 10px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-origin: content-box;
+
+}
+
+.hidden {
+  display: none;
+}
+
+.profileImgContainer {
+  padding: 20px 0px 6px 0px;
+}
+img {
+
+    width: 20vw;
+    height: 20vw;
+    border-radius: 50%;
+    margin: 3vw;
+    margin-left: 53%;
+    margin-right: 0px;
+}
+
+.editButton{
+    margin-left: 69%;
+
+}

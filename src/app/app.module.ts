@@ -1,5 +1,6 @@
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationService } from './services/location-service.service';
+import { FavouriteService } from './services/favourite/favourite.service';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { AuthInterceptor } from './services/security/auth-interceptor';
 import { NgModule } from '@angular/core';
@@ -16,6 +17,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { PayPal } from '@ionic-native/paypal/ngx';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
+import { IonicStorageModule } from '@ionic/storage';
 import {
   GoogleMapsAPIWrapper,
   AgmCoreModule,
@@ -35,12 +37,17 @@ import {
       apiKey: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
       libraries: ['places', 'geometry']
     }),
+    IonicStorageModule.forRoot({
+      name: '__mydb',
+      driverOrder: ['indexeddb', 'sqlite', 'websql']
+    })
   ],
   providers: [
     StatusBar,
     SplashScreen,
     Geolocation,
     GoogleMapsAPIWrapper,
+    FavouriteService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
       provide: HTTP_INTERCEPTORS,

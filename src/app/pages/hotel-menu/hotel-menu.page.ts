@@ -1,3 +1,4 @@
+import { FavouriteService } from './../../services/favourite/favourite.service';
 import { Subscription } from 'rxjs';
 import { CommandResourceService } from 'src/app/api/services';
 import { RatingReview } from './../../api/models/rating-review';
@@ -7,13 +8,15 @@ import { CartService } from './../../services/cart.service';
 import { StockCurrent } from './../../api/models/stock-current';
 import { Store } from './../../api/models/store';
 import { HotelMenuPopoverComponent } from './../../components/hotel-menu-popover/hotel-menu-popover.component';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { HotelMenuPageModule } from './hotel-menu.module';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import {
   PopoverController,
+  IonSlide,
   IonSlides,
   ToastController
 } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 import { UserRating } from 'src/app/api/models/user-rating';
@@ -35,16 +38,6 @@ import { Loading } from 'src/app/components/loading';
   styleUrls: ['./hotel-menu.page.scss']
 })
 export class HotelMenuPage implements OnInit {
-  constructor(
-    private popoverController: PopoverController,
-    private route: ActivatedRoute,
-    private cartService: CartService,
-    private toastController: ToastController,
-    private oauthService: OAuthService,
-    private commandResourceService: CommandResourceService,
-    private queryResourceService: QueryResourceService,
-    private loadingCreator: Loading
-  ) {}
   storeId;
   map: GoogleMap;
   store: Store;
@@ -75,12 +68,46 @@ export class HotelMenuPage implements OnInit {
   loading: HTMLIonLoadingElement;
   @ViewChild('slides') slides: IonSlides;
 
+  favouriteProductsID = [];
+
+  
+  constructor(
+    private popoverController: PopoverController,
+    private route: ActivatedRoute,
+    private router: Router,
+    private cartService: CartService,
+    private toastController: ToastController,
+    private oauthService: OAuthService,
+    private commandResourceService: CommandResourceService,
+    private queryResourceService: QueryResourceService,
+    private loadingCreator: Loading,
+    private favourite: FavouriteService
+  ) {}
+
+
   ngOnInit() {
     this.loadingCreator.createLoader().then(data => {
       this.loading = data;
       this.loading.present();
       this.storeId = this.route.snapshot.paramMap.get('id');
       this.cartService.storeId = this.storeId;
+      this.queryResourceService
+        .findStockCurrentByStoreIdUsingGET(this.storeId)
+        .subscribe(
+          result => {
+            if (result != null) {
+              this.stockCurrents = result;
+              this.getFavourites();
+            }
+            this.loading.dismiss();
+            result.forEach(() => {
+              this.cardExpand.push(0);
+            });
+          },
+          err => {
+            console.log('Error fetching product data', err);
+          }
+        );
       this.queryResourceService
         .findStoreByRegisterNumberUsingGET(this.storeId)
         .subscribe(
@@ -91,20 +118,7 @@ export class HotelMenuPage implements OnInit {
             console.log('Error fetching store data', err);
           }
         );
-      this.queryResourceService
-        .findStockCurrentByStoreIdUsingGET(this.storeId)
-        .subscribe(
-          result => {
-            this.stockCurrents = result;
-            result.forEach(() => {
-              this.cardExpand.push(0);
-              this.loading.dismiss();
-            });
-          },
-          err => {
-            console.log('Error fetching product data', err);
-          }
-        );
+
       this.queryResourceService
         .findRatingReviewByStoreidAndCustomerNameUsingGET({
           storeId: this.storeId
@@ -302,7 +316,34 @@ export class HotelMenuPage implements OnInit {
   }
 
   timeDifference(ot, ct) {
-    // Calculate difference between time
-    return 4.0;
+    const openTime = this.getTimeFixed(ot);
+    const closeTime = this.getTimeFixed(ct);
+
+    if (this.now < openTime) {
+      return openTime - this.now;
+    } else {
+      return 24 - (this.now - openTime);
+      return;
+    }
+  }
+
+  addToFavourite(product) {
+    console.log('adding to favourite', this.favouriteProductsID);
+    this.favourite.addToFavouriteProduct(product , this.router.url.split('#')[0]);
+    this.getFavourites();
+  }
+
+  removeFromFavourite(product) {
+    this.favourite.removeFromFavorite(product , 'product');
+    this.getFavourites();
+  }
+
+  getFavourites() {
+    this.favouriteProductsID = this.favourite.getFavouriteProductsID();
+    console.log(this.favouriteProductsID);
+  }
+
+  isFavourite(product: Product) {
+    return this.favouriteProductsID.includes(product.id);
   }
 }

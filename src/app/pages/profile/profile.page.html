@@ -1,9 +1,6 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button>
-        <ion-icon name="person" slot="icon-only"></ion-icon>
-      </ion-button>
       <ion-title>Profile</ion-title>
     </ion-buttons>
     <ion-buttons slot="end">
@@ -13,39 +10,86 @@
       <ion-button>
         <ion-icon name="notifications" slot="icon-only"></ion-icon>
       </ion-button>
+      <ion-button (click)="edit()">
+        <ion-icon name="create" slot="icon-only"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
- <app-profile-details *ngIf="profile != null
- " [profile]=profile></app-profile-details>
+
+  <div class="profileImgContainer">
+
+    <ion-img *ngIf="customer.photo == null" src="assets/images/user.png" slot="end" class="profileImage"></ion-img>
+    <div class="profileImage hidden" #profileImage></div>
+
+    <ion-text>
+      <p text-center><strong>{{customer.name| uppercase}}</strong></p>
+    </ion-text>
+  </div>
+
   <ion-segment color="shade" (ionChange)="segmentChanged($event)" scrollable="true" value="history">
     <ion-segment-button value="history">
       <ion-label color="primary">History</ion-label>
     </ion-segment-button>
     <ion-segment-button value="frequently odered">
-      <ion-label color="primary">Frequently Ordered</ion-label>
+      <ion-label color="primary">Favourite</ion-label>
     </ion-segment-button>
   </ion-segment>
 
   <!-- <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage"> -->
 
-      <ion-item lines="full" class="order" *ngFor="let order of orders" margin>
-        <div slot="end" *ngIf="stores[order.storeId] != null">
-            <ion-img 
-            [src]="'data:' + stores[order.storeId].imageContentType + ';base64,' + stores[order.storeId].image"
-            class="mainImg"></ion-img>  
-        </div>
-        <ion-text slot="start">
-          <p><b>Date :</b> {{order.date}}</p>
-          <p><b>Order id :</b> {{order.orderId}}</p>
-          <p><b>Product Name :</b> </p>
-          <p><b>Delivered On :</b><p> </p>
-          <p  *ngIf="stores[order.storeId] != null"><b>Store Name : </b>{{stores[order.storeId].name}}</p>
-        </ion-text>
-      </ion-item>       
+  <div *ngIf="orders.length > 0 && showFavourite == false">
+    <ion-item lines="full" class="order" *ngFor="let order of orders" margin>
+      <div slot="end" *ngIf="stores[order.storeId] != null">
+        <ion-img [src]="'data:' + stores[order.storeId].imageContentType + ';base64,' + stores[order.storeId].image"
+          class="mainImg"></ion-img>
+      </div>
+      <ion-text slot="start">
+        <p><b>Date :</b> {{order.date}}</p>
+        <p><b>Order id :</b> {{order.orderId}}</p>
+        <p><b>Product Name :</b> </p>
+        <p><b>Delivered On :</b>
+          <p> </p>
+          <p *ngIf="stores[order.storeId] != null"><b>Store Name : </b>{{stores[order.storeId].name}}</p>
+      </ion-text>
+    </ion-item>
+  </div>
 
-    <ion-infinite-scroll (ionInfinite)="loadMoreOrders($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-      </ion-infinite-scroll>
+  <div class="vertical-align-center h30" *ngIf="orders.length == 0 && showFavourite == false">
+    <ion-text text-center>
+      <p>No Orders</p>
+    </ion-text>
+  </div>
+
+  <div *ngIf="favourites.length > 0 && showFavourite == true">
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let favourite of favourites" >
+        <ion-item lines="full" (click)="route(favourite)">
+          <ion-img slot="start" [src]="'data:' + favourite.data.imageContentType + ';base64,' + favourite.data.image"
+            class="imageShow">
+          </ion-img>
+          <ion-text slot="start">
+            <p> {{favourite.data.name}}</p>
+          </ion-text>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option (click)="removeFavourite(favourite)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+
+  <div class="vertical-align-center h30" *ngIf="favourites.length == 0 && showFavourite == true">
+    <ion-text text-center>
+      <p>Nothng added to favourites</p>
+    </ion-text>
+  </div>
+
+  <ion-infinite-scroll *ngIf="showFavourite == false" (ionInfinite)="loadMoreOrders($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

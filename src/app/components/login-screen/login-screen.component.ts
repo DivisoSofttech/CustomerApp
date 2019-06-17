@@ -1,5 +1,5 @@
 import { CustomerDTO } from './../../api/models/customer-dto';
-import { CommandResourceService, } from 'src/app/api/services';
+import { CommandResourceService } from 'src/app/api/services';
 import {
   ModalController,
   NavController,
@@ -27,6 +27,7 @@ export class LoginScreenComponent implements OnInit {
   agreement: boolean;
   phone: number;
   @ViewChild('slides') slides: IonSlides;
+
   constructor(
     private modalController: ModalController,
     private navController: NavController,
@@ -35,14 +36,13 @@ export class LoginScreenComponent implements OnInit {
     private queryResourceService: QueryResourceService,
     private commandResourceService: CommandResourceService,
     private toastController: ToastController
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.agreement = false;
     this.kcAdminClient = new KeycloakAdminClient();
     this.kcAdminClient.setConfig({
       baseUrl: 'http://35.196.86.249:8080/auth'
-
     });
     this.configureKeycloakAdmin();
   }
@@ -54,43 +54,6 @@ export class LoginScreenComponent implements OnInit {
       grantType: 'password',
       clientId: 'admin-cli'
     });
-  }
-
-  dismiss() {
-    this.modalController.dismiss();
-  }
-
-  login() {
-    console.log('in login' + this.username + ' password is ' + this.password);
-    this.oauthService
-      .fetchTokenUsingPasswordFlowAndLoadUserProfile(
-        this.username,
-        this.password,
-        new HttpHeaders()
-      )
-      .then(() => {
-        const claims = this.oauthService.getIdentityClaims();
-        if (claims) {
-          console.log(claims);
-          // const param: QueryResourceService.FindCustomerByNameUsingGETParams = {name: this.username};
-          // this.queryResourceService.findCustomerByNameUsingGET(param).subscribe(res => {
-          //   if (res.content.length === 0) {
-          //     const customer: CustomerDTO = {name: this.username};
-          //     this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
-          //   }
-          // }, err => {
-          //   const customer: CustomerDTO = {name: this.username};
-          //   this.commandResourceService.createCustomerUsingPOST(customer).subscribe();
-          // });
-        }
-        if (this.oauthService.hasValidAccessToken()) {
-          this.navCtrl.navigateRoot('/tabs/home');
-          this.dismiss();
-        }
-      })
-      .catch((err: HttpErrorResponse) => {
-        this.presentToast(err.error.error_description);
-      });
   }
 
   async presentToast(message: string) {
@@ -144,47 +107,93 @@ export class LoginScreenComponent implements OnInit {
     return 1;
   }
 
-  signup() {
-    const map = new Map([
-      ['phone', this.phone],
-      ['value', 3]
-    ]);
-
-    this.kcAdminClient.users.create({
-      realm: 'graeshoppe',
-      username: this.username,
-      email: this.email,
-      enabled: true,
-      credentials: [{
-        type: 'password',
-        value: this.password
-      }],
-      attributes: map
-
-    }).then(res => {
-        this.oauthService.fetchTokenUsingPasswordFlowAndLoadUserProfile(
-          this.username,
-          this.password,
-          new HttpHeaders()
-        ).then(() => {
-          this.commandResourceService.createCustomerUsingPOST({
-            
-          })
-            .subscribe(data => {
-              console.log("User Created", data);
-              this.presentToast('Registration Successful');
-            });
-        }, err => {
-          this.presentToast('Error Registering User');
-        });
-    });
-  }
-
   dataChanged(agreement) {
     console.log('Old Agreement is ' + this.agreement);
 
     console.log('Agreement is ' + agreement);
     this.agreement = agreement;
+  }
 
+
+
+  login() {
+    console.log('in login' + this.username + ' password is ' + this.password);
+    this.oauthService
+      .fetchTokenUsingPasswordFlowAndLoadUserProfile(
+        this.username,
+        this.password,
+        new HttpHeaders()
+      )
+      .then(() => {
+        const claims = this.oauthService.getIdentityClaims();
+        if (claims) {
+
+          this.queryResourceService.findCustomerByReferenceUsingGET(this.username) 
+          .subscribe(
+            res => {
+              this.presentToast('Login Successful');
+            },
+            err => {
+              this.commandResourceService
+                .createCustomerUsingPOST({
+                  reference: this.username
+                })
+                .subscribe(data => {
+                  console.log('User Created', data);
+                  this.presentToast('Login Successful');
+                });
+            }
+          );
+        }
+        if (this.oauthService.hasValidAccessToken()) {
+          this.navCtrl.navigateRoot('/tabs/home');
+        }
+      })
+      .catch((err: HttpErrorResponse) => {
+        this.presentToast(err.error.error_description);
+      });
+  }
+
+  signup() {
+    const map = new Map([['phone', this.phone], ['value', 3]]);
+
+    this.kcAdminClient.users
+      .create({
+        realm: 'graeshoppe',
+        username: this.username,
+        email: this.email,
+        enabled: true,
+        credentials: [
+          {
+            type: 'password',
+            value: this.password
+          }
+        ],
+        attributes: map
+      })
+      .then(res => {
+        this.oauthService
+          .fetchTokenUsingPasswordFlowAndLoadUserProfile(
+            this.username,
+            this.password,
+            new HttpHeaders()
+          )
+          .then(
+            () => {
+              this.commandResourceService
+                .createCustomerUsingPOST({
+                  reference: this.username
+                })
+                .subscribe(data => {
+                  console.log('User Created', data);
+                  this.presentToast('Registration Successful');
+                  this.navCtrl.navigateRoot('/tabs/home');
+                });
+            },
+            err => {
+              this.presentToast('Error Registering User');
+            }
+          );
+      });
   }
 }

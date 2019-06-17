@@ -11,25 +11,9 @@ import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 })
 export class LoginPage implements OnInit {
 
-  username = '';
-  password = '';
-  constructor(private modalController: ModalController,
-              private navController: NavController,
-              private oauthService: OAuthService,
-              private navCtrl: NavController,
-              private toastController: ToastController) { }
+  constructor() { }
 
   ngOnInit() {
   }
 
-  async showLoginPage() {
-    const modal = await this.modalController.create({
-      component: LoginScreenComponent
-    });
-    await modal.present();
-  }
-
-  navigateRoot() {
-    this.navController.navigateRoot('/tabs');
-  }
 }

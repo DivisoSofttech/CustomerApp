@@ -15,7 +15,6 @@ import { RatingComponent } from './rating/rating.component';
 import { DeliveryInfoComponent } from './delivery-info/delivery-info.component';
 import {PaymentSuccessfullInfoComponent} from './payment-successfull-info/payment-successfull-info.component'
 import { Loading } from './loading';
-import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { Camera } from '@ionic-native/camera/ngx';
@@ -34,7 +33,6 @@ import { ImageSelectorComponent } from './image-selector/image-selector.componen
                   NotificationsComponent,
                   PaymentSuccessfullInfoComponent,
                   FooterComponent,
-                  ProfileDetailsComponent,
                   ProfileEditComponent,
                   ImageSelectorComponent
                 ],
@@ -59,7 +57,6 @@ import { ImageSelectorComponent } from './image-selector/image-selector.componen
               DeliveryInfoComponent,
               PaymentSuccessfullInfoComponent,
               FooterComponent,
-              ProfileDetailsComponent,
               ProfileEditComponent,
               ImageSelectorComponent
             ],
