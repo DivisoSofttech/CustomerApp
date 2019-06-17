@@ -31,6 +31,7 @@ import {
   LatLng
 } from '@ionic-native/google-maps';
 import { Loading } from 'src/app/components/loading';
+import { SearchHistoryService } from 'src/app/services/search-history-service';
 
 @Component({
   selector: 'app-hotel-menu',
@@ -66,11 +67,12 @@ export class HotelMenuPage implements OnInit {
   selectedCategory = 'All';
   now: number;
   loading: HTMLIonLoadingElement;
+  searchSuggetions: any[] = [];
   @ViewChild('slides') slides: IonSlides;
 
   favouriteProductsID = [];
 
-  
+
   constructor(
     private popoverController: PopoverController,
     private route: ActivatedRoute,
@@ -81,8 +83,9 @@ export class HotelMenuPage implements OnInit {
     private commandResourceService: CommandResourceService,
     private queryResourceService: QueryResourceService,
     private loadingCreator: Loading,
-    private favourite: FavouriteService
-  ) {}
+    private favourite: FavouriteService,
+    private searchHistoyService: SearchHistoryService
+  ) { }
 
 
   ngOnInit() {
@@ -273,7 +276,15 @@ export class HotelMenuPage implements OnInit {
   }
 
   searchProducts(event) {
+    this.searchSuggetions = [];
     if (event.detail.value !== '') {
+
+      this.searchHistoyService.findAllSearchTerms(event.detail.value)
+      .then(data => {
+        console.log(data);
+        this.searchSuggetions = data;
+      })
+      this.searchHistoyService.addSearchTerm(event.detail.value);
       const query: string = event.detail.value;
       this.queryResourceService
         .findAllStockCurrentByProductNameStoreIdUsingGET({
@@ -282,6 +293,7 @@ export class HotelMenuPage implements OnInit {
         })
         .subscribe(
           res => {
+            console.log(this.stockCurrents);
             this.stockCurrents = res;
           },
           err => {
@@ -329,12 +341,12 @@ export class HotelMenuPage implements OnInit {
 
   addToFavourite(product) {
     console.log('adding to favourite', this.favouriteProductsID);
-    this.favourite.addToFavouriteProduct(product , this.router.url.split('#')[0]);
+    this.favourite.addToFavouriteProduct(product, this.router.url.split('#')[0]);
     this.getFavourites();
   }
 
   removeFromFavourite(product) {
-    this.favourite.removeFromFavorite(product , 'product');
+    this.favourite.removeFromFavorite(product, 'product');
     this.getFavourites();
   }
 

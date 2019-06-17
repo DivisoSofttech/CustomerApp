@@ -16,6 +16,8 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 import { PayPal } from '@ionic-native/paypal/ngx';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { IonicStorageModule } from '@ionic/storage';
+import { SearchHistoryService } from './services/search-history-service';
+import { CartService } from './services/cart.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,7 +44,9 @@ import { IonicStorageModule } from '@ionic/storage';
       multi: true
     },
     ComponentsModule,
-    PayPal
+    PayPal,
+    CartService,
+    SearchHistoryService
   ],
   bootstrap: [AppComponent]
 })
