@@ -1,3 +1,5 @@
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { LocationService } from './services/location-service.service';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { AuthInterceptor } from './services/security/auth-interceptor';
 import { NgModule } from '@angular/core';
@@ -14,6 +16,10 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { PayPal } from '@ionic-native/paypal/ngx';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
+import {
+  GoogleMapsAPIWrapper,
+  AgmCoreModule,
+} from '@agm/core';
 
 
 @NgModule({
@@ -24,11 +30,17 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
     IonicModule.forRoot(),
     AppRoutingModule,
     OAuthModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
+      libraries: ['places', 'geometry']
+    }),
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    Geolocation,
+    GoogleMapsAPIWrapper,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
       provide: HTTP_INTERCEPTORS,
@@ -36,7 +48,8 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
       multi: true
     },
     ComponentsModule,
-    PayPal
+    PayPal,
+    LocationService,
   ],
   bootstrap: [AppComponent]
 })
