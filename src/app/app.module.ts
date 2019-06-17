@@ -1,3 +1,5 @@
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { LocationService } from './services/location-service.service';
 import { FavouriteService } from './services/favourite/favourite.service';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { AuthInterceptor } from './services/security/auth-interceptor';
@@ -18,6 +20,11 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { IonicStorageModule } from '@ionic/storage';
 import { SearchHistoryService } from './services/search-history-service';
 import { CartService } from './services/cart.service';
+import {
+  GoogleMapsAPIWrapper,
+  AgmCoreModule,
+} from '@agm/core';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +35,10 @@ import { CartService } from './services/cart.service';
     AppRoutingModule,
     OAuthModule.forRoot(),
     HttpClientModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
+      libraries: ['places', 'geometry']
+    }),
     IonicStorageModule.forRoot({
       name: '__mydb',
       driverOrder: ['indexeddb', 'sqlite', 'websql']
@@ -36,6 +47,8 @@ import { CartService } from './services/cart.service';
   providers: [
     StatusBar,
     SplashScreen,
+    Geolocation,
+    GoogleMapsAPIWrapper,
     FavouriteService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
@@ -46,7 +59,8 @@ import { CartService } from './services/cart.service';
     ComponentsModule,
     PayPal,
     CartService,
-    SearchHistoryService
+    SearchHistoryService,
+    LocationService,
   ],
   bootstrap: [AppComponent]
 })

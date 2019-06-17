@@ -1,21 +1,35 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+
+    <ion-buttons *ngIf="!searchBarOnly" slot="start">
       <ion-back-button></ion-back-button>
+      <ion-title *ngIf="store ">{{store.name.substring(0,15) + '...' | uppercase}}</ion-title>
     </ion-buttons>
-    <ion-title *ngIf="store">{{store.name | uppercase}}</ion-title>
+  
+    <ion-buttons  *ngIf="!searchBarOnly" slot="end">
+      <ion-button  (click)="toggleSearchView(true)">
+        <ion-icon name="search" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-searchbar #searchBar (ionCancel)="toggleSearchView(false)" (ionChange)="searchProducts($event)" showCancelButton debounce="1500"
+      *ngIf="searchBarOnly" placeholder="Search Products ..."></ion-searchbar>
+
   </ion-toolbar>
-  <ion-searchbar placeholder="Search products..." (ionChange)="searchProducts($event)" debounce="1100"></ion-searchbar>
+  <ion-list *ngIf="searchSuggetions.length > 0" >
+      <ion-item *ngFor="let term of searchSuggetions" (click)="selectSuggestion(term)" >{{term}}</ion-item>
+    </ion-list>
 </ion-header>
 <ion-content *ngIf="store">
   <div class="container">
     <ion-card color="danger"
       *ngIf="now > getTimeFixed(store.closingTime.slice(11,16)) || now < getTimeFixed(store.openingTime.slice(11,16))">
       <ion-card-content>
-          <ion-card-title>Closed</ion-card-title>      
-          <ion-card-subtitle>
-            Serving in {{ timeDifference(store.openingTime.slice(11,16) , store.closingTime.slice(11,16)) | number : '1.2-2'}} hours
-          </ion-card-subtitle>
+        <ion-card-title>Closed</ion-card-title>
+        <ion-card-subtitle>
+          Serving in
+          {{ timeDifference(store.openingTime.slice(11,16) , store.closingTime.slice(11,16)) | number : '1.2-2'}} hours
+        </ion-card-subtitle>
       </ion-card-content>
     </ion-card>
     <ion-img [src]="'data:' + store.imageContentType + ';base64,' + store.image" class="mainImg"></ion-img>
@@ -75,17 +89,17 @@
                     </ion-buttons>
                   </ion-col>
                   <ion-col size="2">
-                      <ion-buttons>
-                         <ion-button fill="none" (click)="addToFavourite(stock.product)"
-                         *ngIf="!isFavourite(stock.product)">
-                             <ion-icon slot="icon-only"  name="heart-empty"></ion-icon>
-                         </ion-button>
-                         <ion-button fill="none" (click)="removeFromFavourite(stock.product)"
-                         *ngIf="isFavourite(stock.product)">
-                             <ion-icon color="danger" slot="icon-only"  name="heart"></ion-icon>
-                         </ion-button>
-                      </ion-buttons>
-                     </ion-col>
+                    <ion-buttons>
+                      <ion-button fill="none" (click)="addToFavourite(stock.product)"
+                        *ngIf="!isFavourite(stock.product)">
+                        <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+                      </ion-button>
+                      <ion-button fill="none" (click)="removeFromFavourite(stock.product)"
+                        *ngIf="isFavourite(stock.product)">
+                        <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
+                      </ion-button>
+                    </ion-buttons>
+                  </ion-col>
                 </ion-row>
               </ion-grid>
             </ion-card-content>
@@ -136,7 +150,7 @@
     <ion-slide>
       <ion-row>
         <ion-col size="12">
-            <div id="map_canvas"></div>
+          <div id="map_canvas"></div>
         </ion-col>
       </ion-row>
       <ion-row>

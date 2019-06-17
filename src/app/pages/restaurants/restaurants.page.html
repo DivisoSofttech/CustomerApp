@@ -1,19 +1,26 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-title>
+      <ion-title *ngIf="!searchBarOnly && !locateBarOnly">
         <ion-img src="/assets/icon/favicon.png" class="icon-logo"></ion-img>
       </ion-title>
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button>
+    <ion-buttons slot="end" *ngIf="!searchBarOnly && !locateBarOnly">
+      <ion-button (click)="toggleLocateView(true)" >
+        <ion-icon name="locate" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="toggleSearchView(true)" >
         <ion-icon name="search" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button (click)="notificationsModal()" >
-        <ion-icon name="notifications" slot="icon-only"></ion-icon>
-      </ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="searchBarOnly || locateBarOnly" >
+      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"  *ngIf="searchBarOnly" placeholder="Find restaurants around you"></ion-searchbar>
+      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500" *ngIf="locateBarOnly" placeholder="Enter places" (ionChange)="doPlaceSearch($event)"></ion-searchbar>
     </ion-buttons>
   </ion-toolbar>
+  <ion-list *ngIf="places.length > 0" >
+    <ion-item *ngFor="let place of places" (click)="decodeLatLongByPlaceId(place.place_id); toggleLocateView(false);" >{{place.description}}</ion-item>
+  </ion-list>
 </ion-header>
 
 <ion-content>

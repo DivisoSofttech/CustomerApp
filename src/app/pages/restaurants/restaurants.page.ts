@@ -1,37 +1,42 @@
+import { LocationService } from './../../services/location-service.service';
 import { Store, Category } from 'src/app/api/models';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import { NavController, ModalController, ToastController, Platform, IonSlides, LoadingController } from '@ionic/angular';
+import {
+  NavController,
+  ModalController,
+  ToastController,
+  Platform,
+  IonSlides
+} from '@ionic/angular';
 import { FilterComponent } from 'src/app/components/filter/filter.component';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { QueryResourceService } from 'src/app/api/services';
 import {
   GoogleMaps,
   GoogleMap,
-  GoogleMapsEvent,
   GoogleMapOptions,
-  CameraPosition,
-  MarkerOptions,
   Marker,
   Environment,
   MyLocation,
   GoogleMapsAnimation
 } from '@ionic-native/google-maps';
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
-import { LowerCasePipe } from '@angular/common';
 import { Loading } from 'src/app/components/loading';
 import { FavouriteService } from 'src/app/services/favourite/favourite.service';
 
 @Component({
   selector: 'app-restaurants',
   templateUrl: './restaurants.page.html',
-  styleUrls: ['./restaurants.page.scss'],
+  styleUrls: ['./restaurants.page.scss']
 })
 export class RestaurantsPage implements OnInit {
-
   now: number;
   loading: HTMLIonLoadingElement;
 
+  places: any[] = [];
+  searchBarOnly = false;
+  private selectedLat: string;
+  private selectedLon: string;
+  locateBarOnly = false;
   map: GoogleMap;
   stores: Store[] = [];
   categories: any = {};
@@ -39,7 +44,7 @@ export class RestaurantsPage implements OnInit {
   slideOpts = {
     slidesPerView: 2,
     loop: true,
-    autoplay: true,
+    autoplay: true
   };
   @ViewChild('slides') slides: IonSlides;
 
@@ -50,7 +55,7 @@ export class RestaurantsPage implements OnInit {
               private modalController: ModalController,
               private toastCtrl: ToastController,
               private platform: Platform,
-              private modalctrl: ModalController,
+              private locationService: LocationService,
               private queryResourceService: QueryResourceService,
               private loadingCreator: Loading,
               private favourite: FavouriteService) {
@@ -95,13 +100,11 @@ export class RestaurantsPage implements OnInit {
   }
 
   getTimeFixed(str: string): number {
-    return parseFloat(str.replace(':' , '.'));
+    return parseFloat(str.replace(':', '.'));
   }
 
   async ngOnInit() {
-
-    this.loadingCreator.createLoader()
-    .then(async (data) => {
+    this.loadingCreator.createLoader().then(async data => {
       this.loading = data;
       this.loading.present();
       this.timeTracker();
@@ -122,7 +125,8 @@ export class RestaurantsPage implements OnInit {
         err => {
           console.log('Error fetching stores');
           this.loading.dismiss();
-        });
+        }
+      );
       await this.platform.ready();
       await this.loadMap();
     });
@@ -139,20 +143,27 @@ export class RestaurantsPage implements OnInit {
   search(event) {
     if (event.detail.value !== '') {
       const query: string = event.detail.value;
-      this.queryResourceService.findAllStoreByNameUsingGET(query.toLowerCase()).subscribe(res => {
-        if (res.length > 0) {
-          this.stores = res;
-        }
-      }, err => {
-        this.toastView('No results found');
-      });
+      this.queryResourceService
+        .findAllStoreByNameUsingGET(query.toLowerCase())
+        .subscribe(
+          res => {
+            if (res.length > 0) {
+              this.stores = res;
+            }
+          },
+          err => {
+            this.toastView('No results found');
+          }
+        );
     } else {
-      this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
-        this.stores = res;
-      },
+      this.queryResourceService.findAllStoresUsingGET({}).subscribe(
+        res => {
+          this.stores = res;
+        },
         err => {
           console.log('Error fetching stores');
-        });
+        }
+      );
     }
   }
 
@@ -168,8 +179,8 @@ export class RestaurantsPage implements OnInit {
   loadMap() {
     // This code is necessary for browser
     Environment.setEnv({
-      API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyAUlvH09qvfqTyR6izVneDPXEzDyHcIB-0',
-      API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyAUlvH09qvfqTyR6izVneDPXEzDyHcIB-0'
+      API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
+      API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw'
     });
 
     const mapOptions: GoogleMapOptions = {
@@ -184,21 +195,23 @@ export class RestaurantsPage implements OnInit {
     };
 
     this.map = GoogleMaps.create('map_canvas', mapOptions);
-    this.map.getMyLocation().then((location: MyLocation) => {
-      console.log(JSON.stringify(location, null, 2));
+    this.map
+      .getMyLocation()
+      .then((location: MyLocation) => {
+        console.log(JSON.stringify(location, null, 2));
 
-      // Move the map camera to the location with animation
-      this.map.animateCamera({
-        target: location.latLng,
-        zoom: 14,
-        tilt: 30
-      });
-      const marker: Marker = this.map.addMarkerSync({
-        position: location.latLng,
-        animation: GoogleMapsAnimation.BOUNCE
-      });
-      marker.showInfoWindow();
-    })
+        // Move the map camera to the location with animation
+        this.map.animateCamera({
+          target: location.latLng,
+          zoom: 14,
+          tilt: 30
+        });
+        const marker: Marker = this.map.addMarkerSync({
+          position: location.latLng,
+          animation: GoogleMapsAnimation.BOUNCE
+        });
+        marker.showInfoWindow();
+      })
       .catch(err => {
         this.toastView(err.error_message);
       });
@@ -206,12 +219,62 @@ export class RestaurantsPage implements OnInit {
 
   async notificationsModal() {
     const modal = await this.modalController.create({
-      component: NotificationsComponent,
+      component: NotificationsComponent
     });
     return await modal.present();
   }
 
+  toggleSearchView(setVal: boolean) {
+    this.searchBarOnly = setVal;
+  }
 
+  toggleLocateView(setVal: boolean) {
+    this.places = [];
+    this.locateBarOnly = setVal;
+  }
+
+  doPlaceSearch(event) {
+    this.places = [];
+    console.log(event.detail.value);
+    const searchterm = event.detail.value;
+    if (searchterm === '' || searchterm === null) {
+      return;
+    }
+    this.locationService.getPredictions(searchterm).subscribe(res => {
+      console.log(res);
+      this.places = res;
+    });
+  }
+
+  decodeLatLongByPlaceId(placeId) {
+    this.map.remove();
+    this.locationService.geocodeAddress(placeId).then(latlon => {
+      console.log(latlon);
+      Environment.setEnv({
+        API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
+        API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw'
+      });
+      const mapOptions: GoogleMapOptions = {
+        camera: {
+          target: {
+            lat: latlon[0],
+            lng: latlon[1]
+          },
+          zoom: 14,
+          tilt: 30
+        }
+      };
+      this.map = GoogleMaps.create('map_canvas', mapOptions);
+      const marker: Marker = this.map.addMarkerSync({
+        icon: 'red',
+        animation: 'bounce',
+        position: {
+          lat: latlon[0],
+          lng: latlon[1]
+        }
+      });
+    });
+  }
   addToFavourite(store: Store) {
     console.log('adding to favourite', this.favouriteRestaurantsID);
     this.favourite.addToFavouriteStore(store , "/hotel-menu/" + store.regNo);

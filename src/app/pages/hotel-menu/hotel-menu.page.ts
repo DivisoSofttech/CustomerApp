@@ -14,7 +14,8 @@ import {
   PopoverController,
   IonSlide,
   IonSlides,
-  ToastController
+  ToastController,
+  IonSearchbar
 } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
@@ -68,7 +69,10 @@ export class HotelMenuPage implements OnInit {
   now: number;
   loading: HTMLIonLoadingElement;
   searchSuggetions: any[] = [];
+  disableSuggetions = false;
+  searchBarOnly = false;
   @ViewChild('slides') slides: IonSlides;
+  @ViewChild('searchBar') searchBar: IonSearchbar;
 
   favouriteProductsID = [];
 
@@ -174,6 +178,10 @@ export class HotelMenuPage implements OnInit {
     return await popover.present();
   }
 
+  toggleSearchView(setVal: boolean) {
+    this.searchBarOnly = setVal;
+  }
+
   segmentChanged(ev: any) {
     if (ev.detail.value === 'menu') {
       this.slides.slideTo(0);
@@ -275,16 +283,24 @@ export class HotelMenuPage implements OnInit {
     marker.showInfoWindow();
   }
 
+  selectSuggestion(term) {
+    this.disableSuggetions = true;
+    this.searchSuggetions = [];
+    this.searchBar.value = term;
+  }
+
   searchProducts(event) {
+
     this.searchSuggetions = [];
     if (event.detail.value !== '') {
-
-      this.searchHistoyService.findAllSearchTerms(event.detail.value)
-      .then(data => {
-        console.log(data);
-        this.searchSuggetions = data;
-      })
-      this.searchHistoyService.addSearchTerm(event.detail.value);
+      if(this.disableSuggetions != true) {
+        this.searchHistoyService.findAllSearchTerms(event.detail.value)
+        .then(data => {
+          console.log(data);
+          this.searchSuggetions = data;
+        })
+        this.searchHistoyService.addSearchTerm(event.detail.value);  
+      }
       const query: string = event.detail.value;
       this.queryResourceService
         .findAllStockCurrentByProductNameStoreIdUsingGET({
@@ -293,11 +309,13 @@ export class HotelMenuPage implements OnInit {
         })
         .subscribe(
           res => {
-            console.log(this.stockCurrents);
+            console.log('Stock' , this.stockCurrents);
             this.stockCurrents = res;
+            this.disableSuggetions = false;
           },
           err => {
             this.presentToast('No results found');
+            this.disableSuggetions = false;
           }
         );
     } else {

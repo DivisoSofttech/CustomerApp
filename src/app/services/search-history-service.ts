@@ -44,8 +44,8 @@ export class SearchHistoryService {
     async findAllSearchTerms(term) {
         return await this.storage.get('search')
         .then(data => {
-            console.log(data);
-            return data;
+            const matcher = new RegExp(`^${term}`, 'gi');
+            return data.filter(word => word.match(matcher));
         })
     }
 
