@@ -31,7 +31,7 @@ import { FavouriteService } from 'src/app/services/favourite/favourite.service';
 export class RestaurantsPage implements OnInit {
   now: number;
   loading: HTMLIonLoadingElement;
-
+  storesBackup: Store[] = [];
   places: any[] = [];
   searchBarOnly = false;
   private selectedLat: string;
@@ -48,7 +48,6 @@ export class RestaurantsPage implements OnInit {
   };
   @ViewChild('slides') slides: IonSlides;
 
-
   favouriteRestaurantsID = [];
 
   constructor(private navCtrl: NavController,
@@ -62,15 +61,12 @@ export class RestaurantsPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    console.log('hello will leave');
     this.slides.stopAutoplay();
   }
   ionViewDideave() {
-    console.log('hello did leave');
     this.slides.stopAutoplay();
   }
   ionViewDidEnter() {
-    console.log('hello did enter');
     this.getFavourites();
     this.stores = this.stores;
     this.slides.startAutoplay();
@@ -88,7 +84,6 @@ export class RestaurantsPage implements OnInit {
     });
     return await modal.present();
   }
-  
 
   // I dont Know/not sure whether this
   // function will cause any Performance issues
@@ -110,20 +105,22 @@ export class RestaurantsPage implements OnInit {
       this.timeTracker();
       this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
         this.stores = res;
+        this.storesBackup = res;
         this.getFavourites();
         this.stores.forEach(store => {
           this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
               this.categories[store.regNo] = success.content;
-              console.log('------------------------------------------', this.categories);
               this.loading.dismiss();
           },
           err => {
             this.loading.dismiss();
+            this.toastView('Error, connecting to server.');
           });
         });
       },
-        err => {
+      err => {
           console.log('Error fetching stores');
+          this.toastView('Error, connecting to server.');
           this.loading.dismiss();
         }
       );
@@ -138,33 +135,6 @@ export class RestaurantsPage implements OnInit {
       str = Array.prototype.map.call(categories, s => s.name).toString();
     }
     return str;
-  }
-
-  search(event) {
-    if (event.detail.value !== '') {
-      const query: string = event.detail.value;
-      this.queryResourceService
-        .findAllStoreByNameUsingGET(query.toLowerCase())
-        .subscribe(
-          res => {
-            if (res.length > 0) {
-              this.stores = res;
-            }
-          },
-          err => {
-            this.toastView('No results found');
-          }
-        );
-    } else {
-      this.queryResourceService.findAllStoresUsingGET({}).subscribe(
-        res => {
-          this.stores = res;
-        },
-        err => {
-          console.log('Error fetching stores');
-        }
-      );
-    }
   }
 
   async toastView(message) {
@@ -226,6 +196,7 @@ export class RestaurantsPage implements OnInit {
 
   toggleSearchView(setVal: boolean) {
     this.searchBarOnly = setVal;
+    this.stores = this.storesBackup;
   }
 
   toggleLocateView(setVal: boolean) {
@@ -247,6 +218,7 @@ export class RestaurantsPage implements OnInit {
   }
 
   decodeLatLongByPlaceId(placeId) {
+    this.places = [];
     this.map.remove();
     this.locationService.geocodeAddress(placeId).then(latlon => {
       console.log(latlon);
@@ -277,7 +249,7 @@ export class RestaurantsPage implements OnInit {
   }
   addToFavourite(store: Store) {
     console.log('adding to favourite', this.favouriteRestaurantsID);
-    this.favourite.addToFavouriteStore(store , "/hotel-menu/" + store.regNo);
+    this.favourite.addToFavouriteStore(store , '/hotel-menu/' + store.regNo);
     this.getFavourites();
   }
 
@@ -295,5 +267,17 @@ export class RestaurantsPage implements OnInit {
     return this.favouriteRestaurantsID.includes(store.id);
   }
 
+  searchRestaurants(event) {
+    this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value.toLowerCase()})
+      .subscribe(result => {
+        if (result.content.length === 0) {
+          this.toastView('Sorry, couldn\'t find any match');
+          return;
+        }
+        this.stores = result.content;
+      }, err => {
+        this.toastView('Sorry, couldn\'t find any match');
+      });
+  }
 
 }

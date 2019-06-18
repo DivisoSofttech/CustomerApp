@@ -2,7 +2,7 @@ import { Customer } from './../../api/models/customer';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MakePaymentComponent } from './../../components/make-payment/make-payment.component';
 import { ProductQuantityModalComponent } from 'src/app/components/product-quantity-modal/product-quantity-modal.component';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Component } from '@angular/core';
 import { TicketLineDTO, ProductDTO, OrderLine, Order } from 'src/app/api/models';
 import { CartService } from 'src/app/services/cart.service';
@@ -29,6 +29,7 @@ export class BasketPage {
   constructor(
     private modalController: ModalController,
     private cartService: CartService,
+    private toastController: ToastController,
     private authService: OAuthService,
     private queryResourceService: QueryResourceService,
     private orderCommandResource: OrderCommandResourceService
@@ -36,18 +37,25 @@ export class BasketPage {
 
   ionViewWillEnter() {
     this.orderLines = this.cartService.orderLines;
-    //this.orderLines = ORDERLINES;
-    //this.products = PRODUCTS;
-    //this.customer = { 'id': 1, 'name': 'maya' };
     this.products = [];
     this.authService.loadUserProfile().then(user => {
       this.user = user;
       this.queryResourceService.findCustomerByReferenceUsingGET(this.user.preferred_username ).subscribe(res => {
         this.customer = res;
-
+      }, err => {
+        this.presentToast('Error connecting to server');
       });
     });
     this.setTotal();
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      cssClass: 'toast'
+    });
+    toast.present();
   }
 
   setTotal() {
@@ -60,7 +68,7 @@ export class BasketPage {
           console.log(result);
         },
         err => {
-          console.log('error');
+          this.presentToast('Error connecting to server');
         }
       );
 
@@ -71,27 +79,27 @@ export class BasketPage {
     let grandTotal = 0;
     this.orderLines.forEach(orderLine => {
       grandTotal += orderLine.pricePerUnit * orderLine.quantity;
-    })
+    });
     this.grandTotal = grandTotal;
     const order: Order = {
       customerId: this.customer.name,
       orderLines: this.orderLines,
-      grandTotal: grandTotal,
+      grandTotal: this.grandTotal,
       storeId: this.cartService.storeId
-      //storeId: 'whitesand'
+      // storeId: 'whitesand'
     }
     this.orderCommandResource.initiateOrderUsingPOST(order).subscribe(result => {
       this.nextTaskId = result.nextTaskId
       this.selfId = result.selfId
       console.log('Next Task Id is ' + this.nextTaskId);
       console.log('Self id is ' + this.selfId);
-      if (this.nextTaskId != undefined)
+      if (this.nextTaskId != undefined) {
         this.presentModal();
+      }
+    }, err => {
+      this.presentToast('Error connecting to server');
     });
     console.log('Next id outside subscibe is ' + this.nextTaskId);
-
-
-
   }
 
   // For Testing lasat Page PaymentSuccessfullInfo

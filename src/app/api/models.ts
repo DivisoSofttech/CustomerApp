@@ -33,7 +33,6 @@ export { PageOfOrderAddress } from './models/page-of-order-address';
 export { PageOfProduct } from './models/page-of-product';
 export { PageOfRatingReview } from './models/page-of-rating-review';
 export { PageOfStockCurrent } from './models/page-of-stock-current';
-export { PageOfStockDiary } from './models/page-of-stock-diary';
 export { PageOfStore } from './models/page-of-store';
 export { Product } from './models/product';
 export { ProductDTO } from './models/product-dto';

@@ -38,19 +38,19 @@ export class ProfilePage implements OnInit {
   }
 
   constructor(private oauthService: OAuthService,
-    private queryResourceService: QueryResourceService,
-    private toastController: ToastController,
-    private alertController: AlertController,
-    private modalController: ModalController,
-    private navController: NavController,
-    private favourite: FavouriteService,
-    private loading: Loading) { }
+              private queryResourceService: QueryResourceService,
+              private toastController: ToastController,
+              private alertController: AlertController,
+              private modalController: ModalController,
+              private navController: NavController,
+              private favourite: FavouriteService,
+              private loading: Loading) { }
 
   ngOnInit() {
 
     this.loading.createLoader()
-      .then(data => {
-        this.loadingElement = data;
+      .then(res => {
+        this.loadingElement = res;
         this.loadingElement.present();
         this.favourite.getFavourites()
           .subscribe(data => {
@@ -67,6 +67,8 @@ export class ProfilePage implements OnInit {
               console.log(customer);
               this.customer = customer;
               this.setBackground(customer);
+            }, err => {
+              this.presentToast('Error connecting to server');
             });
           this.queryResourceService.findOrdersByCustomerIdUsingGET({
             customerId: this.profile.preferred_username,
@@ -84,14 +86,21 @@ export class ProfilePage implements OnInit {
                   this.queryResourceService.findStoreByRegisterNumberUsingGET(order.storeId)
                     .subscribe(store => {
                       this.stores[order.storeId] = store;
+                    }, err => {
+                      this.presentToast('Error connecting to server');
                     });
                 }
+              }, err => {
+                this.presentToast('Error connecting to server');
               });
             },
               err => {
+                this.presentToast('Error connecting to server');
                 this.loadingElement.dismiss();
               });
           console.log(user);
+        }, err => {
+          this.presentToast('Error connecting to server');
         });
       });
 
@@ -99,12 +108,12 @@ export class ProfilePage implements OnInit {
   }
 
   setBackground(customer) {
-    if(customer.photo != null) {
-      var img = "url('data:" +  customer.photoContentType + ";base64," + customer.photo + "')";
+    if (customer.photo != null) {
+      let img = 'url(\'data:' +  customer.photoContentType + ';base64,' + customer.photo + '\')';
       this.profileImage.nativeElement.style.backgroundImage = img;
-      this.profileImage.nativeElement.style.display="block";
+      this.profileImage.nativeElement.style.display ='block';
     } else {
-      this.profileImage.nativeElement.style.display="hidden";
+      this.profileImage.nativeElement.style.display ='hidden';
     }
   }
 
@@ -181,8 +190,8 @@ export class ProfilePage implements OnInit {
   }
 
   route(favourite: Favourite) {
-    var routeURL = favourite.route + "#" + favourite.data.id;
-    this.navController.navigateForward(routeURL)
+    let routeURL = favourite.route + '#' + favourite.data.id;
+    this.navController.navigateForward(routeURL);
   }
 
   removeFavourite(fav) {

@@ -39,6 +39,7 @@
       <ion-buttons>
         <rating [rate]="store.totalRating" [readonly]="true"></rating>
         <ion-button *ngIf="rateReview" disabled>{{'(' + rateReview.length + ')'}}</ion-button>
+        <ion-button *ngIf="!rateReview" disabled>(0)</ion-button>
       </ion-buttons>
     </div>
   </div>

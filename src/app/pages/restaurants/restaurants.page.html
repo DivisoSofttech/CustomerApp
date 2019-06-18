@@ -14,7 +14,7 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons *ngIf="searchBarOnly || locateBarOnly" >
-      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"  *ngIf="searchBarOnly" placeholder="Find restaurants around you"></ion-searchbar>
+      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"  *ngIf="searchBarOnly" placeholder="Find restaurants around you" (ionChange)="searchRestaurants($event)"></ion-searchbar>
       <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500" *ngIf="locateBarOnly" placeholder="Enter places" (ionChange)="doPlaceSearch($event)"></ion-searchbar>
     </ion-buttons>
   </ion-toolbar>
@@ -24,11 +24,6 @@
 </ion-header>
 
 <ion-content>
-  <!-- <ion-item lines="none">
-    <ion-button color="light" (click)="presentFilterModal()">
-      <ion-icon name="options"></ion-icon>
-    </ion-button>
-  </ion-item> -->
   <div id="map_canvas">
   </div>
   <ion-slides #slides [options]="slideOpts" autoplayDisableOnInteraction = "false" (ionSlideDidChange)="slides.startAutoplay();">
@@ -57,9 +52,8 @@
           <p 
           *ngIf="now < getTimeFixed(store.closingTime.slice(11,16)) || now > getTimeFixed(store.openingTime.slice(11,16))">Closed</p>
           </ion-text>
-      <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
+      <img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
         class="imageShow">
-      </ion-img>
       <ion-card-content *ngIf="store.regNo"  (click)="showHotelMenu(store.regNo)">
         <ion-card-title *ngIf="store.name">{{store.name}}</ion-card-title>
         <ion-card-subtitle *ngIf="store.openingTime">
