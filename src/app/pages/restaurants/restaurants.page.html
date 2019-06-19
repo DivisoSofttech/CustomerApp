@@ -50,7 +50,7 @@
     <ion-item lines="none">
       <ion-text slot="end" no-margin class="closedLabel" *ngIf="store.closingTime && store.openingTime">
           <p 
-          *ngIf="now < getTimeFixed(store.closingTime.slice(11,16)) || now > getTimeFixed(store.openingTime.slice(11,16))">Closed</p>
+          *ngIf="now < getTimeFixed(store.closingTime.slice(11,16)) && now > getTimeFixed(store.openingTime.slice(11,16))">Closed</p>
           </ion-text>
       <img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
         class="imageShow">
