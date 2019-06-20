@@ -341,19 +341,6 @@ export class HotelMenuPage implements OnInit {
     }, 10000);
   }
 
-
-  timeDifference(ot, ct) {
-    const openTime = this.getTimeFixed(ot);
-    const closeTime = this.getTimeFixed(ct);
-
-    if (this.now < openTime) {
-      return openTime - this.now;
-    } else {
-      return 24 - (this.now - openTime);
-      return;
-    }
-  }
-
   addToFavourite(product) {
     console.log('adding to favourite', this.favouriteProductsID);
     this.favourite.addToFavouriteProduct(product, this.router.url.split('#')[0]);

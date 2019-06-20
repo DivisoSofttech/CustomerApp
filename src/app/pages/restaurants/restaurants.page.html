@@ -13,11 +13,9 @@
         <ion-icon name="search" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-buttons *ngIf="searchBarOnly || locateBarOnly">
-      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"
-        *ngIf="searchBarOnly" placeholder="Find restaurants around you"></ion-searchbar>
-      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"
-        *ngIf="locateBarOnly" placeholder="Enter places" (ionChange)="doPlaceSearch($event)"></ion-searchbar>
+    <ion-buttons *ngIf="searchBarOnly || locateBarOnly" >
+      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"  *ngIf="searchBarOnly" placeholder="Find restaurants around you" (ionChange)="searchRestaurants($event)"></ion-searchbar>
+      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500" *ngIf="locateBarOnly" placeholder="Enter places" (ionChange)="doPlaceSearch($event)"></ion-searchbar>
     </ion-buttons>
   </ion-toolbar>
   <ion-list *ngIf="places.length > 0">
@@ -27,11 +25,6 @@
 </ion-header>
 
 <ion-content>
-  <!-- <ion-item lines="none">
-    <ion-button color="light" (click)="presentFilterModal()">
-      <ion-icon name="options"></ion-icon>
-    </ion-button>
-  </ion-item> -->
   <div id="map_canvas">
   </div>
   <ion-slides #slides [options]="slideOpts" autoplayDisableOnInteraction="false"

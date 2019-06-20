@@ -136,7 +136,8 @@ export class LoginScreenComponent implements OnInit {
             err => {
               this.commandResourceService
                 .createCustomerUsingPOST({
-                  reference: this.username
+                  reference: this.username,
+                  name: this.username
                 })
                 .subscribe(data => {
                   console.log('User Created', data);
@@ -182,7 +183,8 @@ export class LoginScreenComponent implements OnInit {
             () => {
               this.commandResourceService
                 .createCustomerUsingPOST({
-                  reference: this.username
+                  reference: this.username,
+                  name: this.username
                 })
                 .subscribe(data => {
                   console.log('User Created', data);
