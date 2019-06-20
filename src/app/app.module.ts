@@ -24,6 +24,7 @@ import {
   GoogleMapsAPIWrapper,
   AgmCoreModule,
 } from '@agm/core';
+import { DateDifferencePipe } from './pipes/date-difference.pipe';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import {
     CartService,
     SearchHistoryService,
     LocationService,
+
   ],
   bootstrap: [AppComponent]
 })

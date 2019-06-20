@@ -22,6 +22,7 @@ import {
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
 import { Loading } from 'src/app/components/loading';
 import { FavouriteService } from 'src/app/services/favourite/favourite.service';
+import { ClosedPipe } from 'src/app/pipes/closed.pipe';
 
 @Component({
   selector: 'app-restaurants',
@@ -29,7 +30,7 @@ import { FavouriteService } from 'src/app/services/favourite/favourite.service';
   styleUrls: ['./restaurants.page.scss']
 })
 export class RestaurantsPage implements OnInit {
-  now: number;
+  now: Date;
   loading: HTMLIonLoadingElement;
 
   places: any[] = [];
@@ -93,15 +94,12 @@ export class RestaurantsPage implements OnInit {
   // I dont Know/not sure whether this
   // function will cause any Performance issues
   timeTracker() {
-    setInterval(() => {
-      const date = new Date();
-      this.now  = this.getTimeFixed(date.getHours() + '.' + date.getMinutes());
-    }, 1000);
+    this.now = new Date();
+    // setInterval(() => {
+    //   this.now = new Date();
+    // }, 10000);
   }
-
-  getTimeFixed(str: string): number {
-    return parseFloat(str.replace(':', '.'));
-  }
+ 
 
   async ngOnInit() {
     this.loadingCreator.createLoader().then(async data => {

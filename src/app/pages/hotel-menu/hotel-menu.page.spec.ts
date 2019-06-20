@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HotelMenuPage } from './hotel-menu.page';
+import { HotelMenuPage } from '../../pipes/hotel-menu.page';
 
 describe('HotelMenuPage', () => {
   let component: HotelMenuPage;
@@ -20,7 +20,7 @@ describe('HotelMenuPage', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
+  
   it('should create', () => {
     expect(component).toBeTruthy();
   });

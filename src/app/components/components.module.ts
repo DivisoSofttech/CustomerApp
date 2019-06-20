@@ -19,6 +19,8 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { Camera } from '@ionic-native/camera/ngx';
 import { ImageSelectorComponent } from './image-selector/image-selector.component';
+import { ClosedPipe } from '../pipes/closed.pipe';
+import { DateDifferencePipe } from '../pipes/date-difference.pipe';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { ImageSelectorComponent } from './image-selector/image-selector.componen
                   PaymentSuccessfullInfoComponent,
                   FooterComponent,
                   ProfileEditComponent,
-                  ImageSelectorComponent
+                  ImageSelectorComponent,
+                  ClosedPipe,
+                  DateDifferencePipe
                 ],
   imports: [
     CommonModule,
@@ -58,7 +62,9 @@ import { ImageSelectorComponent } from './image-selector/image-selector.componen
               PaymentSuccessfullInfoComponent,
               FooterComponent,
               ProfileEditComponent,
-              ImageSelectorComponent
+              ImageSelectorComponent,
+              ClosedPipe,
+              DateDifferencePipe
             ],
   entryComponents: [
               AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent,

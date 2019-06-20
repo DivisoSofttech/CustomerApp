@@ -66,7 +66,7 @@ export class HotelMenuPage implements OnInit {
   stockCurrents: StockCurrent[];
   products: Product[] = [];
   selectedCategory = 'All';
-  now: number;
+  now: Date;
   loading: HTMLIonLoadingElement;
   searchSuggetions: any[] = [];
   disableSuggetions = false;
@@ -335,15 +335,12 @@ export class HotelMenuPage implements OnInit {
   // I dont Know/not sure whether this
   // function will cause any Performance issues
   timeTracker() {
+    this.now = new Date();
     setInterval(() => {
-      const date = new Date();
-      this.now = this.getTimeFixed(date.getHours() + '.' + date.getMinutes());
-    }, 1000);
+      this.now = new Date();
+    }, 10000);
   }
 
-  getTimeFixed(str: string): number {
-    return parseFloat(str.replace(':', '.'));
-  }
 
   timeDifference(ot, ct) {
     const openTime = this.getTimeFixed(ot);

@@ -6,14 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { HotelMenuPage } from './hotel-menu.page';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: HotelMenuPage
-  }
-];
+import { HotelMenuPage } from './hotel-menu-page';
 
 @NgModule({
   imports: [
@@ -21,7 +14,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     ComponentsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild([{ path: '', component: HotelMenuPage }])
   ],
   declarations: [HotelMenuPage],
   entryComponents:[HotelMenuPopoverComponent, RatingComponent]
