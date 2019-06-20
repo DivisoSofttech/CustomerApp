@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { LocationService } from './../../services/location-service.service';
 import { Store, Category } from 'src/app/api/models';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -17,11 +18,13 @@ import {
   Marker,
   Environment,
   MyLocation,
-  GoogleMapsAnimation
+  GoogleMapsAnimation,
+  GoogleMapsEvent
 } from '@ionic-native/google-maps';
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
 import { Loading } from 'src/app/components/loading';
 import { FavouriteService } from 'src/app/services/favourite/favourite.service';
+import { google } from '@agm/core/services/google-maps-types';
 
 @Component({
   selector: 'app-restaurants',
@@ -105,6 +108,7 @@ export class RestaurantsPage implements OnInit {
       this.timeTracker();
       this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
         this.stores = res;
+        this.setRestaurantMarkers();
         this.storesBackup = res;
         this.getFavourites();
         this.stores.forEach(store => {
@@ -185,6 +189,28 @@ export class RestaurantsPage implements OnInit {
       .catch(err => {
         this.toastView(err.error_message);
       });
+  }
+
+  setRestaurantMarkers() {
+    this.stores.forEach(store => {
+      const latLng: string[] = store.location.split(',');
+      const marker: Marker = this.map.addMarkerSync({
+        icon: 'assets/icon/marker.png',
+        label: store.name,
+        position: {
+          lat: +latLng[0],
+          lng: +latLng[1]
+        },
+        animation: GoogleMapsAnimation.BOUNCE
+      });
+      // const infowindow = new google.maps.InfoWindow({
+      //   content: store.name
+      // });
+      // marker.showInfoWindow();
+      marker.addEventListener(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+        this.showHotelMenu(store.regNo);
+      });
+    });
   }
 
   async notificationsModal() {
