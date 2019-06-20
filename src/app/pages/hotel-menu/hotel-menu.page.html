@@ -23,7 +23,7 @@
 <ion-content *ngIf="store">
   <div class="container">
     <ion-card color="danger"
-      *ngIf="now > getTimeFixed(store.closingTime.slice(11,16)) || now < getTimeFixed(store.openingTime.slice(11,16))">
+      *ngIf="now > getTimeFixed(store.closingTime.slice(11,16)) && now < getTimeFixed(store.openingTime.slice(11,16))">
       <ion-card-content>
         <ion-card-title>Closed</ion-card-title>
         <ion-card-subtitle>

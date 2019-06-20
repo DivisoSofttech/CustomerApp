@@ -32,8 +32,6 @@
     "@ionic/angular": "^4.5.0",
     "@ionic/storage": "^2.2.0",
     "angular-reverse-geocode": "^1.0.0",
-    "card.io.cordova.mobilesdk": "^2.1.0",
-    "com.paypal.cordova.mobilesdk": "^3.5.0",
     "cordova-android": "7.1.4",
     "cordova-browser": "5.0.4",
     "cordova-ios": "4.5.5",
@@ -110,7 +108,6 @@
         "LOCATION_WHEN_IN_USE_DESCRIPTION": "This app wants to get your location while this app runs only.",
         "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
       },
-      "com.paypal.cordova.mobilesdk": {},
       "cordova-plugin-camera": {},
       "cordova-sqlite-storage": {}
     },
