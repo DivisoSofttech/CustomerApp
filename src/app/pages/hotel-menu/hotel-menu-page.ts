@@ -40,6 +40,7 @@ import { SearchHistoryService } from 'src/app/services/search-history-service';
   styleUrls: ['./hotel-menu.page.scss']
 })
 export class HotelMenuPage implements OnInit {
+  accordionArray = [];
   storeId;
   map: GoogleMap;
   store: Store;
@@ -91,6 +92,16 @@ export class HotelMenuPage implements OnInit {
     private searchHistoyService: SearchHistoryService
   ) { }
 
+  closeOpen(index) {
+    for(let i = 0 ;i < this.accordionArray.length;i++) {
+
+      if(i ===index) {
+        this.accordionArray[i] = !this.accordionArray[i];
+      } else {
+        this.accordionArray[i] = false;
+      }
+    }
+  }
 
   ngOnInit() {
     this.loadingCreator.createLoader().then(data => {
@@ -105,6 +116,9 @@ export class HotelMenuPage implements OnInit {
             if (result != null) {
               this.stockCurrents = result;
               this.getFavourites();
+              for(let i = 0;i < result.length;i++) {
+                this.accordionArray.push(false);
+              }
             }
             this.loading.dismiss();
             result.forEach(() => {

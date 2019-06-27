@@ -1,4 +1,3 @@
-
 import { FooterComponent } from './footer/footer.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { AddAddressModalComponent } from './add-address-modal/add-address-modal.component';
@@ -39,6 +38,7 @@ import { DateDifferencePipe } from '../pipes/date-difference.pipe';
                   ImageSelectorComponent,
                   ClosedPipe,
                   DateDifferencePipe
+                  
                 ],
   imports: [
     CommonModule,
@@ -65,11 +65,12 @@ import { DateDifferencePipe } from '../pipes/date-difference.pipe';
               ImageSelectorComponent,
               ClosedPipe,
               DateDifferencePipe
+              
             ],
   entryComponents: [
               AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent,
               ProfileEditComponent,
-              ImageSelectorComponent
+              ImageSelectorComponent,
             ]
 })
 export class ComponentsModule { }

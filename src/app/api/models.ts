@@ -34,6 +34,7 @@ export { PageOfProduct } from './models/page-of-product';
 export { PageOfRatingReview } from './models/page-of-rating-review';
 export { PageOfStockCurrent } from './models/page-of-stock-current';
 export { PageOfStore } from './models/page-of-store';
+export { PageOfType } from './models/page-of-type';
 export { Product } from './models/product';
 export { ProductDTO } from './models/product-dto';
 export { Propreitor } from './models/propreitor';

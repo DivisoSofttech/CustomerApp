@@ -26,7 +26,6 @@ import {
 } from '@agm/core';
 import { DateDifferencePipe } from './pipes/date-difference.pipe';
 
-
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],

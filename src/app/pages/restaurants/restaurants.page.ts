@@ -42,6 +42,7 @@ export class RestaurantsPage implements OnInit {
   map: GoogleMap;
   stores: Store[] = [];
   categories: any = {};
+  deliveryInfos: any = {};
   rate = 2;
   slideOpts = {
     slidesPerView: 2,
@@ -102,20 +103,35 @@ export class RestaurantsPage implements OnInit {
       this.loading = data;
       this.loading.present();
       this.timeTracker();
+
       this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
         this.stores = res;
+        console.log('Got Stores',res);
         this.setRestaurantMarkers();
         this.storesBackup = res;
         this.getFavourites();
         this.stores.forEach(store => {
+          console.log('Getting Category',store.regNo);
           this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
               this.categories[store.regNo] = success.content;
+              console.log('Got Category',success.content);
               this.loading.dismiss();
           },
           err => {
             this.loading.dismiss();
             this.toastView('Error, connecting to server.');
           });
+          this.queryResourceService.findAllDeliveryTypesByStoreIdUsingGET(
+            {
+              storeId: store.id
+            })
+            .subscribe(success => {
+                this.deliveryInfos[store.regNo] = success.content;
+                console.log('DeliveryInfo' , success.content);
+            },
+            err => {
+              console.log('Could Not Find Delivery Info');
+            });
         });
       },
       err => {

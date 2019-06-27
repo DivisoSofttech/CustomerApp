@@ -9,6 +9,7 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 
 import { ContactDTO } from '../models/contact-dto';
 import { CustomerDTO } from '../models/customer-dto';
+import { PageOfType } from '../models/page-of-type';
 import { CategoryDTO } from '../models/category-dto';
 import { PageOfCustomer } from '../models/page-of-customer';
 import { PageOfProduct } from '../models/page-of-product';
@@ -38,6 +39,7 @@ class QueryResourceService extends __BaseService {
   static readonly findContactByIdUsingGETPath = '/api/query/contacts/{id}';
   static readonly findCustomerByReferenceUsingGETPath = '/api/query/customers/findByReference/{reference}';
   static readonly findCustomerByIdUsingGETPath = '/api/query/customers/{id}';
+  static readonly findAllDeliveryTypesByStoreIdUsingGETPath = '/api/query/deliveryTypes/{storeId}';
   static readonly findAllCategoriesWithOutImageUsingGETPath = '/api/query/findAllCategoriesWithOutImage';
   static readonly findAllCategoriesUsingGETPath = '/api/query/findAllCateogories';
   static readonly findAllCustomersWithoutSearchUsingGETPath = '/api/query/findAllCustomers';
@@ -60,6 +62,7 @@ class QueryResourceService extends __BaseService {
   static readonly findAllProductUsingGETPath = '/api/query/products';
   static readonly findProductUsingGETPath = '/api/query/products/{id}';
   static readonly findRatingCountUsingGETPath = '/api/query/rating-count';
+  static readonly findRatingByStoreIdAndCustomerNameUsingGET1Path = '/api/query/rating/{storeId}';
   static readonly findRatingByStoreIdAndCustomerNameUsingGETPath = '/api/query/rating/{storeId}/{name}';
   static readonly findReviewByStoreIdAndCustomerNameUsingGETPath = '/api/query/review/{storeId}/{name}';
   static readonly findReviewsByStoreIdUsingGETPath = '/api/query/review/{userName}';
@@ -189,6 +192,63 @@ class QueryResourceService extends __BaseService {
   findCustomerByIdUsingGET(id: number): __Observable<CustomerDTO> {
     return this.findCustomerByIdUsingGETResponse(id).pipe(
       __map(_r => _r.body as CustomerDTO)
+    );
+  }
+
+  /**
+   * @param params The `QueryResourceService.FindAllDeliveryTypesByStoreIdUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
+   * @return OK
+   */
+  findAllDeliveryTypesByStoreIdUsingGETResponse(params: QueryResourceService.FindAllDeliveryTypesByStoreIdUsingGETParams): __Observable<__StrictHttpResponse<PageOfType>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    (params.sort || []).forEach(val => {if (val != null) __params = __params.append('sort', val.toString())});
+    if (params.size != null) __params = __params.set('size', params.size.toString());
+    if (params.page != null) __params = __params.set('page', params.page.toString());
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/deliveryTypes/${params.storeId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<PageOfType>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.FindAllDeliveryTypesByStoreIdUsingGETParams` containing the following parameters:
+   *
+   * - `storeId`: storeId
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
+   * @return OK
+   */
+  findAllDeliveryTypesByStoreIdUsingGET(params: QueryResourceService.FindAllDeliveryTypesByStoreIdUsingGETParams): __Observable<PageOfType> {
+    return this.findAllDeliveryTypesByStoreIdUsingGETResponse(params).pipe(
+      __map(_r => _r.body as PageOfType)
     );
   }
 
@@ -1375,6 +1435,42 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
+   * @param storeId storeId
+   * @return OK
+   */
+  findRatingByStoreIdAndCustomerNameUsingGET1Response(storeId: string): __Observable<__StrictHttpResponse<UserRating>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/rating/${storeId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<UserRating>;
+      })
+    );
+  }
+  /**
+   * @param storeId storeId
+   * @return OK
+   */
+  findRatingByStoreIdAndCustomerNameUsingGET1(storeId: string): __Observable<UserRating> {
+    return this.findRatingByStoreIdAndCustomerNameUsingGET1Response(storeId).pipe(
+      __map(_r => _r.body as UserRating)
+    );
+  }
+
+  /**
    * @param params The `QueryResourceService.FindRatingByStoreIdAndCustomerNameUsingGETParams` containing the following parameters:
    *
    * - `storeId`: storeId
@@ -2096,6 +2192,32 @@ class QueryResourceService extends __BaseService {
 }
 
 module QueryResourceService {
+
+  /**
+   * Parameters for findAllDeliveryTypesByStoreIdUsingGET
+   */
+  export interface FindAllDeliveryTypesByStoreIdUsingGETParams {
+
+    /**
+     * storeId
+     */
+    storeId: number;
+
+    /**
+     * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     */
+    sort?: Array<string>;
+
+    /**
+     * Size of a page
+     */
+    size?: number;
+
+    /**
+     * Page number of the requested page
+     */
+    page?: number;
+  }
 
   /**
    * Parameters for findAllCategoriesWithOutImageUsingGET
