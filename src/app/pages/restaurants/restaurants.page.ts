@@ -127,7 +127,7 @@ export class RestaurantsPage implements OnInit {
             })
             .subscribe(success => {
                 this.deliveryInfos[store.regNo] = success.content;
-                console.log('DeliveryInfo' , success.content);
+                console.log('DeliveryInfo' , this.deliveryInfos[store.regNo]);
             },
             err => {
               console.log('Could Not Find Delivery Info');
