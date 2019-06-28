@@ -11,11 +11,9 @@ import { Loading } from '../loading';
 @Component({
   selector: 'app-delivery-info',
   templateUrl: './delivery-info.component.html',
-  styleUrls: ['./delivery-info.component.scss'],
+  styleUrls: ['./delivery-info.component.scss']
 })
 export class DeliveryInfoComponent implements OnInit {
-
-
   // Delete this later
   tmpAddress: OrderAddress = {};
 
@@ -24,55 +22,78 @@ export class DeliveryInfoComponent implements OnInit {
   customerId;
   taskId;
   orderId;
-  selectedAddressId:number;
+  selectedAddressId: number;
   deliveryType;
   expectedDelivery;
-  grandTotal:number;
-  deliveryCharges:number;
-  total:number;
+  grandTotal: number;
+  deliveryCharges: number;
+  total: number;
   loading: HTMLIonLoadingElement;
-  constructor(private oauthService: OAuthService, private modalController: ModalController, 
+
+  constructor(
+    private oauthService: OAuthService,
+    private modalController: ModalController,
     private orderCommandService: OrderCommandResourceService,
     private loadingCreator: Loading,
-    private toastController: ToastController) { }
+    private toastController: ToastController
+  ) {}
 
-
+  ngOnInit() {
+    const dt = new Date();
+    dt.setMinutes(dt.getMinutes() + 35);
+    this.expectedDelivery = dt.getHours() + '.' + dt.getMinutes();
+    // this.getCurrentAddresses();
+    console.log('Product total is ' + this.grandTotal);
+    this.total = this.grandTotal + 50;
+    console.log('Total is ' + this.total);
+  }
 
   collectDeliveryInfo() {
-    this.deliveryCharges=50;
+    this.deliveryCharges = 50;
+
     const deliveryDetails: OrderDeliveryInfo = {
-      deliveryCharge: 50,
+      deliveryCharge: this.deliveryCharges,
       deliveryType: this.deliveryType,
-      deliveryAddress: { 'id': this.tmpAddress.id, 'phone': this.tmpAddress.phone }
-    }
-    console.log('Next Id in Delivery info '+this.taskId);
-    console.log('Order Id in Delivery info '+this.orderId);
-    console.log('Delivery type is '+this.deliveryType);
-    this.orderCommandService.collectDeliveryDetailsUsingPOST({ taskId: this.taskId, orderId: this.orderId, deliveryInfo: deliveryDetails })
-      .subscribe(result => {
-        console.log('Result is Next id deliveryinfo ' + result.nextTaskId);
-        console.log('Self rel id  is '+result.selfId);
-        this.taskId=result.nextTaskId;
-        this.presentModal();
+      deliveryAddress: {
+        id: this.tmpAddress.id,
+        phone: this.tmpAddress.phone,
+        name: this.tmpAddress.name,
+        houseNoOrBuildingName: this.tmpAddress.houseNoOrBuildingName
       },
+      expectedDelivery: this.expectedDelivery
+    };
+
+    console.log('Delivery ', deliveryDetails);
+
+    this.orderCommandService
+      .collectDeliveryDetailsUsingPOST({
+        taskId: this.taskId,
+        orderId: this.orderId,
+        deliveryInfo: deliveryDetails
+      })
+      .subscribe(
+        result => {
+          console.log(result);
+          this.taskId = result.nextTaskId;
+          this.presentModal();
+        },
         err => {
           console.log('Error performing collectDeliveryInfo ');
         }
-
-      );      
+      );
 
     let selectedAddress: OrderAddress;
     this.addresses.forEach(addr => {
       // if(addr.id == this.selectedAddressId) {
-        console.log('Selected id' , this.selectedAddressId);
-        if(true) {
-          selectedAddress = addr;
-          console.log(selectedAddress);
-        }
+      console.log('Selected id', this.selectedAddressId);
+      if (true) {
+        selectedAddress = addr;
+        console.log(selectedAddress);
+      }
     });
   }
 
-  async presentModal(){
+  async presentModal() {
     this.dismiss();
     const modal = await this.modalController.create({
       component: MakePaymentComponent,
@@ -80,52 +101,55 @@ export class DeliveryInfoComponent implements OnInit {
         orderLines: this.orderLines,
         taskId: this.taskId,
         orderId: this.orderId,
-        toBePaid:this.grandTotal+this.deliveryCharges
+        toBePaid: this.grandTotal + this.deliveryCharges
       }
     });
-    
+
     return await modal.present();
   }
 
   checkForm() {
-    if(this.tmpAddress.name != undefined && this.tmpAddress.phone && this.tmpAddress.houseNoOrBuildingName) {
+    if (
+      this.tmpAddress.name != undefined &&
+      this.tmpAddress.phone &&
+      this.tmpAddress.houseNoOrBuildingName
+    ) {
       return false;
-    } 
+    }
     return true;
   }
 
   getCurrentAddresses() {
-    //this.oauthService.loadUserProfile()
-      //.then((user: any) => {
-        //console.log(user);
-        this.loadingCreator.createLoader()
-        .then(data => {
-          this.loading = data;
-          this.loading.present();
-          this.orderCommandService.getAllSavedAddressUsingGET({ customerId: this.customerId })
-          .subscribe(addresses => {
-            console.log('Customer id is ' + this.customerId);
-            console.log('Got Addresses ', addresses);
-            this.addresses = addresses.content;
-            this.loading.dismiss();
-          },
-          err => {
-            this.loading.dismiss();
-          });
-        })
-      //});
+    this.oauthService.loadUserProfile().then((user: any) => {
+      console.log(user);
+      this.loadingCreator.createLoader().then(data => {
+        this.loading = data;
+        this.loading.present();
+        this.orderCommandService
+          .getAllSavedAddressUsingGET({ customerId: this.customerId })
+          .subscribe(
+            addresses => {
+              console.log('Customer id is ' + this.customerId);
+              console.log('Got Addresses ', addresses);
+              this.addresses = addresses.content;
+              this.loading.dismiss();
+            },
+            err => {
+              this.loading.dismiss();
+            }
+          );
+      });
+    });
   }
-
 
   async addAddressModal() {
     const modal = await this.modalController.create({
-      component: AddAddressModalComponent,
+      component: AddAddressModalComponent
     });
 
-    modal.onDidDismiss()
-      .then(() => {
-        this.getCurrentAddresses();
-      });
+    modal.onDidDismiss().then(() => {
+      this.getCurrentAddresses();
+    });
 
     modal.present();
   }
@@ -133,14 +157,4 @@ export class DeliveryInfoComponent implements OnInit {
   dismiss() {
     this.modalController.dismiss();
   }
-  ngOnInit() {
-    var dt = new Date();
-    dt.setMinutes( dt.getMinutes() + 35 );
-    this.expectedDelivery = dt.getHours() + '.' + dt.getMinutes();
-    this.getCurrentAddresses();
-    console.log('Product total is '+this.grandTotal);
-    this.total=this.grandTotal+50
-    console.log('Total is '+this.total);
-  }
-
 }
