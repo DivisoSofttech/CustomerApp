@@ -24,6 +24,7 @@ export { OrderAddress } from './models/order-address';
 export { OrderAddressDTO } from './models/order-address-dto';
 export { OrderDeliveryInfo } from './models/order-delivery-info';
 export { OrderLine } from './models/order-line';
+export { OrderMaster } from './models/order-master';
 export { OrderPayment } from './models/order-payment';
 export { OrderPaymentDTO } from './models/order-payment-dto';
 export { PageOfCategory } from './models/page-of-category';

@@ -20,6 +20,7 @@ import { PageOfStockCurrent } from '../models/page-of-stock-current';
 import { StockCurrent } from '../models/stock-current';
 import { PageOfStore } from '../models/page-of-store';
 import { Product } from '../models/product';
+import { OrderMaster } from '../models/order-master';
 import { PageOfOrder } from '../models/page-of-order';
 import { ProductDTO } from '../models/product-dto';
 import { UserRating } from '../models/user-rating';
@@ -58,12 +59,14 @@ class QueryResourceService extends __BaseService {
   static readonly findStoreBySearchTermUsingGETPath = '/api/query/findStore/{searchTerm}';
   static readonly findStoreByTypeNameUsingGETPath = '/api/query/findStoreByTypeName/{name}';
   static readonly findAllProductByStoreIdUsingGETPath = '/api/query/findproducts/{storeId}';
+  static readonly findOrderMasterByOrderIdUsingGETPath = '/api/query/orderMaster/{orderId}';
   static readonly findOrdersByCustomerIdUsingGETPath = '/api/query/ordersByCustomerId/{customerId}';
   static readonly findAllProductUsingGETPath = '/api/query/products';
   static readonly findProductUsingGETPath = '/api/query/products/{id}';
   static readonly findRatingCountUsingGETPath = '/api/query/rating-count';
-  static readonly findRatingByStoreIdAndCustomerNameUsingGET1Path = '/api/query/rating/{storeId}';
+  static readonly findRatingByStoreIdUsingGETPath = '/api/query/rating/{storeId}';
   static readonly findRatingByStoreIdAndCustomerNameUsingGETPath = '/api/query/rating/{storeId}/{name}';
+  static readonly findRatingByCustomerNameUsingGETPath = '/api/query/ratingByName/{name}';
   static readonly findReviewByStoreIdAndCustomerNameUsingGETPath = '/api/query/review/{storeId}/{name}';
   static readonly findReviewsByStoreIdUsingGETPath = '/api/query/review/{userName}';
   static readonly findAllReviewsUsingGETPath = '/api/query/reviews';
@@ -1238,6 +1241,42 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
+   * @param orderId orderId
+   * @return OK
+   */
+  findOrderMasterByOrderIdUsingGETResponse(orderId: string): __Observable<__StrictHttpResponse<OrderMaster>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/orderMaster/${orderId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<OrderMaster>;
+      })
+    );
+  }
+  /**
+   * @param orderId orderId
+   * @return OK
+   */
+  findOrderMasterByOrderIdUsingGET(orderId: string): __Observable<OrderMaster> {
+    return this.findOrderMasterByOrderIdUsingGETResponse(orderId).pipe(
+      __map(_r => _r.body as OrderMaster)
+    );
+  }
+
+  /**
    * @param params The `QueryResourceService.FindOrdersByCustomerIdUsingGETParams` containing the following parameters:
    *
    * - `customerId`: customerId
@@ -1438,7 +1477,7 @@ class QueryResourceService extends __BaseService {
    * @param storeId storeId
    * @return OK
    */
-  findRatingByStoreIdAndCustomerNameUsingGET1Response(storeId: string): __Observable<__StrictHttpResponse<UserRating>> {
+  findRatingByStoreIdUsingGETResponse(storeId: string): __Observable<__StrictHttpResponse<UserRating>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -1464,8 +1503,8 @@ class QueryResourceService extends __BaseService {
    * @param storeId storeId
    * @return OK
    */
-  findRatingByStoreIdAndCustomerNameUsingGET1(storeId: string): __Observable<UserRating> {
-    return this.findRatingByStoreIdAndCustomerNameUsingGET1Response(storeId).pipe(
+  findRatingByStoreIdUsingGET(storeId: string): __Observable<UserRating> {
+    return this.findRatingByStoreIdUsingGETResponse(storeId).pipe(
       __map(_r => _r.body as UserRating)
     );
   }
@@ -1513,6 +1552,42 @@ class QueryResourceService extends __BaseService {
    */
   findRatingByStoreIdAndCustomerNameUsingGET(params: QueryResourceService.FindRatingByStoreIdAndCustomerNameUsingGETParams): __Observable<UserRating> {
     return this.findRatingByStoreIdAndCustomerNameUsingGETResponse(params).pipe(
+      __map(_r => _r.body as UserRating)
+    );
+  }
+
+  /**
+   * @param name name
+   * @return OK
+   */
+  findRatingByCustomerNameUsingGETResponse(name: string): __Observable<__StrictHttpResponse<UserRating>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/ratingByName/${name}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<UserRating>;
+      })
+    );
+  }
+  /**
+   * @param name name
+   * @return OK
+   */
+  findRatingByCustomerNameUsingGET(name: string): __Observable<UserRating> {
+    return this.findRatingByCustomerNameUsingGETResponse(name).pipe(
       __map(_r => _r.body as UserRating)
     );
   }

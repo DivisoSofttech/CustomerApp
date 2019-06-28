@@ -52,7 +52,7 @@ export class LoginScreenComponent implements OnInit {
       username: 'admin',
       password: 'karma123',
       grantType: 'password',
-      clientId: 'admin-cli'
+      clientId: 'admin-cli',
     });
   }
 
