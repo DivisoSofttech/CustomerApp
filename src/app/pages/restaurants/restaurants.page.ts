@@ -320,7 +320,16 @@ export class RestaurantsPage implements OnInit {
   async filterModal() {
     const modal = await this.modalController.create({
       component: FilterComponent,
+      componentProps:{stores: this.stores}
     });
+
+    modal.onDidDismiss()
+    .then(data => {
+
+        if(data != undefined) {
+          console.log(data);
+        }
+    })
 
     modal.present();
   }

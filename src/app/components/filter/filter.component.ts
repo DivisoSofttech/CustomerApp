@@ -1,5 +1,7 @@
 import { ModalController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
+import { CategoryDTO, StoreDTO } from 'src/app/api/models';
+import { QueryResourceService } from 'src/app/api/services';
 
 @Component({
   selector: 'app-filter',
@@ -8,12 +10,37 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FilterComponent implements OnInit {
 
-  constructor(private modalController:ModalController) { }
+  distance: number = 4;
 
-  ngOnInit() {}
+  deliveryType: string = "both";
+
+  categories: CategoryDTO[] = [];
+
+  constructor(
+     private modalController:ModalController
+    ,private queryResourceService: QueryResourceService
+  ) { }
+
+  ngOnInit() {
+    this.getCategories();
+  }
+
+  getCategories() {
+    this.queryResourceService.findAllCategoriesUsingGET({})
+    .subscribe(data => {
+      if(data != undefined) {
+        this.categories = data;
+      }
+    });
+  }
+
   dismiss()
   {
     this.modalController.dismiss();
+  }
+
+  filter() {
+    
   }
 
 }

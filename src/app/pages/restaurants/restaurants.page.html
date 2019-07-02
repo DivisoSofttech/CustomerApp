@@ -62,12 +62,8 @@
         <ion-card-subtitle>
             {{store.openingTime | date: 'shortTime' }}  to  {{ store.closingTime |  date: 'shortTime'}}
             <ion-label>
-              <ion-text class="category">{{categoryString(categories[store.regNo])}} </ion-text>
-              <ion-text *ngIf="deliveryInfos[store.regNo]">
-               <p *ngFor="let d of deliveryInfos[store.regNo]">
-                {{d.name}}
-               </p>
-              </ion-text>
+              <ion-text class="category">{{categories[store.regNo] | arrayFormater}} </ion-text>
+              <ion-text *ngIf="deliveryInfos[store.regNo]">deliveryInfos[store.regNo]| arrayFormater}}</ion-text>
               <ion-text>
                   <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
                       Closed
