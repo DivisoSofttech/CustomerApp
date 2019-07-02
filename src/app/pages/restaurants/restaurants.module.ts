@@ -1,3 +1,4 @@
+import { ArrayFormaterPipe } from './../../pipes/array-formater.pipe';
 import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
 import { RatingComponent } from './../../components/rating/rating.component';
 import { IonicRatingModule } from 'ionic-rating';
@@ -21,7 +22,7 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
     RouterModule.forChild([{ path: '', component: RestaurantsPage }])
   ],
   providers: [Geolocation, NativeGeocoder],
-  declarations: [RestaurantsPage],
+  declarations: [RestaurantsPage , ArrayFormaterPipe],
   entryComponents : [FilterComponent, RatingComponent, NotificationsComponent]
 })
 export class RestaurantsPageModule {}
