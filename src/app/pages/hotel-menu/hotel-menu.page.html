@@ -64,17 +64,16 @@
     <ion-slide class="product-slide">
 
       <div>
-          <ion-card  no-padding *ngFor="let stock of stockCurrents, let i = index;" id="{{stock.product.id}}"
-          (click)="closeOpen(i)">
+          <ion-card  no-padding *ngFor="let stock of stockCurrents, let i = index;" id="{{stock.product.id}}">
               <ion-item lines="none">
                 <ion-img [src]="'data:' + stock.product.imageContentType + ';base64,' + stock.product.image"
                   class="imageShow">
                 </ion-img>
                 <ion-card-content>
                   <ion-grid>
-                    <ion-row>
+                    <ion-row (click)="closeOpen(i)">
                       <ion-col class="title-card">
-                        <ion-card-title>{{stock.product.name}}</ion-card-title>
+                        <ion-card-title >{{stock.product.name}}</ion-card-title>
                         <ion-text><strong>&#8364;{{stock.sellPrice}}</strong></ion-text>
                       </ion-col>
                     </ion-row>

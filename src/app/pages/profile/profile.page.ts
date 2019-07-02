@@ -5,7 +5,7 @@ import { ToastController, AlertController, NavController, IonInfiniteScroll, Mod
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { QueryResourceService } from 'src/app/api/services';
-import { Order, Product, Stock } from 'src/app/api/models';
+import { Order, Product, Stock, StockCurrent } from 'src/app/api/models';
 import { Loading } from 'src/app/components/loading';
 import { Router } from '@angular/router';
 
@@ -24,10 +24,15 @@ export class ProfilePage implements OnInit {
   currentOrderPageNumber = 0;
 
   favourites: Favourite[] = [];
-  frequentOrders: Product[] = [
-    {name:'Burger',
-    reference:'abc',
-    searchkey:'cba'}
+  frequentOrders: StockCurrent[] = [
+    {
+      product:{
+        name:'Burger',
+        reference:'abc',
+        searchkey:'cba'
+      },
+      sellPrice: 420
+    }
   ];
   orders: Order[] = [];
   customer: CustomerDTO = {};
@@ -111,6 +116,10 @@ export class ProfilePage implements OnInit {
       });
 
 
+  }
+
+  ionViewDidEnter() {
+    console.log(this.frequentOrders);
   }
 
   setBackground(customer) {
