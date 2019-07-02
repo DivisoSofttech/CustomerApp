@@ -1,16 +1,16 @@
-import { map } from 'rxjs/operators';
-import { LocationService } from './../../services/location-service.service';
-import { Store, Category } from 'src/app/api/models';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { map } from "rxjs/operators";
+import { LocationService } from "./../../services/location-service.service";
+import { Store, Category } from "src/app/api/models";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import {
   NavController,
   ModalController,
   ToastController,
   Platform,
   IonSlides
-} from '@ionic/angular';
-import { FilterComponent } from 'src/app/components/filter/filter.component';
-import { QueryResourceService } from 'src/app/api/services';
+} from "@ionic/angular";
+import { FilterComponent } from "src/app/components/filter/filter.component";
+import { QueryResourceService } from "src/app/api/services";
 import {
   GoogleMaps,
   GoogleMap,
@@ -20,15 +20,15 @@ import {
   MyLocation,
   GoogleMapsAnimation,
   GoogleMapsEvent
-} from '@ionic-native/google-maps';
-import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
-import { Loading } from 'src/app/components/loading';
-import { FavouriteService } from 'src/app/services/favourite/favourite.service';
+} from "@ionic-native/google-maps";
+import { NotificationsComponent } from "src/app/components/notifications/notifications.component";
+import { Loading } from "src/app/components/loading";
+import { FavouriteService } from "src/app/services/favourite/favourite.service";
 
 @Component({
-  selector: 'app-restaurants',
-  templateUrl: './restaurants.page.html',
-  styleUrls: ['./restaurants.page.scss']
+  selector: "app-restaurants",
+  templateUrl: "./restaurants.page.html",
+  styleUrls: ["./restaurants.page.scss"]
 })
 export class RestaurantsPage implements OnInit {
   now: Date;
@@ -49,19 +49,20 @@ export class RestaurantsPage implements OnInit {
     loop: true,
     autoplay: true
   };
-  @ViewChild('slides') slides: IonSlides;
+  @ViewChild("slides") slides: IonSlides;
 
   favouriteRestaurantsID = [];
 
-  constructor(private navCtrl: NavController,
-              private modalController: ModalController,
-              private toastCtrl: ToastController,
-              private platform: Platform,
-              private locationService: LocationService,
-              private queryResourceService: QueryResourceService,
-              private loadingCreator: Loading,
-              private favourite: FavouriteService) {
-  }
+  constructor(
+    private navCtrl: NavController,
+    private modalController: ModalController,
+    private toastCtrl: ToastController,
+    private platform: Platform,
+    private locationService: LocationService,
+    private queryResourceService: QueryResourceService,
+    private loadingCreator: Loading,
+    private favourite: FavouriteService
+  ) {}
 
   ionViewWillLeave() {
     this.slides.stopAutoplay();
@@ -76,13 +77,13 @@ export class RestaurantsPage implements OnInit {
   }
   showHotelMenu(storeId) {
     this.slides.stopAutoplay();
-    this.navCtrl.navigateForward('/hotel-menu/' + storeId);
+    this.navCtrl.navigateForward("/hotel-menu/" + storeId);
   }
 
   async presentFilterModal() {
     const modal = await this.modalController.create({
       component: FilterComponent,
-      cssClass: 'half-height',
+      cssClass: "half-height",
       showBackdrop: true
     });
     return await modal.present();
@@ -96,7 +97,6 @@ export class RestaurantsPage implements OnInit {
     //   this.now = new Date();
     // }, 10000);
   }
- 
 
   async ngOnInit() {
     this.loadingCreator.createLoader().then(async data => {
@@ -104,60 +104,59 @@ export class RestaurantsPage implements OnInit {
       this.loading.present();
       this.timeTracker();
 
-      this.queryResourceService.findAllStoresUsingGET({}).subscribe(res => {
-        this.stores = res;
-        console.log('Got Stores',res);
-        this.setRestaurantMarkers();
-        this.storesBackup = res;
-        this.getFavourites();
-        this.stores.forEach(store => {
-          console.log('Getting Category',store.regNo);
-          this.queryResourceService.findCategoryByStoreIdUsingGET({userId: store.regNo}).subscribe(success => {
-              this.categories[store.regNo] = success.content;
-              console.log('Got Category',success.content);
-              this.loading.dismiss();
-          },
-          err => {
-            this.loading.dismiss();
-            this.toastView('Error, connecting to server.');
+      this.queryResourceService.findAllStoresUsingGET({}).subscribe(
+        res => {
+          this.stores = res;
+          console.log("Got Stores", res);
+          this.setRestaurantMarkers();
+          this.storesBackup = res;
+          this.getFavourites();
+          this.stores.forEach(store => {
+            console.log("Getting Category", store.regNo);
+            this.queryResourceService
+              .findCategoryByStoreIdUsingGET({ userId: store.regNo })
+              .subscribe(
+                success => {
+                  this.categories[store.regNo] = success.content;
+                  console.log("Got Category", success.content);
+                  this.loading.dismiss();
+                },
+                err => {
+                  this.loading.dismiss();
+                  this.toastView("Error, connecting to server.");
+                }
+              );
+            this.queryResourceService
+              .findAllDeliveryTypesByStoreIdUsingGET({
+                storeId: store.id
+              })
+              .subscribe(
+                success => {
+                  this.deliveryInfos[store.regNo] = success.content;
+                  console.log("DeliveryInfo", this.deliveryInfos[store.regNo]);
+                },
+                err => {
+                  console.log("Could Not Find Delivery Info");
+                }
+              );
           });
-          this.queryResourceService.findAllDeliveryTypesByStoreIdUsingGET(
-            {
-              storeId: store.id
-            })
-            .subscribe(success => {
-                this.deliveryInfos[store.regNo] = success.content;
-                console.log('DeliveryInfo' , this.deliveryInfos[store.regNo]);
-            },
-            err => {
-              console.log('Could Not Find Delivery Info');
-            });
-        });
-      },
-      err => {
-          console.log('Error fetching stores');
-          this.toastView('Error, connecting to server.');
+        },
+        err => {
+          console.log("Error fetching stores");
+          this.toastView("Error, connecting to server.");
           this.loading.dismiss();
         }
       );
-      await this.platform.ready();
-      await this.loadMap();
+      // await this.platform.ready();
+      // await this.loadMap();
     });
-  }
-
-  categoryString(categories) {
-    let str = '';
-    if (categories != undefined) {
-      str = Array.prototype.map.call(categories, s => s.name).toString();
-    }
-    return str;
   }
 
   async toastView(message) {
     const toast = await this.toastCtrl.create({
       message,
       duration: 2000,
-      cssClass: 'toast'
+      cssClass: "toast"
     });
     await toast.present();
   }
@@ -165,8 +164,8 @@ export class RestaurantsPage implements OnInit {
   loadMap() {
     // This code is necessary for browser
     Environment.setEnv({
-      API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
-      API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw'
+      API_KEY_FOR_BROWSER_RELEASE: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw",
+      API_KEY_FOR_BROWSER_DEBUG: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw"
     });
 
     const mapOptions: GoogleMapOptions = {
@@ -180,7 +179,7 @@ export class RestaurantsPage implements OnInit {
       }
     };
 
-    this.map = GoogleMaps.create('map_canvas', mapOptions);
+    this.map = GoogleMaps.create("map_canvas", mapOptions);
     this.map
       .getMyLocation()
       .then((location: MyLocation) => {
@@ -205,23 +204,25 @@ export class RestaurantsPage implements OnInit {
 
   setRestaurantMarkers() {
     this.stores.forEach(store => {
-      const latLng: string[] = store.location.split(',');
-      const marker: Marker = this.map.addMarkerSync({
-        icon: 'assets/icon/marker.png',
-        label: store.name,
-        position: {
-          lat: +latLng[0],
-          lng: +latLng[1]
-        },
-        animation: GoogleMapsAnimation.BOUNCE
-      });
-      // const infowindow = new google.maps.InfoWindow({
-      //   content: store.name
-      // });
-      // marker.showInfoWindow();
-      marker.addEventListener(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-        this.showHotelMenu(store.regNo);
-      });
+      const latLng: string[] = store.location.split(",");
+      if (this.map != undefined) {
+        const marker: Marker = this.map.addMarkerSync({
+          icon: "assets/icon/marker.png",
+          label: store.name,
+          position: {
+            lat: +latLng[0],
+            lng: +latLng[1]
+          },
+          animation: GoogleMapsAnimation.BOUNCE
+        });
+        // const infowindow = new google.maps.InfoWindow({
+        //   content: store.name
+        // });
+        // marker.showInfoWindow();
+        marker.addEventListener(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+          this.showHotelMenu(store.regNo);
+        });
+      }
     });
   }
 
@@ -246,7 +247,7 @@ export class RestaurantsPage implements OnInit {
     this.places = [];
     console.log(event.detail.value);
     const searchterm = event.detail.value;
-    if (searchterm === '' || searchterm === null) {
+    if (searchterm === "" || searchterm === null) {
       return;
     }
     this.locationService.getPredictions(searchterm).subscribe(res => {
@@ -261,8 +262,8 @@ export class RestaurantsPage implements OnInit {
     this.locationService.geocodeAddress(placeId).then(latlon => {
       console.log(latlon);
       Environment.setEnv({
-        API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
-        API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw'
+        API_KEY_FOR_BROWSER_RELEASE: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw",
+        API_KEY_FOR_BROWSER_DEBUG: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw"
       });
       const mapOptions: GoogleMapOptions = {
         camera: {
@@ -274,10 +275,10 @@ export class RestaurantsPage implements OnInit {
           tilt: 30
         }
       };
-      this.map = GoogleMaps.create('map_canvas', mapOptions);
+      this.map = GoogleMaps.create("map_canvas", mapOptions);
       const marker: Marker = this.map.addMarkerSync({
-        icon: 'red',
-        animation: 'bounce',
+        icon: "red",
+        animation: "bounce",
         position: {
           lat: latlon[0],
           lng: latlon[1]
@@ -286,13 +287,13 @@ export class RestaurantsPage implements OnInit {
     });
   }
   addToFavourite(store: Store) {
-    console.log('adding to favourite', this.favouriteRestaurantsID);
-    this.favourite.addToFavouriteStore(store , '/hotel-menu/' + store.regNo);
+    console.log("adding to favourite", this.favouriteRestaurantsID);
+    this.favourite.addToFavouriteStore(store, "/hotel-menu/" + store.regNo);
     this.getFavourites();
   }
 
   removeFromFavourite(store) {
-    this.favourite.removeFromFavorite(store , 'store');
+    this.favourite.removeFromFavorite(store, "store");
     this.getFavourites();
   }
 
@@ -306,16 +307,21 @@ export class RestaurantsPage implements OnInit {
   }
 
   searchRestaurants(event) {
-    this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value.toLowerCase()})
+    this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value})
       .subscribe(result => {
         if (result.content.length === 0) {
           this.toastView('Sorry, couldn\'t find any match');
           return;
         }
-        this.stores = result.content;
-      }, err => {
-        this.toastView('Sorry, couldn\'t find any match');
       });
   }
+  
 
+  async filterModal() {
+    const modal = await this.modalController.create({
+      component: FilterComponent,
+    });
+
+    modal.present();
+  }
 }

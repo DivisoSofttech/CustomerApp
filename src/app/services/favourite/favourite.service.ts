@@ -37,7 +37,7 @@ export class FavouriteService {
       this.storage.get(this.username +  '_favourites')
       .then(p => {
         console.log(p);
-        if(p != null) {
+        if(p != undefined) {
           this.favourites = p;
         }
         if(p==null) {this.storage.set(this.username +  '_favourites' , this.favourites);}
