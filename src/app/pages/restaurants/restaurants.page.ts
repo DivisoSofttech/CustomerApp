@@ -307,23 +307,15 @@ export class RestaurantsPage implements OnInit {
   }
 
   searchRestaurants(event) {
-    this.queryResourceService
-      .findStoreBySearchTermUsingGET({
-        searchTerm: event.detail.value.toLowerCase()
-      })
-      .subscribe(
-        result => {
-          if (result.content.length === 0) {
-            this.toastView("Sorry, couldn't find any match");
-            return;
-          }
-          this.stores = result.content;
-        },
-        err => {
-          this.toastView("Sorry, couldn't find any match");
+    this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value})
+      .subscribe(result => {
+        if (result.content.length === 0) {
+          this.toastView('Sorry, couldn\'t find any match');
+          return;
         }
-      );
+      });
   }
+  
 
   async filterModal() {
     const modal = await this.modalController.create({
