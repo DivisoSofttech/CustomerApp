@@ -50,26 +50,39 @@
   </h4>
   <ion-card *ngFor="let store of stores">
     <ion-item lines="none" class="mg-top">
-      <ion-text slot="end" no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
-        Closed
-      </ion-text>
+
+   
       <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
         class="imageShow">
       </ion-img>
       <ion-card-content *ngIf="store.regNo" (click)="showHotelMenu(store.regNo)">
-        <ion-card-title *ngIf="store.name">{{store.name}}</ion-card-title>
+        <ion-card-title class="card-title" *ngIf="store.name">{{store.name}}</ion-card-title>
         <!-- <ion-card-subtitle *ngIf="store.openingTime">
           {{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>-->
         <ion-card-subtitle>
             {{store.openingTime | date: 'shortTime' }}  to  {{ store.closingTime |  date: 'shortTime'}}
             <ion-label>
-              <ion-text class="category" *ngIf="categories[store.regNo]">{{categories[store.regNo] | arrayFormater}} </ion-text>
-              <ion-text *ngIf="deliveryInfos[store.regNo]">{{deliveryInfos[store.regNo] | arrayFormater}}</ion-text>
+              <ion-text class="category">{{categoryString(categories[store.regNo])}} </ion-text>
+              <ion-text *ngIf="deliveryInfos[store.regNo]">
+               <p *ngFor="let d of deliveryInfos[store.regNo]">
+                {{d.name}}
+               </p>
+              </ion-text>
+              <ion-text>
+                  <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
+                      Closed
+                   </p>
+              </ion-text>
             </ion-label>
         </ion-card-subtitle>
       </ion-card-content>
+      <div class="ribbon">
+          <span class="ribbon1">
+            <span>50% DISCOUNT</span>
+          </span>
+        </div>
     </ion-item>
-    <div class="card-footer">
+    <div class="card-footer"> 
       <ion-grid no-padding>
         <ion-row>
           <ion-col size="7" text-center no-padding>
@@ -93,6 +106,7 @@
           </ion-col>
         </ion-row>
       </ion-grid>
+      
 
     </div>
   </ion-card>
