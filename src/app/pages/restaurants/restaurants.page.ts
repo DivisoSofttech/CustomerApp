@@ -306,7 +306,7 @@ export class RestaurantsPage implements OnInit {
   }
 
   searchRestaurants(event) {
-    this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value.toLowerCase()})
+    this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value})
       .subscribe(result => {
         if (result.content.length === 0) {
           this.toastView('Sorry, couldn\'t find any match');

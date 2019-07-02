@@ -29,14 +29,17 @@
     <ion-segment-button value="history">
       <ion-label color="primary">History</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="frequently odered">
+    <ion-segment-button value="favourite">
       <ion-label color="primary">Favourite</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="frequently">
+      <ion-label color="primary">Frequently</ion-label>
     </ion-segment-button>
   </ion-segment>
 
   <!-- <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage"> -->
 
-  <div *ngIf="orders.length > 0 && showFavourite == false">
+  <div *ngIf="orders.length > 0 && currentSubPage == 'history'">
     <ion-item lines="full" class="order" *ngFor="let order of orders" margin>
       <div slot="end" *ngIf="stores[order.storeId] != null">
         <ion-img [src]="'data:' + stores[order.storeId].imageContentType + ';base64,' + stores[order.storeId].image"
@@ -53,13 +56,13 @@
     </ion-item>
   </div>
 
-  <div class="vertical-align-center h30" *ngIf="orders.length == 0 && showFavourite == false">
+  <div class="vertical-align-center h30" *ngIf="orders.length == 0 && currentSubPage == 'history'">
     <ion-text text-center>
       <p>No Orders</p>
     </ion-text>
   </div>
 
-  <div *ngIf="favourites.length > 0 && showFavourite == true">
+  <div *ngIf="favourites.length > 0 && currentSubPage == 'favourite'">
 
     <ion-list>
       <ion-item-sliding *ngFor="let favourite of favourites" >
@@ -80,13 +83,62 @@
     </ion-list>
   </div>
 
-  <div class="vertical-align-center h30" *ngIf="favourites.length == 0 && showFavourite == true">
+  <div class="vertical-align-center h30" *ngIf="favourites.length == 0 && currentSubPage == 'favourite'">
     <ion-text text-center>
       <p>Nothng added to favourites</p>
     </ion-text>
   </div>
 
-  <ion-infinite-scroll *ngIf="showFavourite == false" (ionInfinite)="loadMoreOrders($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
+  <div *ngIf="frequentOrders.length > 0 && currentSubPage == 'frequently'">
+
+    <ion-list>
+      <ion-card  no-padding *ngFor="let product of frequentOrders, let i = index;" id="{{product.id}}"
+          (click)="closeOpen(i)">
+              <ion-item lines="none">
+                <ion-img [src]="'data:' + product.imageContentType + ';base64,' + product.image"
+                  class="imageShow">
+                </ion-img>
+                <ion-card-content>
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col class="title-card">
+                        <ion-card-title>{{product.name}}</ion-card-title>
+                        <!-- <ion-text><strong>&#8364;{{stock.sellPrice}}</strong></ion-text> -->
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="2">
+                        <ion-buttons>
+                          <ion-button fill="none" (click)="addToFavourite(product)"
+                            *ngIf="!isFavourite(product)">
+                            <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+                          </ion-button>
+                          <ion-button fill="none" (click)="removeFromFavourite(product)"
+                            *ngIf="isFavourite(product)">
+                            <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
+                          </ion-button>
+                        </ion-buttons>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-card-content>
+              </ion-item>
+              <div *ngIf="accordionArray[i]">
+                <p>
+                    {{product.description}}
+                </p>
+              </div>
+            </ion-card>
+    </ion-list>
+  </div>
+
+  <div class="vertical-align-center h30" *ngIf="frequentOrders.length == 0 && currentSubPage == 'frequently'">
+    <ion-text text-center>
+      <p>No Frequent Orders</p>
+    </ion-text>
+  </div>
+
+  <ion-infinite-scroll *ngIf="currentSubPage == 'history'" (ionInfinite)="loadMoreOrders($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>

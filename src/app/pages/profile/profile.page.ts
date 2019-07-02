@@ -5,8 +5,9 @@ import { ToastController, AlertController, NavController, IonInfiniteScroll, Mod
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { QueryResourceService } from 'src/app/api/services';
-import { Order, Product } from 'src/app/api/models';
+import { Order, Product, Stock } from 'src/app/api/models';
 import { Loading } from 'src/app/components/loading';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -15,15 +16,19 @@ import { Loading } from 'src/app/components/loading';
 })
 export class ProfilePage implements OnInit {
 
+  favouriteProductsID = [];
   currentSubPage = 'history';
   profile: any = {};
   stores: any = {};
   maximumPage;
   currentOrderPageNumber = 0;
-  showFavourite = false;
 
   favourites: Favourite[] = [];
-
+  frequentOrders: Product[] = [
+    {name:'Burger',
+    reference:'abc',
+    searchkey:'cba'}
+  ];
   orders: Order[] = [];
   customer: CustomerDTO = {};
 
@@ -34,7 +39,7 @@ export class ProfilePage implements OnInit {
   @ViewChild('profileImage') profileImage: ElementRef;
 
   segmentChanged(ev: any) {
-    this.showFavourite = !this.showFavourite;
+    this.currentSubPage = ev.detail.value;
   }
 
   constructor(private oauthService: OAuthService,
@@ -44,6 +49,7 @@ export class ProfilePage implements OnInit {
               private modalController: ModalController,
               private navController: NavController,
               private favourite: FavouriteService,
+              private router: Router,
               private loading: Loading) { }
 
   ngOnInit() {
@@ -54,8 +60,8 @@ export class ProfilePage implements OnInit {
         this.loadingElement.present();
         this.favourite.getFavourites()
           .subscribe(data => {
-            console.log(data);
-            if (data != null) {
+            console.log('favorrite',data);
+            if (data != undefined && data.length != 0) {
               this.favourites = data;
             }
           });
@@ -194,8 +200,24 @@ export class ProfilePage implements OnInit {
     this.navController.navigateForward(routeURL);
   }
 
-  removeFavourite(fav) {
-    this.favourite.removeFromFavorite(fav.data , fav.type);
+  addToFavourite(product) {
+    console.log('adding to favourite', this.favouriteProductsID);
+    this.favourite.addToFavouriteProduct(product, this.router.url.split('#')[0]);
+    this.getFavourites();
+  }
+
+  removeFromFavourite(product) {
+    this.favourite.removeFromFavorite(product, 'product');
+    this.getFavourites();
+  }
+
+  getFavourites() {
+    this.favouriteProductsID = this.favourite.getFavouriteProductsID();
+    console.log(this.favouriteProductsID);
+  }
+
+  isFavourite(product: Product) {
+    return this.favouriteProductsID.includes(product.id);
   }
 
 }
