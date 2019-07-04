@@ -204,7 +204,12 @@ export class RestaurantsPage implements OnInit {
 
   setRestaurantMarkers() {
     this.stores.forEach(store => {
-      const latLng: string[] = store.location.split(",");
+      let latLng: string[];
+      try {
+       latLng = store.location.split(",");        
+      } catch (error) {
+        
+      }
       if (this.map != undefined) {
         const marker: Marker = this.map.addMarkerSync({
           icon: "assets/icon/marker.png",
@@ -315,7 +320,6 @@ export class RestaurantsPage implements OnInit {
         }
       });
   }
-  
 
   async filterModal() {
     const modal = await this.modalController.create({

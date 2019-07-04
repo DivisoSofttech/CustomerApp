@@ -34,7 +34,7 @@
     <ion-img [src]="'data:' + store.imageContentType + ';base64,' + store.image" class="mainImg"></ion-img>
     <div class="overlay">
       <h2><strong>{{store.name | uppercase}}</strong></h2>
-      <p>{{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</p>
+      <p>  {{store.openingTime | date: 'shortTime' }}  to  {{ store.closingTime |  date: 'shortTime'}}</p>
       <ion-buttons>
         <rating [rate]="store.totalRating" [readonly]="true"></rating>
         <ion-button *ngIf="rateReview" disabled>{{'(' + rateReview.length + ')'}}</ion-button>

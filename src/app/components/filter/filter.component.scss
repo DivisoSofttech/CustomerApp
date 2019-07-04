@@ -4,3 +4,18 @@ ion-list-header {
     font-weight: bold;
     font-family: monospace;
 }
+
+ion-content {
+    height: 66vh;
+}
+
+.icon-grid {
+    border-bottom: 1px solid black;
+}
+
+ion-col ion-text {
+    font-size: 75%;
+}
+.el-bl {
+    display: block;
+}

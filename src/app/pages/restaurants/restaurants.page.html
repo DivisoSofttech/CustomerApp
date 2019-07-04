@@ -12,6 +12,9 @@
       <ion-button (click)="toggleSearchView(true)">
         <ion-icon name="search" slot="icon-only"></ion-icon>
       </ion-button>
+      <ion-button (click)="filterModal()">
+        <ion-icon name="funnel"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-buttons *ngIf="searchBarOnly || locateBarOnly" >
       <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"  *ngIf="searchBarOnly" placeholder="Find restaurants around you" (ionChange)="searchRestaurants($event)"></ion-searchbar>
@@ -49,6 +52,11 @@
     What's Nearby!
   </h4>
   <ion-card *ngFor="let store of stores">
+      <div class="ribbon">
+          <span class="ribbon1">
+            <span>50% DISCOUNT</span>
+          </span>
+        </div>
     <ion-item lines="none" class="mg-top">
 
    
@@ -63,7 +71,7 @@
             {{store.openingTime | date: 'shortTime' }}  to  {{ store.closingTime |  date: 'shortTime'}}
             <ion-label>
               <ion-text class="category">{{categories[store.regNo] | arrayFormater}} </ion-text>
-              <ion-text *ngIf="deliveryInfos[store.regNo]">deliveryInfos[store.regNo]| arrayFormater}}</ion-text>
+              <ion-text *ngIf="deliveryInfos[store.regNo]">{{deliveryInfos[store.regNo]| arrayFormater}}</ion-text>
               <ion-text>
                   <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
                       Closed
@@ -72,11 +80,7 @@
             </ion-label>
         </ion-card-subtitle>
       </ion-card-content>
-      <div class="ribbon">
-          <span class="ribbon1">
-            <span>50% DISCOUNT</span>
-          </span>
-        </div>
+     
     </ion-item>
     <div class="card-footer"> 
       <ion-grid no-padding>
@@ -106,9 +110,4 @@
 
     </div>
   </ion-card>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="filterModal()" >
-      <ion-icon name="pizza"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>

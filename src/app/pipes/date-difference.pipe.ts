@@ -26,10 +26,17 @@ export class DateDifferencePipe implements PipeTransform {
     }
 
     if(now.isAfter(closingTime)) {
-      openingTime.add(1,'days');
+      openingTime.add(1 , 'days');
     }
 
-    return moment.duration(now.diff(openingTime)).asHours();
+    let diff = moment.duration(now.diff(openingTime)).asHours();
+
+    if(diff < 0) {
+
+      diff = diff * -1;
+    }
+
+    return diff;
   }
 
 }

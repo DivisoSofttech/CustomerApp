@@ -73,13 +73,14 @@
     border-left: 53px solid transparent;
     border-right: 48px solid transparent;
     border-top: 10px solid #F8463F;
+    z-index: 200;
   }
   .ribbon1 span {
     position: relative;
     display: block;
     text-align: center;
     background: #F8463F;
-    font-size: 14px;
+    font-size: 92%;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     line-height: 1;
     font-weight: bold;
@@ -87,6 +88,7 @@
     padding: 12px 8px 10px;
     border-top-right-radius: 8px;
     width: 99px;
+    z-index: 200;
   }
   .ribbon1 span:before, .ribbon1 span:after {
     position: absolute;

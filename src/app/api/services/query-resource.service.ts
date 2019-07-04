@@ -61,6 +61,7 @@ class QueryResourceService extends __BaseService {
   static readonly findAllProductByStoreIdUsingGETPath = '/api/query/findproducts/{storeId}';
   static readonly findOrderMasterByOrderIdUsingGETPath = '/api/query/orderMaster/{orderId}';
   static readonly findOrdersByCustomerIdUsingGETPath = '/api/query/ordersByCustomerId/{customerId}';
+  static readonly findAndSortProductByPriceUsingGETPath = '/api/query/productByPrice/{from}/{to}';
   static readonly findAllProductUsingGETPath = '/api/query/products';
   static readonly findProductUsingGETPath = '/api/query/products/{id}';
   static readonly findRatingCountUsingGETPath = '/api/query/rating-count';
@@ -78,6 +79,7 @@ class QueryResourceService extends __BaseService {
   static readonly findStockCurrentByStoreIdUsingGETPath = '/api/query/stockcurrent/{storeId}';
   static readonly findAllStockLinesUsingGETPath = '/api/query/stocklines';
   static readonly findStoreByRegisterNumberUsingGETPath = '/api/query/store/{regNo}';
+  static readonly findStoreByRatingUsingGETPath = '/api/query/storeByRating';
   static readonly findAllStoresUsingGETPath = '/api/query/stores';
   static readonly findStoresByTypeUsingGETPath = '/api/query/storesByDeliveryType/{deliveryType}';
   static readonly findUserRatingByRegNoUsingGETPath = '/api/query/user-rating/{regNo}';
@@ -1334,6 +1336,53 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
+   * @param params The `QueryResourceService.FindAndSortProductByPriceUsingGETParams` containing the following parameters:
+   *
+   * - `to`: to
+   *
+   * - `from`: from
+   *
+   * @return OK
+   */
+  findAndSortProductByPriceUsingGETResponse(params: QueryResourceService.FindAndSortProductByPriceUsingGETParams): __Observable<__StrictHttpResponse<PageOfStockCurrent>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/productByPrice/${params.from}/${params.to}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<PageOfStockCurrent>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.FindAndSortProductByPriceUsingGETParams` containing the following parameters:
+   *
+   * - `to`: to
+   *
+   * - `from`: from
+   *
+   * @return OK
+   */
+  findAndSortProductByPriceUsingGET(params: QueryResourceService.FindAndSortProductByPriceUsingGETParams): __Observable<PageOfStockCurrent> {
+    return this.findAndSortProductByPriceUsingGETResponse(params).pipe(
+      __map(_r => _r.body as PageOfStockCurrent)
+    );
+  }
+
+  /**
    * @param params The `QueryResourceService.FindAllProductUsingGETParams` containing the following parameters:
    *
    * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
@@ -2090,6 +2139,39 @@ class QueryResourceService extends __BaseService {
   }
 
   /**
+   * @return OK
+   */
+  findStoreByRatingUsingGETResponse(): __Observable<__StrictHttpResponse<Array<Store>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/storeByRating`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<Store>>;
+      })
+    );
+  }
+  /**
+   * @return OK
+   */
+  findStoreByRatingUsingGET(): __Observable<Array<Store>> {
+    return this.findStoreByRatingUsingGETResponse().pipe(
+      __map(_r => _r.body as Array<Store>)
+    );
+  }
+
+  /**
    * @param params The `QueryResourceService.FindAllStoresUsingGETParams` containing the following parameters:
    *
    * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
@@ -2740,6 +2822,22 @@ module QueryResourceService {
      * Page number of the requested page
      */
     page?: number;
+  }
+
+  /**
+   * Parameters for findAndSortProductByPriceUsingGET
+   */
+  export interface FindAndSortProductByPriceUsingGETParams {
+
+    /**
+     * to
+     */
+    to: number;
+
+    /**
+     * from
+     */
+    from: number;
   }
 
   /**
