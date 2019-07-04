@@ -11,7 +11,10 @@ import { QueryResourceService } from 'src/app/api/services';
 export class FilterComponent implements OnInit {
   distance = 4;
 
-  price = 24;
+  price = {
+    lower: 20,
+    upper: 300
+  };
 
   deliveryType = 'both';
 
@@ -20,7 +23,7 @@ export class FilterComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private queryResourceService: QueryResourceService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getCategories();
@@ -41,13 +44,22 @@ export class FilterComponent implements OnInit {
   filter(type) {
     try {
       switch (type) {
+
         case 'rating':
+          this.queryResourceService
+            .findStoreByRatingUsingGET()
+            .subscribe(data => {
+              console.log('Rating' , data);
+            });
+          break;
+
+        case 'deliveryType':
           this.queryResourceService
             .findStoreByTypeNameUsingGET({
               name: this.deliveryType
             })
             .subscribe(data => {
-              console.log(data);
+              console.log('DeliveryType' ,data);
             });
           break;
 
@@ -56,6 +68,18 @@ export class FilterComponent implements OnInit {
 
         case 'htol':
           break;
+
+        case 'price':
+          this.queryResourceService
+            .findAndSortProductByPriceUsingGET({
+              to: this.price.lower,
+              from: this.price.upper
+            })
+            .subscribe(data => {
+              console.log('price' ,data);
+            });
+          break;
+
       }
     } catch (error) {
       console.log(error);

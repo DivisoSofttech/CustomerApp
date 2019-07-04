@@ -66,7 +66,7 @@ export class ProfilePage implements OnInit {
         this.favourite.getFavourites()
           .subscribe(data => {
             console.log('favorrite',data);
-            if (data != undefined && data.length != 0) {
+            if (data != undefined) {
               this.favourites = data;
             }
           });
@@ -216,7 +216,7 @@ export class ProfilePage implements OnInit {
   }
 
   removeFromFavourite(product) {
-    this.favourite.removeFromFavorite(product, 'product');
+    this.favourite.removeFromFavorite(product.data, product.type);
     this.getFavourites();
   }
 

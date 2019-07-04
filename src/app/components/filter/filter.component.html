@@ -13,7 +13,7 @@
   <ion-grid class="icon-grid">
     <ion-row inline>
       <ion-col text-center>
-        <ion-button fill="none">
+        <ion-button fill="none" (click)="filter('rating')">
           <ion-icon name="star-half" slot="icon-only"></ion-icon>
         </ion-button>
         <ion-text color="medium" class="el-bl">Rating</ion-text>
@@ -25,14 +25,14 @@
         <ion-text color="medium" class="el-bl">Time</ion-text>
       </ion-col>
       <ion-col text-center>
-        <ion-button fill="none">
+        <ion-button fill="none"  (click)="filter('ltoh')">
           <ion-icon name="wallet" slot="icon-only"></ion-icon>
           <ion-icon name="arrow-up" slot="icon-only"></ion-icon>
         </ion-button>
         <ion-text color="medium" class="el-bl">Cost (Low to High)</ion-text>
       </ion-col>
       <ion-col text-center>
-        <ion-button fill="none">
+        <ion-button fill="none"  (click)="filter('htol')">
           <ion-icon name="wallet" slot="icon-only"></ion-icon>
           <ion-icon name="arrow-down" slot="icon-only"></ion-icon>
         </ion-button>
@@ -77,17 +77,20 @@
     </ion-radio-group>
   </ion-list>
 
-  <!-- <ion-list>
+  <ion-list>
     <ion-list-header>Price</ion-list-header>
     <ion-item>
-      <ion-range min="2" max="1000" step="2" [(ngModel)]="price">
+      <ion-range dualKnobs="true" min="2" max="1000" step="2" [(ngModel)]="price">
         <ion-icon size="small" slot="start" name="cash"></ion-icon>
         <ion-icon slot="end" name="cash"></ion-icon>
       </ion-range>
-      <ion-text>{{price}}</ion-text>
     </ion-item>
 
-  </ion-list> -->
+    <ion-item lines="full">
+      <ion-text>From {{price.lower}} To {{price.upper}}</ion-text>
+    </ion-item>
+
+  </ion-list>
 
   <ion-list>
     <ion-list-header>Distance</ion-list-header>
@@ -102,7 +105,7 @@
 
 </ion-content>
 <ion-footer padding>
-  <ion-button expand="block" color="primary" (click)="filter()">
+  <ion-button expand="block" color="primary" (click)="filter('price');filter('deliveryType')">
     Apply
   </ion-button>
 </ion-footer>

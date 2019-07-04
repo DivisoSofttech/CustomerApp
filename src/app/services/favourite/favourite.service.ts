@@ -65,8 +65,9 @@ export class FavouriteService {
   }
 
   removeFromFavorite(data , type) {
-    const tmpArray = this.favourites.filter(favourite => !(favourite.data.id == data.id
-      && favourite.type == type));
+    const tmpArray = this.favourites.filter(favourite => !(favourite.data.id === data.id
+      && favourite.type === type));
+      console.log('Temp Array is' , tmpArray)
     this.favourites = tmpArray;
     this.refresh();
   }

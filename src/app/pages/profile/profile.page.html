@@ -39,22 +39,18 @@
 
   <!-- <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage"> -->
 
-  <div *ngIf="orders.length > 0 && currentSubPage == 'history'">
+  <ion-list *ngIf="orders.length > 0 && currentSubPage == 'history'">
     <ion-item lines="full" class="order" *ngFor="let order of orders" margin>
-      <div slot="end" *ngIf="stores[order.storeId] != null">
+      <ion-thumbnail slot="start" *ngIf="stores[order.storeId] != null">
         <ion-img [src]="'data:' + stores[order.storeId].imageContentType + ';base64,' + stores[order.storeId].image"
-          class="mainImg"></ion-img>
-      </div>
-      <ion-text slot="start">
-        <p><b>Date :</b> {{order.date}}</p>
-        <p><b>Order id :</b> {{order.orderId}}</p>
-        <p><b>Product Name :</b> </p>
-        <p><b>Delivered On :</b>
-          <p> </p>
-          <p *ngIf="stores[order.storeId] != null"><b>Store Name : </b>{{stores[order.storeId].name}}</p>
-      </ion-text>
+        ></ion-img>
+      </ion-thumbnail>
+      <ion-label>
+          <h2><b>Date :</b> {{order.date | date:'short'}}</h2>
+          <h3><b>Order id :</b> {{order.orderId}}</h3>
+          <p *ngIf="stores[order.storeId] != null"><b>Store Name : </b>{{stores[order.storeId].name}}</p>      </ion-label>
     </ion-item>
-  </div>
+  </ion-list>
 
   <div class="vertical-align-center h30" *ngIf="orders.length == 0 && currentSubPage == 'history'">
     <ion-text text-center>
@@ -67,15 +63,17 @@
     <ion-list>
       <ion-item-sliding *ngFor="let favourite of favourites">
         <ion-item lines="full" (click)="route(favourite)">
-          <ion-img slot="start" [src]="'data:' + favourite.data.imageContentType + ';base64,' + favourite.data.image"
-            class="imageShow">
-          </ion-img>
-          <ion-text slot="start">
+          <ion-avatar slot="start">
+              <ion-img [src]="'data:' + favourite.data.imageContentType + ';base64,' + favourite.data.image"
+              >
+            </ion-img>
+          </ion-avatar>
+          <ion-label>
             <p> {{favourite.data.name}}</p>
-          </ion-text>
+          </ion-label>
         </ion-item>
         <ion-item-options side="end">
-          <ion-item-option (click)="removeFromFavourite(favourite)">
+          <ion-item-option (click)="removeFromFavourite(favourite , favourite.type)">
             <ion-icon name="trash"></ion-icon>
           </ion-item-option>
         </ion-item-options>
@@ -92,7 +90,7 @@
   <div *ngIf="frequentOrders.length > 0 && currentSubPage == 'frequently'">
 
     <ion-list>
-      <ion-card no-padding *ngFor="let stock of frequentOrders, let i = index;">
+      <ion-card padding *ngFor="let stock of frequentOrders, let i = index;">
         <ion-item lines="none">
           <ion-img [src]="'data:' + stock.product.imageContentType + ';base64,' + stock.product.image" class="imageShow">
           </ion-img>
