@@ -105,53 +105,60 @@ export class RestaurantsPage implements OnInit {
       this.loading = data;
       this.loading.present();
       this.timeTracker();
-
-      this.queryResourceService.findAllStoresUsingGET({}).subscribe(
-        res => {
-          this.stores = res;
-          console.log("Got Stores", res);
-          this.setRestaurantMarkers();
-          this.storesBackup = res;
-          this.getFavourites();
-          this.stores.forEach(store => {
-            console.log("Getting Category", store.regNo);
-            this.queryResourceService
-              .findCategoryByStoreIdUsingGET({ userId: store.regNo })
-              .subscribe(
-                success => {
-                  this.categories[store.regNo] = success.content;
-                  console.log("Got Category", success.content);
-                  this.loading.dismiss();
-                },
-                err => {
-                  this.loading.dismiss();
-                  this.toastView("Error, connecting to server.");
-                }
-              );
-            this.queryResourceService
-              .findAllDeliveryTypesByStoreIdUsingGET({
-                storeId: store.id
-              })
-              .subscribe(
-                success => {
-                  this.deliveryInfos[store.regNo] = success.content;
-                  console.log("DeliveryInfo", this.deliveryInfos[store.regNo]);
-                },
-                err => {
-                  console.log("Could Not Find Delivery Info");
-                }
-              );
-          });
-        },
-        err => {
-          console.log("Error fetching stores");
-          this.toastView("Error, connecting to server.");
-          this.loading.dismiss();
-        }
-      );
+      this.getStores();
       await this.platform.ready();
       await this.loadMap();
     });
+  }
+
+  getStores() {
+    this.queryResourceService.findAllStoresUsingGET(
+      {
+      
+    }).subscribe(
+      res => {
+        this.stores = res;
+        console.log("Got Stores", res);
+        this.setRestaurantMarkers();
+        this.storesBackup = res;
+        this.getFavourites();
+        this.stores.forEach(store => {
+          console.log("Getting Category", store.regNo);
+          this.queryResourceService
+            .findCategoryByStoreIdUsingGET({ userId: store.regNo })
+            .subscribe(
+              success => {
+                this.categories[store.regNo] = success.content;
+                console.log("Got Category", success.content);
+                this.loading.dismiss();
+              },
+              err => {
+                this.loading.dismiss();
+                this.toastView("Error, connecting to server.");
+              }
+            );
+          this.queryResourceService
+            .findAllDeliveryTypesByStoreIdUsingGET({
+              storeId: store.id
+            })
+            .subscribe(
+              success => {
+                this.deliveryInfos[store.regNo] = success.content;
+                console.log("DeliveryInfo", this.deliveryInfos[store.regNo]);
+              },
+              err => {
+                console.log("Could Not Find Delivery Info");
+              }
+            );
+        });
+      },
+      err => {
+        console.log("Error fetching stores");
+        this.toastView("Error, connecting to server.");
+        this.loading.dismiss();
+      }
+    );
+
   }
 
   async toastView(message) {
@@ -212,7 +219,7 @@ export class RestaurantsPage implements OnInit {
       } catch (error) {
         
       }
-      if (this.map != undefined) {
+      if (this.map != undefined && latLng != undefined) {
         const marker: Marker = this.map.addMarkerSync({
           icon: "assets/icon/marker.png",
           label: store.name,

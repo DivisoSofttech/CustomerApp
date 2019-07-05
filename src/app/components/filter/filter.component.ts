@@ -9,6 +9,7 @@ import { QueryResourceService } from 'src/app/api/services';
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
+
   distance = 4;
 
   price = {
@@ -70,6 +71,7 @@ export class FilterComponent implements OnInit {
           break;
 
         case 'price':
+          console.log(this.price.lower,'-' , this.price.upper);
           this.queryResourceService
             .findAndSortProductByPriceUsingGET({
               to: this.price.lower,

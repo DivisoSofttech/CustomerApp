@@ -65,6 +65,11 @@
 
       <div>
           <ion-card  no-padding *ngFor="let stock of stockCurrents, let i = index;" id="{{stock.product.id}}">
+              <div class="ribbon">
+                  <span class="ribbon1">
+                    <span>50% off</span>
+                  </span>
+                </div>
               <ion-item lines="none">
                 <ion-img [src]="'data:' + stock.product.imageContentType + ';base64,' + stock.product.image"
                   class="imageShow">
@@ -155,11 +160,11 @@
       </ion-grid>
     </ion-slide>
     <ion-slide>
-      <div id="map_canvas"></div>
-      <!-- <ion-row class="map">
+      <!-- <div id="map_canvas"></div> -->
+      <ion-row class="map">
         <ion-col class="map">
         </ion-col>
-      </ion-row> -->
+      </ion-row>
       <ion-row>
         <ion-col size="12">
           <p class="normal-text" *ngIf="store.info">{{store.info}}</p>

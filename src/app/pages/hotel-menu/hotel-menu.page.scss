@@ -120,3 +120,25 @@
     text-align: start;
     font-size: 14px;
   }
+
+  .ribbon1 {
+    position: absolute;
+    top: -0.1px;
+    right: -7%;
+  }
+
+  .ribbon1 span {
+    position: relative;
+    display: block;
+    text-align: center;
+    background: #F8463F;
+    font-size: 92%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    line-height: 1;
+    font-weight: bold;
+    color: #edf0f2;
+    padding: 12px 8px 10px;
+    border-top-right-radius: 8px;
+    width: 75%;
+    z-index: 200;
+  }

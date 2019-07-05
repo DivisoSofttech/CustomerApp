@@ -31,7 +31,7 @@ export class ProfilePage implements OnInit {
         reference:'abc',
         searchkey:'cba'
       },
-      sellPrice: 420
+      sellPrice: 10
     }
   ];
   orders: Order[] = [];

@@ -3,7 +3,7 @@
     <name>Food Court</name>
     <description>Food Online</description>
     <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://localhost:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -96,4 +96,5 @@
     <engine name="browser" spec="5.0.4" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="4.5.5" />
+    <allow-navigation href="http://localhost:8100" sessionid="4f1c9fa3" />
 </widget>
