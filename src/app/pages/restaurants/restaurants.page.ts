@@ -7,7 +7,8 @@ import {
   ModalController,
   ToastController,
   Platform,
-  IonSlides
+  IonSlides,
+  IonInfiniteScroll
 } from "@ionic/angular";
 import { FilterComponent } from "src/app/components/filter/filter.component";
 import { QueryResourceService } from "src/app/api/services";
@@ -50,6 +51,7 @@ export class RestaurantsPage implements OnInit {
     autoplay: true
   };
   @ViewChild("slides") slides: IonSlides;
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   favouriteRestaurantsID = [];
 
@@ -147,8 +149,8 @@ export class RestaurantsPage implements OnInit {
           this.loading.dismiss();
         }
       );
-      // await this.platform.ready();
-      // await this.loadMap();
+      await this.platform.ready();
+      await this.loadMap();
     });
   }
 
@@ -314,7 +316,9 @@ export class RestaurantsPage implements OnInit {
   searchRestaurants(event) {
     this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value})
       .subscribe(result => {
+        console.log(result.content);  
         if (result.content.length === 0) {
+          this.stores = result.content;
           this.toastView('Sorry, couldn\'t find any match');
           return;
         }
@@ -337,4 +341,22 @@ export class RestaurantsPage implements OnInit {
 
     modal.present();
   }
+
+  doRefresh(event) {
+    console.log('Begin async operation');
+    this.ngOnInit();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
+
+  loadData(event) {
+    
+  }
+
+  toggleInfiniteScroll() {
+    this.infiniteScroll.disabled = !this.infiniteScroll.disabled;
+  }
+
 }

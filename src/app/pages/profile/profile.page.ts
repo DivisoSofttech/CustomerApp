@@ -140,8 +140,12 @@ export class ProfilePage implements OnInit {
 
     modal.onDidDismiss()
       .then((data: any) => {
-        this.customer = data.data.customer;
-        this.setBackground(data.data.customer);
+        try {
+          this.customer = data.data.customer;
+          this.setBackground(data.data.customer);            
+        } catch (error) {
+          
+        }
       });
 
     modal.present();

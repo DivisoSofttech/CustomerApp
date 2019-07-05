@@ -235,6 +235,7 @@ export class HotelMenuPage implements OnInit {
         .createRatingAndReviewUsingPOST({ ratingReview: raterev })
         .subscribe(
           result => {
+            console.log(result);
             this.rateReview = result.content;
           },
           err => {
@@ -318,7 +319,7 @@ export class HotelMenuPage implements OnInit {
       const query: string = event.detail.value;
       this.queryResourceService
         .findAllStockCurrentByProductNameStoreIdUsingGET({
-          name: query.toLowerCase(),
+          name: query,
           storeId: this.storeId
         })
         .subscribe(

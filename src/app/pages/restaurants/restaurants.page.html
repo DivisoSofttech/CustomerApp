@@ -16,9 +16,12 @@
         <ion-icon name="funnel"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-buttons *ngIf="searchBarOnly || locateBarOnly" >
-      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"  *ngIf="searchBarOnly" placeholder="Find restaurants around you" (ionChange)="searchRestaurants($event)"></ion-searchbar>
-      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500" *ngIf="locateBarOnly" placeholder="Enter places" (ionChange)="doPlaceSearch($event)"></ion-searchbar>
+    <ion-buttons *ngIf="searchBarOnly || locateBarOnly">
+      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"
+        *ngIf="searchBarOnly" placeholder="Find restaurants around you" (ionChange)="searchRestaurants($event)">
+      </ion-searchbar>
+      <ion-searchbar (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"
+        *ngIf="locateBarOnly" placeholder="Enter places" (ionChange)="doPlaceSearch($event)"></ion-searchbar>
     </ion-buttons>
   </ion-toolbar>
   <ion-list *ngIf="places.length > 0">
@@ -51,63 +54,72 @@
   <h4 padding class="head">
     What's Nearby!
   </h4>
-  <ion-card *ngFor="let store of stores">
-      <div class="ribbon">
-          <span class="ribbon1">
-            <span>50% DISCOUNT</span>
-          </span>
-        </div>
-    <ion-item lines="none" class="mg-top">
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
 
-   
-      <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
-        class="imageShow">
-      </ion-img>
-      <ion-card-content *ngIf="store.regNo" (click)="showHotelMenu(store.regNo)">
-        <ion-card-title class="card-title" *ngIf="store.name">{{store.name}}</ion-card-title>
-        <!-- <ion-card-subtitle *ngIf="store.openingTime">
-          {{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>-->
-        <ion-card-subtitle>
-            {{store.openingTime | date: 'shortTime' }}  to  {{ store.closingTime |  date: 'shortTime'}}
-            <ion-label>
-              <ion-text class="category">{{categories[store.regNo] | arrayFormater}} </ion-text>
-              <ion-text *ngIf="deliveryInfos[store.regNo]">{{deliveryInfos[store.regNo]| arrayFormater}}</ion-text>
-              <ion-text>
-                  <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
+      <ion-infinite-scroll-content
+      loading-spinner="bubbles">
+      <ion-card *ngFor="let store of stores">
+
+          <ion-item lines="none" class="mg-top">
+    
+    
+            <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
+              class="imageShow">
+            </ion-img>
+            <ion-card-content *ngIf="store.regNo" (click)="showHotelMenu(store.regNo)">
+              <ion-card-title class="card-title" *ngIf="store.name">{{store.name}}</ion-card-title>
+              <!-- <ion-card-subtitle *ngIf="store.openingTime">
+              {{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>-->
+              <ion-card-subtitle>
+                {{store.openingTime | date: 'shortTime' }} to {{ store.closingTime |  date: 'shortTime'}}
+                <ion-label>
+                  <ion-text class="category">{{categories[store.regNo] | arrayFormater}} </ion-text>
+                  <ion-text *ngIf="deliveryInfos[store.regNo]">{{deliveryInfos[store.regNo]| arrayFormater: ' only'}}
+                  </ion-text>
+                  <ion-text>
+                    <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
                       Closed
-                   </p>
-              </ion-text>
-            </ion-label>
-        </ion-card-subtitle>
-      </ion-card-content>
-     
-    </ion-item>
-    <div class="card-footer"> 
-      <ion-grid no-padding>
-        <ion-row>
-          <ion-col size="7" text-center no-padding>
-            <rating [rate]="store.totalRating" [readonly]="true"></rating>
-          </ion-col>
-          <ion-col size="3" text-center no-padding>
-            <ion-buttons>
-              <ion-button *ngIf="store.userRatings" disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
-              <ion-button *ngIf="!store.userRatings" disabled>(0)</ion-button>
-            </ion-buttons>
-          </ion-col>
-          <ion-col size="2" text-center no-padding>
-            <ion-buttons justify-content-center>
-              <ion-button fill="none" (click)="addToFavourite(store)" *ngIf="!isFavourite(store)">
-                <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
-              </ion-button>
-              <ion-button fill="none" (click)="removeFromFavourite(store)" *ngIf="isFavourite(store)">
-                <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      
+                    </p>
+                  </ion-text>
+                </ion-label>
+              </ion-card-subtitle>
+            </ion-card-content>
+    
+          </ion-item>
+          <div class="card-footer">
+            <ion-grid no-padding>
+              <ion-row>
+                <ion-col size="7" text-center no-padding>
+                  <rating [rate]="store.totalRating" [readonly]="true"></rating>
+                </ion-col>
+                <ion-col size="3" text-center no-padding>
+                  <ion-buttons>
+                    <ion-button *ngIf="store.userRatings" disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
+                    <ion-button *ngIf="!store.userRatings" disabled>(0)</ion-button>
+                  </ion-buttons>
+                </ion-col>
+                <ion-col size="2" text-center no-padding>
+                  <ion-buttons justify-content-center>
+                    <ion-button fill="none" (click)="addToFavourite(store)" *ngIf="!isFavourite(store)">
+                      <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="none" (click)="removeFromFavourite(store)" *ngIf="isFavourite(store)">
+                      <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+    
+    
+          </div>
+        </ion-card>
+    
+    </ion-infinite-scroll-content>
 
-    </div>
-  </ion-card>
+  </ion-infinite-scroll>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher>
 </ion-content>

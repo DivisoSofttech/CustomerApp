@@ -27,7 +27,7 @@
         <ion-card-title>Closed</ion-card-title>
         <ion-card-subtitle>
           Serving in
-          {{ now | dateDifference:store.openingTime:store.closingTime | number : '1.2-2' }}
+          {{ (now | dateDifference:store.openingTime:store.closingTime | number : '1.0-0') + ' hrs' }}
         </ion-card-subtitle>
       </ion-card-content>
     </ion-card>
@@ -180,7 +180,7 @@
           <ion-label>{{cartSize + ' Items'}}</ion-label>
         </ion-col>
         <ion-col size="4" text-center no-padding>
-          <ion-label>{{'Total: ' + '&#8364; ' + totalPrice}}</ion-label>
+          <ion-label>{{'Total: ' + '&#8364; ' + (totalPrice | number:'1.1-2')}}</ion-label>
         </ion-col>
         <ion-col size="4" text-center no-padding>
           <ion-label class="button-cart" [routerLink]="['/tabs/basket']" routerLinkActive="router-link-active">
