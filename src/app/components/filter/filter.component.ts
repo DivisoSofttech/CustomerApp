@@ -49,8 +49,8 @@ export class FilterComponent implements OnInit {
         case 'rating':
           this.queryResourceService
             .findStoreByRatingUsingGET()
-            .subscribe(data => {
-              console.log('Rating' , data);
+            .subscribe(d => {
+              this.modalController.dismiss(d)
             });
           break;
 
@@ -59,8 +59,8 @@ export class FilterComponent implements OnInit {
             .findStoreByTypeNameUsingGET({
               name: this.deliveryType
             })
-            .subscribe(data => {
-              console.log('DeliveryType' ,data);
+            .subscribe(d => {
+              this.modalController.dismiss(d.content);
             });
           break;
 

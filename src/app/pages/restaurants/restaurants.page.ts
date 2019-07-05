@@ -342,7 +342,7 @@ export class RestaurantsPage implements OnInit {
     .then(data => {
 
         if(data != undefined) {
-          console.log(data);
+          this.stores = data.data;
         }
     })
 
