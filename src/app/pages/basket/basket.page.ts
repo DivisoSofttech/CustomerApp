@@ -159,4 +159,14 @@ export class BasketPage {
     console.log(this.orderLines.length);
     this.products.splice(index, 1);
   }
+
+  doRefresh(event) {
+    console.log('Begin async operation');
+    this.ionViewWillEnter();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
+
 }

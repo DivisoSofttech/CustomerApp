@@ -81,6 +81,10 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher>
 </ion-content>
 
 <ion-content *ngIf="orderLines.length === 0">
@@ -111,4 +115,8 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher>
 </ion-content>

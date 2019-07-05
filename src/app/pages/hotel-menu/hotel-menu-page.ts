@@ -375,4 +375,14 @@ export class HotelMenuPage implements OnInit {
   isFavourite(product: Product) {
     return this.favouriteProductsID.includes(product.id);
   }
+
+  doRefresh(event) {
+    console.log('Begin async operation');
+    this.ngOnInit();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
+
 }
