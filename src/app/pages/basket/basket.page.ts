@@ -96,22 +96,8 @@ export class BasketPage {
       orderLines: this.orderLines,
       grandTotal: this.grandTotal,
       storeId: this.cartService.storeId
-      // storeId: 'whitesand'
     }
-
     this.presentModal(order);
-    // this.orderCommandResource.initiateOrderUsingPOST(order).subscribe(result => {
-    //   this.nextTaskId = result.nextTaskId
-    //   this.selfId = result.selfId
-    //   console.log('Next Task Id is ' + this.nextTaskId);
-    //   console.log('Self id is ' + this.selfId);
-    //   if (this.nextTaskId != undefined) {
-    //     this.presentModal();
-    //   }
-    // }, err => {
-    //   this.presentToast('Error connecting to server');
-    // });
-    console.log('Next id outside subscibe is ' + this.nextTaskId);
   }
 
   // For Testing lasat Page PaymentSuccessfullInfo
@@ -132,7 +118,11 @@ export class BasketPage {
     const modal = await this.modalController.create({
       component: DeliveryInfoComponent,
       componentProps: {
-      order: or
+        order:or,
+        orderLines: this.orderLines,
+        customerId: this.customer.name,
+        orderId: this.selfId,
+        grandTotal: this.grandTotal
       }
     });
     return await modal.present();

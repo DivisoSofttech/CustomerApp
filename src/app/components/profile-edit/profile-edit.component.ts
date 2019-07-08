@@ -125,7 +125,7 @@ export class ProfileEditComponent implements OnInit {
                 .subscribe(data => {
                   this.customer = data;
                   this.loadingElement.dismiss();
-                  this.modalController.dismiss();
+                  this.dismiss();
                   console.log('Updated Customer', data);
                 },
                 err => { this.loadingElement.dismiss();});

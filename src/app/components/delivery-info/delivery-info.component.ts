@@ -3,7 +3,7 @@ import { OrderDeliveryInfo } from './../../api/models/order-delivery-info';
 import { ModalController, ToastController } from '@ionic/angular';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit } from '@angular/core';
-import { OrderAddressDTO, OrderAddress, OrderLine } from 'src/app/api/models';
+import { OrderAddressDTO, OrderAddress, OrderLine, Order } from 'src/app/api/models';
 import { OrderCommandResourceService } from 'src/app/api/services';
 import { AddAddressModalComponent } from '../add-address-modal/add-address-modal.component';
 import { Loading } from '../loading';
@@ -30,6 +30,8 @@ export class DeliveryInfoComponent implements OnInit {
   total: number;
   loading: HTMLIonLoadingElement;
 
+  order: Order;
+
   constructor(
     private oauthService: OAuthService,
     private modalController: ModalController,
@@ -51,47 +53,54 @@ export class DeliveryInfoComponent implements OnInit {
   collectDeliveryInfo() {
     this.deliveryCharges = 50;
 
-    const deliveryDetails: OrderDeliveryInfo = {
-      deliveryCharge: this.deliveryCharges,
-      deliveryType: this.deliveryType,
-      deliveryAddress: {
-        id: this.tmpAddress.id,
-        phone: this.tmpAddress.phone,
-        name: this.tmpAddress.name,
-        houseNoOrBuildingName: this.tmpAddress.houseNoOrBuildingName
-      },
-      expectedDelivery: this.expectedDelivery
-    };
+      this.orderCommandService.initiateOrderUsingPOST(this.order).subscribe(result => {
+        this.taskId = result.nextTaskId;
+        this.orderId = result.selfId;
+        const deliveryDetails: OrderDeliveryInfo = {
+          deliveryCharge: this.deliveryCharges,
+          deliveryType: this.deliveryType,
+          deliveryAddress: {
+            id: this.tmpAddress.id,
+            phone: this.tmpAddress.phone,
+            name: this.tmpAddress.name,
+            houseNoOrBuildingName: this.tmpAddress.houseNoOrBuildingName
+          },
+          expectedDelivery: this.expectedDelivery
+        };
+    
+        console.log('Delivery ', deliveryDetails);
+    
+        this.orderCommandService
+          .collectDeliveryDetailsUsingPOST({
+            taskId: this.taskId,
+            orderId: this.orderId,
+            deliveryInfo: deliveryDetails
+          })
+          .subscribe(
+            result => {
+              console.log(result);
+              this.taskId = result.nextTaskId;
+              this.presentModal();
+            },
+            err => {
+              console.log('Error performing collectDeliveryInfo ');
+            }
+          );
+    
+        let selectedAddress: OrderAddress;
+        this.addresses.forEach(addr => {
+          // if(addr.id == this.selectedAddressId) {
+          console.log('Selected id', this.selectedAddressId);
+          if (true) {
+            selectedAddress = addr;
+            console.log(selectedAddress);
+          }
+        });
+    
 
-    console.log('Delivery ', deliveryDetails);
-
-    this.orderCommandService
-      .collectDeliveryDetailsUsingPOST({
-        taskId: this.taskId,
-        orderId: this.orderId,
-        deliveryInfo: deliveryDetails
-      })
-      .subscribe(
-        result => {
-          console.log(result);
-          this.taskId = result.nextTaskId;
-          this.presentModal();
-        },
-        err => {
-          console.log('Error performing collectDeliveryInfo ');
-        }
-      );
-
-    let selectedAddress: OrderAddress;
-    this.addresses.forEach(addr => {
-      // if(addr.id == this.selectedAddressId) {
-      console.log('Selected id', this.selectedAddressId);
-      if (true) {
-        selectedAddress = addr;
-        console.log(selectedAddress);
       }
-    });
-  }
+      );
+   }
 
   async presentModal() {
     this.dismiss();
