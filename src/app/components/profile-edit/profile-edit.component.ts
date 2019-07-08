@@ -72,6 +72,10 @@ export class ProfileEditComponent implements OnInit {
     });
   }
 
+  nonSaveDismiss() {
+    this.modalController.dismiss();
+  }
+
   dismiss() {
     this.modalController.dismiss(
       {
