@@ -20,6 +20,8 @@ import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { IonicStorageModule } from '@ionic/storage';
 import { SearchHistoryService } from './services/search-history-service';
 import { CartService } from './services/cart.service';
+import { FilterService } from './services/filter.service';
+
 import {
   GoogleMapsAPIWrapper,
   AgmCoreModule,
@@ -60,6 +62,7 @@ import {
     CartService,
     SearchHistoryService,
     LocationService,
+    FilterService
 
   ],
   bootstrap: [AppComponent]

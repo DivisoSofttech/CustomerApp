@@ -2,7 +2,7 @@ import { Customer } from './../../api/models/customer';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MakePaymentComponent } from './../../components/make-payment/make-payment.component';
 import { ProductQuantityModalComponent } from 'src/app/components/product-quantity-modal/product-quantity-modal.component';
-import { ModalController, ToastController } from '@ionic/angular';
+import { ModalController, ToastController, LoadingController } from '@ionic/angular';
 import { Component } from '@angular/core';
 import { TicketLineDTO, ProductDTO, OrderLine, Order } from 'src/app/api/models';
 import { CartService } from 'src/app/services/cart.service';
@@ -11,6 +11,7 @@ import { DeliveryInfoComponent } from 'src/app/components/delivery-info/delivery
 import { ORDERLINES } from '../../mock-orderlines';
 import { PRODUCTS } from '../../mock-products';
 import { PaymentSuccessfullInfoComponent } from 'src/app/components/payment-successfull-info/payment-successfull-info.component';
+import { Loading } from 'src/app/components/loading';
 @Component({
   selector: 'app-basket',
   templateUrl: './basket.page.html',
@@ -28,6 +29,7 @@ export class BasketPage {
   total = 0;
   constructor(
     private modalController: ModalController,
+    private loading:Loading,
     private cartService: CartService,
     private toastController: ToastController,
     private authService: OAuthService,
@@ -35,18 +37,26 @@ export class BasketPage {
     private orderCommandResource: OrderCommandResourceService
   ) { }
 
+  
+
   ionViewWillEnter() {
     this.orderLines = this.cartService.orderLines;
     this.products = [];
-    this.authService.loadUserProfile().then(user => {
-      this.user = user;
-      this.queryResourceService.findCustomerByReferenceUsingGET(this.user.preferred_username ).subscribe(res => {
-        this.customer = res;
-      }, err => {
-        this.presentToast('Error connecting to server');
+    this.loading.createLoader()
+    .then(data => {
+      data.present();
+      this.authService.loadUserProfile().then(user => {
+        this.user = user;
+        this.queryResourceService.findCustomerByReferenceUsingGET(this.user.preferred_username).subscribe(res => {
+          this.customer = res;
+          data.dismiss();
+        }, err => {
+          this.presentToast('Error connecting to server');
+          data.dismiss();
+        });
       });
-    });
-    this.setTotal();
+      this.setTotal();  
+    })
   }
 
   async presentToast(message: string) {

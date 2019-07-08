@@ -19,29 +19,39 @@
     <ion-row inline>
       <ion-col text-center>
         <ion-button fill="none" (click)="filter('rating')">
-          <ion-icon name="star-half" slot="icon-only"></ion-icon>
+          <ion-icon name="star-half" slot="icon-only"
+          [color]="filterObject.sortFilter === 'rating' ? 'success' : 'primary'"></ion-icon>
         </ion-button>
-        <ion-text color="medium" class="el-bl">Rating</ion-text>
+        <ion-text color="medium" class="el-bl"
+        [color]="filterObject.sortFilter === 'rating' ? 'success' : 'primary'"
+        >Rating</ion-text>
       </ion-col>
       <ion-col text-center >
-        <ion-button fill="none">
-          <ion-icon name="time" slot="icon-only"></ion-icon>
+        <ion-button fill="none" (click)="filter('time')" >
+          <ion-icon name="time" slot="icon-only"
+          [color]="filterObject.sortFilter === 'time' ? 'success' : 'primary'"></ion-icon>
         </ion-button>
-        <ion-text color="medium" class="el-bl">Time</ion-text>
+        <ion-text color="medium" class="el-bl" [color]="filterObject.sortFilter === 'time' ? 'success' : 'primary'">Time</ion-text>
       </ion-col>
       <ion-col text-center>
         <ion-button fill="none"  (click)="filter('ltoh')">
-          <ion-icon name="wallet" slot="icon-only"></ion-icon>
-          <ion-icon name="arrow-up" slot="icon-only"></ion-icon>
+          <ion-icon name="wallet" slot="icon-only"
+          [color]="filterObject.sortFilter === 'ltoh' ? 'success' : 'primary'"></ion-icon>
+          <ion-icon name="arrow-up" slot="icon-only"
+          [color]="filterObject.sortFilter === 'ltoh' ? 'success' : 'primary'"></ion-icon>
         </ion-button>
-        <ion-text color="medium" class="el-bl">Cost (Low to High)</ion-text>
+        <ion-text color="medium" class="el-bl"
+        [color]="filterObject.sortFilter === 'ltoh' ? 'success' : 'primary'">Cost (Low to High)</ion-text>
       </ion-col>
       <ion-col text-center>
         <ion-button fill="none"  (click)="filter('htol')">
-          <ion-icon name="wallet" slot="icon-only"></ion-icon>
-          <ion-icon name="arrow-down" slot="icon-only"></ion-icon>
+          <ion-icon name="wallet" slot="icon-only"
+          [color]="filterObject.sortFilter === 'htol' ? 'success' : 'primary'"></ion-icon>
+          <ion-icon name="arrow-down" slot="icon-only"
+          [color]="filterObject.sortFilter === 'htol' ? 'success' : 'primary'"></ion-icon>
         </ion-button>
-        <ion-text color="medium" class="el-bl">Cost (High to Low)</ion-text>
+        <ion-text color="medium" class="el-bl"
+        [color]="filterObject.sortFilter === 'htol' ? 'success' : 'primary'">Cost (High to Low)</ion-text>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -65,20 +75,13 @@
         <ion-label>Delivery Type</ion-label>
       </ion-list-header>
 
-      <ion-item>
-        <ion-label>Both</ion-label>
-        <ion-radio slot="start" value="both" checked></ion-radio>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Collection</ion-label>
-        <ion-radio slot="start" value="collection"></ion-radio>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Delivery</ion-label>
-        <ion-radio slot="start" value="delivery"></ion-radio>
-      </ion-item>
+     <ion-item>
+        <ion-select [(ngModel)]="deliveryType">
+            <ion-select-option  *ngFor="let deliver of ['Both' , 'Delivery' , 'Collection']" value="{{deliver}}">
+                {{deliver}}
+            </ion-select-option>
+          </ion-select>
+     </ion-item>
     </ion-radio-group>
   </ion-list>
 

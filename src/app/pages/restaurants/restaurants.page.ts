@@ -25,6 +25,7 @@ import {
 import { NotificationsComponent } from "src/app/components/notifications/notifications.component";
 import { Loading } from "src/app/components/loading";
 import { FavouriteService } from "src/app/services/favourite/favourite.service";
+import { FilterService } from 'src/app/services/filter.service';
 
 @Component({
   selector: "app-restaurants",
@@ -63,8 +64,9 @@ export class RestaurantsPage implements OnInit {
     private locationService: LocationService,
     private queryResourceService: QueryResourceService,
     private loadingCreator: Loading,
-    private favourite: FavouriteService
-  ) {}
+    private favourite: FavouriteService,
+    private filterService: FilterService
+  ) { }
 
   ionViewWillLeave() {
     this.slides.stopAutoplay();
@@ -112,53 +114,75 @@ export class RestaurantsPage implements OnInit {
   }
 
   getStores() {
+    this.filterService.getFilter()
+    .subscribe(data => {
+      if(data.sortFilter != undefined) {
+        this.getStoreByCommonSortFilter()
+      } else if(data.deliveryTypeFilter != undefined) {
+        this.getStoreByDeliveryType();
+      }
+      else {
+        this.getStoresNoFilter();
+      }
+    });
+ 
+  }
+
+  getStoreByCommonSortFilter() {
+    this.filterService.getByCommonFilter();
+  }
+
+  getStoreByDeliveryType() {
+    this.filterService.getByDeliveryType();
+  }
+
+  getStoresNoFilter() {
     this.queryResourceService.findAllStoresUsingGET(
       {
-      
-    }).subscribe(
-      res => {
-        this.stores = res;
-        console.log("Got Stores", res);
-        this.setRestaurantMarkers();
-        this.storesBackup = res;
-        this.getFavourites();
-        this.stores.forEach(store => {
-          console.log("Getting Category", store.regNo);
-          this.queryResourceService
-            .findCategoryByStoreIdUsingGET({ userId: store.regNo })
-            .subscribe(
-              success => {
-                this.categories[store.regNo] = success.content;
-                console.log("Got Category", success.content);
-                this.loading.dismiss();
-              },
-              err => {
-                this.loading.dismiss();
-                this.toastView("Error, connecting to server.");
-              }
-            );
-          this.queryResourceService
-            .findAllDeliveryTypesByStoreIdUsingGET({
-              storeId: store.id
-            })
-            .subscribe(
-              success => {
-                this.deliveryInfos[store.regNo] = success.content;
-                console.log("DeliveryInfo", this.deliveryInfos[store.regNo]);
-              },
-              err => {
-                console.log("Could Not Find Delivery Info");
-              }
-            );
-        });
-      },
-      err => {
-        console.log("Error fetching stores");
-        this.toastView("Error, connecting to server.");
-        this.loading.dismiss();
-      }
-    );
 
+      }).subscribe(
+        res => {
+          this.stores = res;
+          console.log("Got Stores", res);
+          this.setRestaurantMarkers();
+          this.storesBackup = res;
+          this.getFavourites();
+          this.stores.forEach(store => {
+            console.log("Getting Category", store.regNo);
+            this.queryResourceService
+              .findCategoryByStoreIdUsingGET({ userId: store.regNo })
+              .subscribe(
+                success => {
+                  this.categories[store.regNo] = success.content;
+                  console.log("Got Category", success.content);
+                  this.loading.dismiss();
+                },
+                err => {
+                  this.loading.dismiss();
+                  this.toastView("Error, connecting to server.");
+                }
+              );
+            this.queryResourceService
+              .findAllDeliveryTypesByStoreIdUsingGET({
+                storeId: store.id
+              })
+              .subscribe(
+                success => {
+                  this.deliveryInfos[store.regNo] = success.content;
+                  console.log("DeliveryInfo", this.deliveryInfos[store.regNo]);
+                },
+                err => {
+                  console.log("Could Not Find Delivery Info");
+                }
+              );
+          });
+        },
+        err => {
+          console.log("Error fetching stores");
+          this.toastView("Error, connecting to server.");
+          this.loading.dismiss();
+        }
+      );    
   }
 
   async toastView(message) {
@@ -215,9 +239,9 @@ export class RestaurantsPage implements OnInit {
     this.stores.forEach(store => {
       let latLng: string[];
       try {
-       latLng = store.location.split(",");        
+        latLng = store.location.split(",");
       } catch (error) {
-        
+
       }
       if (this.map != undefined && latLng != undefined) {
         const marker: Marker = this.map.addMarkerSync({
@@ -298,6 +322,7 @@ export class RestaurantsPage implements OnInit {
           lng: latlon[1]
         }
       });
+      this.setRestaurantMarkers();
     });
   }
   addToFavourite(store: Store) {
@@ -321,13 +346,14 @@ export class RestaurantsPage implements OnInit {
   }
 
   searchRestaurants(event) {
-    this.queryResourceService.findStoreBySearchTermUsingGET({searchTerm: event.detail.value})
+    this.queryResourceService.findStoreBySearchTermUsingGET({ searchTerm: event.detail.value })
       .subscribe(result => {
-        console.log(result.content);  
+        console.log(result.content);
         if (result.content.length === 0) {
-          this.stores = result.content;
           this.toastView('Sorry, couldn\'t find any match');
           return;
+        } else {
+          this.stores = result.content;
         }
       });
   }
@@ -335,16 +361,16 @@ export class RestaurantsPage implements OnInit {
   async filterModal() {
     const modal = await this.modalController.create({
       component: FilterComponent,
-      componentProps:{stores: this.stores}
+      componentProps: { stores: this.stores }
     });
 
     modal.onDidDismiss()
-    .then(data => {
+      .then(data => {
 
-        if(data != undefined) {
+        if (data.data != undefined) {
           this.stores = data.data;
         }
-    })
+      })
 
     modal.present();
   }
@@ -359,7 +385,7 @@ export class RestaurantsPage implements OnInit {
   }
 
   loadData(event) {
-    
+
   }
 
   toggleInfiniteScroll() {
