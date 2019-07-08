@@ -84,6 +84,11 @@ export class ProfileEditComponent implements OnInit {
     );
   }
 
+  removeImage() {
+    this.customer.photo = null;
+    this.customer.photoContentType  =null;
+  }
+
 
   async selectImage() {
 

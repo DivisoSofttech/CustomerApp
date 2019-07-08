@@ -18,7 +18,8 @@
   <div class="profileImgContainer">
 
     <ion-img *ngIf="customer.photo == null" src="assets/images/user.png" slot="end" class="profileImage"></ion-img>
-    <div class="profileImage hidden" #profileImage></div>
+
+    <ion-img class="profileImage" *ngIf="customer.photo != null" [src]="'data:' + customer.photoContentType + ';base64,' + customer.photo"></ion-img>
 
     <ion-text>
       <p text-center><strong>{{customer.name| uppercase}}</strong></p>
@@ -52,11 +53,33 @@
     </ion-item>
   </ion-list>
 
+  <ion-list *ngIf="orders.length == 0 && currentSubPage == 'history'">
+      <ion-item lines="full" class="order" *ngFor="let order of [1,2,3,4,5]" margin>
+        <ion-thumbnail slot="start">
+          <ion-img>
+          <ion-skeleton-text></ion-skeleton-text>
+        </ion-img>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-skeleton-text></ion-skeleton-text>
+          <ion-skeleton-text></ion-skeleton-text>
+          <ion-skeleton-text></ion-skeleton-text>
+          </ion-label>
+      </ion-item>
+    </ion-list>
+
+
   <div class="vertical-align-center h30" *ngIf="orders.length == 0 && currentSubPage == 'history'">
-    <ion-text text-center>
-      <p>No Orders</p>
-    </ion-text>
-  </div>
+      <ion-text text-center>
+        <p>No Orders</p>
+      </ion-text>
+    </div>
+  
+    <div class="vertical-align-center h30" *ngIf="orders.length == 0 && currentSubPage == 'history'">
+      <ion-text text-center>
+        <p>No Orders</p>
+      </ion-text>
+    </div>
 
   <div *ngIf="favourites.length > 0 && currentSubPage == 'favourite'">
 

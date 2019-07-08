@@ -122,15 +122,7 @@ export class ProfilePage implements OnInit {
     console.log(this.frequentOrders);
   }
 
-  setBackground(customer) {
-    if (customer.photo != null) {
-      let img = 'url(\'data:' +  customer.photoContentType + ';base64,' + customer.photo + '\')';
-      this.profileImage.nativeElement.style.backgroundImage = img;
-      this.profileImage.nativeElement.style.display ='block';
-    } else {
-      this.profileImage.nativeElement.style.display ='hidden';
-    }
-  }
+
 
   async edit() {
     const modal = await this.modalController.create({
@@ -141,8 +133,7 @@ export class ProfilePage implements OnInit {
     modal.onDidDismiss()
       .then((data: any) => {
         try {
-          this.customer = data.data.customer;
-          this.setBackground(data.data.customer);            
+          this.customer = data.data.customer;          
         } catch (error) {
           
         }
