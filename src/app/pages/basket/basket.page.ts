@@ -98,17 +98,19 @@ export class BasketPage {
       storeId: this.cartService.storeId
       // storeId: 'whitesand'
     }
-    this.orderCommandResource.initiateOrderUsingPOST(order).subscribe(result => {
-      this.nextTaskId = result.nextTaskId
-      this.selfId = result.selfId
-      console.log('Next Task Id is ' + this.nextTaskId);
-      console.log('Self id is ' + this.selfId);
-      if (this.nextTaskId != undefined) {
-        this.presentModal();
-      }
-    }, err => {
-      this.presentToast('Error connecting to server');
-    });
+
+    this.presentModal(order);
+    // this.orderCommandResource.initiateOrderUsingPOST(order).subscribe(result => {
+    //   this.nextTaskId = result.nextTaskId
+    //   this.selfId = result.selfId
+    //   console.log('Next Task Id is ' + this.nextTaskId);
+    //   console.log('Self id is ' + this.selfId);
+    //   if (this.nextTaskId != undefined) {
+    //     this.presentModal();
+    //   }
+    // }, err => {
+    //   this.presentToast('Error connecting to server');
+    // });
     console.log('Next id outside subscibe is ' + this.nextTaskId);
   }
 
@@ -126,15 +128,11 @@ export class BasketPage {
   }
 
 
-  async presentModal() {
+  async presentModal(or) {
     const modal = await this.modalController.create({
       component: DeliveryInfoComponent,
       componentProps: {
-        orderLines: this.orderLines,
-        customerId: this.customer.name,
-        taskId: this.nextTaskId,
-        orderId: this.selfId,
-        grandTotal: this.grandTotal
+      order: or
       }
     });
     return await modal.present();

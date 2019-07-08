@@ -132,18 +132,18 @@ export class LoginScreenComponent implements OnInit {
           .subscribe(
             res => {
               this.presentToast('Login Successful');
-            },
-            err => {
-              this.commandResourceService
-                .createCustomerUsingPOST({
-                  reference: this.username,
-                  name: this.username
-                })
-                .subscribe(data => {
-                  console.log('User Created', data);
-                  this.presentToast('Login Successful');
-                });
             }
+            // err => {
+            //   this.commandResourceService
+            //     .createCustomerUsingPOST({
+            //       reference: this.username,
+            //       name: this.username
+            //     })
+            //     .subscribe(data => {
+            //       console.log('User Created', data);
+            //       this.presentToast('Login Successful');
+            //     });
+            // }
           );
         }
         if (this.oauthService.hasValidAccessToken()) {
