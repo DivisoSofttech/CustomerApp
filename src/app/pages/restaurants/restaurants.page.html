@@ -78,6 +78,9 @@
                   <ion-text color="success" *ngIf="deliveryInfos[store.regNo]">{{deliveryInfos[store.regNo]| arrayFormater: ' only'}}
                   </ion-text>
                   <ion-text>
+                    
+                  </ion-text>
+                  <ion-text>
                     <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
                       Closed
                     </p>

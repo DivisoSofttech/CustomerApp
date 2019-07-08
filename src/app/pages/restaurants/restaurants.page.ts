@@ -129,7 +129,8 @@ export class RestaurantsPage implements OnInit {
   }
 
   getStoreByCommonSortFilter() {
-    this.filterService.getByCommonFilter();
+    this.filterService.getByCommonFilter(false)
+    
   }
 
   getStoreByDeliveryType() {

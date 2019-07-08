@@ -41,9 +41,22 @@ export class FilterService {
     console.log('DeliveryType' , this.filter.deliveryTypeFilter);
   }
 
-  getByCommonFilter() {
+  getByCommonFilter(resetPageNumber) {
+
+    if(typeof this.getByCommonFilter.prototype.pageCount == 'undefined'
+    || resetPageNumber === true) {
+      this.getByCommonFilter.prototype.pageCount = 0;
+    } else {
+      this.getByCommonFilter.prototype.pageCount = this.getByCommonFilter.prototype.pageCount++;
+    }
+
     this.filterSubjcet.subscribe(data => {
 
+        switch(data.sortFilter) {
+          case 'rating':
+
+          break;
+        }
     });
   }
 
