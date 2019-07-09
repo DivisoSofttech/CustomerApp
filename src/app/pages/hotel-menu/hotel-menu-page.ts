@@ -109,26 +109,7 @@ export class HotelMenuPage implements OnInit {
       this.loading.present();
       this.storeId = this.route.snapshot.paramMap.get('id');
       this.cartService.storeId = this.storeId;
-      this.queryResourceService
-        .findStockCurrentByStoreIdUsingGET(this.storeId)
-        .subscribe(
-          result => {
-            if (result != null) {
-              this.stockCurrents = result;
-              this.getFavourites();
-              for(let i = 0;i < result.length;i++) {
-                this.accordionArray.push(false);
-              }
-            }
-            this.loading.dismiss();
-            result.forEach(() => {
-              this.cardExpand.push(0);
-            });
-          },
-          err => {
-            console.log('Error fetching product data', err);
-          }
-        );
+     
       this.queryResourceService
         .findStoreByRegisterNumberUsingGET(this.storeId)
         .subscribe(
@@ -139,27 +120,9 @@ export class HotelMenuPage implements OnInit {
             console.log('Error fetching store data', err);
           }
         );
+        this.getProducts();
+        this.getRatingReview();
 
-      this.queryResourceService
-        .findRatingReviewByStoreidAndCustomerNameUsingGET({
-          storeId: this.storeId
-        })
-        .subscribe(
-          result => {
-            this.rateReview = result.content;
-          },
-          err => {
-            console.log('Error fetching review data', err);
-          }
-        );
-      this.queryResourceService
-        .findCategoryByStoreIdUsingGET({ userId: this.storeId })
-        .subscribe(success => {
-          this.categories = success.content;
-        });
-      this.oauthService.loadUserProfile().then(user => {
-        this.usr = user;
-      });
       this.subscriptionCart = this.cartService.observableTickets.subscribe(
         orderLines => (this.cartSize = orderLines.length)
       );
@@ -168,6 +131,44 @@ export class HotelMenuPage implements OnInit {
       );
       this.timeTracker();
     });
+  }
+
+  getRatingReview() {
+    this.queryResourceService
+    .findRatingReviewByStoreidAndCustomerNameUsingGET({
+      storeId: this.storeId
+    })
+    .subscribe(
+      result => {
+        this.rateReview = result.content;
+      },
+      err => {
+        console.log('Error fetching review data', err);
+      }
+    );
+  }
+
+  getProducts() {
+    this.queryResourceService
+    .findStockCurrentByStoreIdUsingGET(this.storeId)
+    .subscribe(
+      result => {
+        if (result != null) {
+          this.stockCurrents = result.content;
+          this.getFavourites();
+          for(let i = 0;i < result.content.length;i++) {
+            this.accordionArray.push(false);
+          }
+        }
+        this.loading.dismiss();
+        result.content.forEach(() => {
+          this.cardExpand.push(0);
+        });
+      },
+      err => {
+        console.log('Error fetching product data', err);
+      }
+    );
   }
 
   async presentPopover(ev: any) {
@@ -237,6 +238,7 @@ export class HotelMenuPage implements OnInit {
           result => {
             console.log(result);
             this.rateReview = result.content;
+            this.review.review = '';
           },
           err => {
             this.presentToast('Error while posting review. Try again later');
@@ -258,8 +260,9 @@ export class HotelMenuPage implements OnInit {
   }
 
   add(i, stock: StockCurrent) {
-    this.cardExpand[i]++;
-    this.cartService.addProduct(stock.product, stock);
+    if(this.cartService.addProduct(stock.product, stock , this.store)) {
+      this.cardExpand[i]++;
+    }
   }
   remove(i, stock: StockCurrent) {
     if (this.cardExpand[i] !== 0) {
@@ -334,16 +337,7 @@ export class HotelMenuPage implements OnInit {
           }
         );
     } else {
-      this.queryResourceService
-        .findStockCurrentByStoreIdUsingGET(this.storeId)
-        .subscribe(
-          result => {
-            this.stockCurrents = result;
-          },
-          err => {
-            console.log('Error fetching product data', err);
-          }
-        );
+      this.getProducts();
     }
   }
 

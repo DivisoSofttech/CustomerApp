@@ -1,9 +1,22 @@
 /* tslint:disable */
-import { OrderAddress } from './order-address';
-import { Order } from './order';
-import { OrderLine } from './order-line';
 export interface OrderMaster {
-  address?: OrderAddress;
-  order?: Order;
-  orderLines?: Array<OrderLine>;
+  paymentTotal?: number;
+  amount?: number;
+  date?: string;
+  deliveryCharge?: number;
+  deliveryType?: string;
+  expectedDelivery?: string;
+  grandTotal?: number;
+  id?: number;
+  orderId?: string;
+  customerId?: string;
+  paymentType?: string;
+  pricePerUnit?: number;
+  productId?: number;
+  quantity?: number;
+  ref?: string;
+  status?: string;
+  storeId?: string;
+  tax?: number;
+  total?: number;
 }

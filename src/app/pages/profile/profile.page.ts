@@ -34,7 +34,7 @@ export class ProfilePage implements OnInit {
       sellPrice: 10
     }
   ];
-  orders: Order[] = [];
+  orders: Order[];
   customer: CustomerDTO = {};
 
   loadingElement: HTMLIonLoadingElement;
@@ -59,10 +59,10 @@ export class ProfilePage implements OnInit {
 
   ngOnInit() {
 
-    this.loading.createLoader()
-      .then(res => {
-        this.loadingElement = res;
-        this.loadingElement.present();
+    // this.loading.createLoader()
+    //   .then(res => {
+    //     this.loadingElement = res;
+    //     this.loadingElement.present();
         this.favourite.getFavourites()
           .subscribe(data => {
             console.log('favorrite',data);
@@ -77,7 +77,6 @@ export class ProfilePage implements OnInit {
             .subscribe(customer => {
               console.log(customer);
               this.customer = customer;
-              this.setBackground(customer);
             }, err => {
               this.presentToast('Error connecting to server');
             });
@@ -86,7 +85,6 @@ export class ProfilePage implements OnInit {
             page: 0
           })
             .subscribe(orders => {
-              this.loadingElement.dismiss();
               if (orders.content.length > 0) {
                 this.orders = orders.content;
                 console.log('No orders', this.orders.length);
@@ -107,13 +105,12 @@ export class ProfilePage implements OnInit {
             },
               err => {
                 this.presentToast('Error connecting to server');
-                this.loadingElement.dismiss();
               });
           console.log(user);
         }, err => {
           this.presentToast('Error connecting to server');
         });
-      });
+      // });
 
 
   }
@@ -226,6 +223,8 @@ export class ProfilePage implements OnInit {
 
 
   doRefresh(event) {
+    this.orders = undefined;
+    this.customer = {};
     console.log('Begin async operation');
     this.ngOnInit();
     setTimeout(() => {

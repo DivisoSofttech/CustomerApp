@@ -11,6 +11,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
+import { Loading } from '../loading';
 
 @Component({
   selector: 'app-login-screen',
@@ -26,6 +27,7 @@ export class LoginScreenComponent implements OnInit {
   kcAdminClient: KeycloakAdminClient;
   agreement: boolean;
   phone: number;
+  registerStatus = "none";
   @ViewChild('slides') slides: IonSlides;
 
   constructor(
@@ -35,7 +37,8 @@ export class LoginScreenComponent implements OnInit {
     private navCtrl: NavController,
     private queryResourceService: QueryResourceService,
     private commandResourceService: CommandResourceService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingService: Loading
   ) {}
 
   ngOnInit() {
@@ -156,46 +159,55 @@ export class LoginScreenComponent implements OnInit {
   }
 
   signup() {
-    const map = new Map([['phone', this.phone], ['value', 3]]);
+    this.loadingService.createLoader()
+    .then(loader => {
 
-    this.kcAdminClient.users
-      .create({
-        realm: 'graeshoppe',
-        username: this.username,
-        email: this.email,
-        enabled: true,
-        credentials: [
-          {
-            type: 'password',
-            value: this.password
-          }
-        ],
-        attributes: map
-      })
-      .then(res => {
-        this.oauthService
-          .fetchTokenUsingPasswordFlowAndLoadUserProfile(
-            this.username,
-            this.password,
-            new HttpHeaders()
-          )
-          .then(
-            () => {
-              this.commandResourceService
-                .createCustomerUsingPOST({
-                  reference: this.username,
-                  name: this.username
-                })
-                .subscribe(data => {
-                  console.log('User Created', data);
-                  this.presentToast('Registration Successful');
-                  this.navCtrl.navigateRoot('/tabs/home');
-                });
-            },
-            err => {
-              this.presentToast('Error Registering User');
+      loader.present();
+      const map = new Map([['phone', this.phone], ['value', 3]]);
+
+      this.kcAdminClient.users
+        .create({
+          realm: 'graeshoppe',
+          username: this.username,
+          email: this.email,
+          enabled: true,
+          credentials: [
+            {
+              type: 'password',
+              value: this.password
             }
-          );
-      });
+          ],
+          attributes: map
+        })
+        .then(res => {
+          this.oauthService
+            .fetchTokenUsingPasswordFlowAndLoadUserProfile(
+              this.username,
+              this.password,
+              new HttpHeaders()
+            )
+            .then(
+              () => {
+                this.commandResourceService
+                  .createCustomerUsingPOST({
+                    reference: this.username,
+                    name: this.username
+                  })
+                  .subscribe(data => {
+                    console.log('User Created', data);
+                    this.presentToast('Registration Successful');
+                    this.navCtrl.navigateRoot('/tabs/home');
+                    loader.dismiss();
+                  });
+              },
+              err => {
+                this.presentToast('Error Registering User');
+                loader.dismiss();
+              }
+            );
+        });
+  
+
+    });
   }
 }

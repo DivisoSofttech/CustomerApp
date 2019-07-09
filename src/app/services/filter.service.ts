@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QueryResourceService } from '../api/services';
 import { BehaviorSubject } from 'rxjs';
+import { Store } from '../api/models';
 
 export class Filter {
 
@@ -21,11 +22,15 @@ export class FilterService {
 
   private filterSubjcet: BehaviorSubject<Filter> = new BehaviorSubject<Filter>(this.filter);
 
+  pageNum = 1;
+  maxPageNum = 1;
+
   constructor(
     private queryResourceService: QueryResourceService
   ) { }
 
   setFilter(pfilter) {
+    this.filter = pfilter;
     this.filterSubjcet.next(pfilter);
   }
 
@@ -35,30 +40,53 @@ export class FilterService {
 
   resetFilter() {
     this.filterSubjcet.next(this.filter);
+    this.pageNum = 1;
+    this.maxPageNum = 1;
   }
 
-  getByDeliveryType() {
-    console.log('DeliveryType' , this.filter.deliveryTypeFilter);
-  }
+  getByDeliveryType(obj: any, complete: any) {
+    let stores: Store[] = [];
+    
+    if (this.pageNum <= this.maxPageNum) {
 
-  getByCommonFilter(resetPageNumber) {
-
-    if(typeof this.getByCommonFilter.prototype.pageCount == 'undefined'
-    || resetPageNumber === true) {
-      this.getByCommonFilter.prototype.pageCount = 0;
+      this.queryResourceService.findStoreByTypeNameUsingGET(
+        {
+          name: this.filter.deliveryTypeFilter.toLowerCase(),
+        }).subscribe(data => {
+          console.log('Getting By Delivery Type' , data , this.filter);
+          this.maxPageNum = data.totalPages;
+          this.pageNum++;
+          obj(data.content);
+      })
     } else {
-      this.getByCommonFilter.prototype.pageCount = this.getByCommonFilter.prototype.pageCount++;
+      this.pageNum = 1;
+      this.maxPageNum = 1;
+      complete();
+    }
+  }
+
+  getByCommonFilter(obj: any, complete: any) {
+
+    console.log(this.filter);
+    let stores: Store[] = [];
+
+    if (this.pageNum <= this.maxPageNum) {
+
+        switch (this.filter.sortFilter) {
+          case 'rating':
+            this.queryResourceService.findStoreByRatingUsingGET()
+              .subscribe(data => {
+                this.maxPageNum = data.totalPages;
+                this.pageNum++;
+                obj(data.content);
+              });
+            break;
+        }
+    } else {
+      this.pageNum = 1;
+      this.maxPageNum = 1;
+      complete();
     }
 
-    this.filterSubjcet.subscribe(data => {
-
-        switch(data.sortFilter) {
-          case 'rating':
-
-          break;
-        }
-    });
   }
-
-
 }

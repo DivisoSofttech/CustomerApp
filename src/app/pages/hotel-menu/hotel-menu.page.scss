@@ -1,9 +1,18 @@
+.my-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 20;
+  top: 8vh;
+  left: 0;
+}
 .imageShow{
-    display: block;
-    left: 0%;
-    top: 0%;
-    height: 106px;
-    width: 145px;
+  display: block;
+  left: 0%;
+  top: 0%;
+  width: 30vw;
+  height: 30vw;
   } 
   .reviewProfile{
     display: block;
@@ -139,5 +148,10 @@
     color: #edf0f2;
     padding: 12px 8px 10px;
     width: 75%;
+    z-index: 200;
+  }
+
+  .closeCard {
+
     z-index: 200;
   }

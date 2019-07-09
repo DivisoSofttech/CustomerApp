@@ -10,6 +10,7 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 import { ContactDTO } from '../models/contact-dto';
 import { CustomerDTO } from '../models/customer-dto';
 import { PageOfType } from '../models/page-of-type';
+import { PageOfDeliveryInfo } from '../models/page-of-delivery-info';
 import { CategoryDTO } from '../models/category-dto';
 import { PageOfCustomer } from '../models/page-of-customer';
 import { PageOfProduct } from '../models/page-of-product';
@@ -19,16 +20,17 @@ import { PageOfRatingReview } from '../models/page-of-rating-review';
 import { PageOfStockCurrent } from '../models/page-of-stock-current';
 import { StockCurrent } from '../models/stock-current';
 import { PageOfStore } from '../models/page-of-store';
-import { Product } from '../models/product';
 import { OrderMaster } from '../models/order-master';
 import { PageOfOrder } from '../models/page-of-order';
 import { ProductDTO } from '../models/product-dto';
 import { UserRating } from '../models/user-rating';
 import { Review } from '../models/review';
+import { PageOfReview } from '../models/page-of-review';
 import { StockCurrentDTO } from '../models/stock-current-dto';
 import { StockDiaryDTO } from '../models/stock-diary-dto';
 import { StockLine } from '../models/stock-line';
 import { Store } from '../models/store';
+import { PageOfUserRating } from '../models/page-of-user-rating';
 
 /**
  * Query Resource
@@ -41,6 +43,7 @@ class QueryResourceService extends __BaseService {
   static readonly findCustomerByReferenceUsingGETPath = '/api/query/customers/findByReference/{reference}';
   static readonly findCustomerByIdUsingGETPath = '/api/query/customers/{id}';
   static readonly findAllDeliveryTypesByStoreIdUsingGETPath = '/api/query/deliveryTypes/{storeId}';
+  static readonly findDeliveryInfoByStoreIdUsingGETPath = '/api/query/deliveryinfoByStoreId/{storeId}';
   static readonly findAllCategoriesWithOutImageUsingGETPath = '/api/query/findAllCategoriesWithOutImage';
   static readonly findAllCategoriesUsingGETPath = '/api/query/findAllCateogories';
   static readonly findAllCustomersWithoutSearchUsingGETPath = '/api/query/findAllCustomers';
@@ -254,6 +257,42 @@ class QueryResourceService extends __BaseService {
   findAllDeliveryTypesByStoreIdUsingGET(params: QueryResourceService.FindAllDeliveryTypesByStoreIdUsingGETParams): __Observable<PageOfType> {
     return this.findAllDeliveryTypesByStoreIdUsingGETResponse(params).pipe(
       __map(_r => _r.body as PageOfType)
+    );
+  }
+
+  /**
+   * @param storeId storeId
+   * @return OK
+   */
+  findDeliveryInfoByStoreIdUsingGETResponse(storeId: string): __Observable<__StrictHttpResponse<PageOfDeliveryInfo>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/deliveryinfoByStoreId/${storeId}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<PageOfDeliveryInfo>;
+      })
+    );
+  }
+  /**
+   * @param storeId storeId
+   * @return OK
+   */
+  findDeliveryInfoByStoreIdUsingGET(storeId: string): __Observable<PageOfDeliveryInfo> {
+    return this.findDeliveryInfoByStoreIdUsingGETResponse(storeId).pipe(
+      __map(_r => _r.body as PageOfDeliveryInfo)
     );
   }
 
@@ -1210,7 +1249,7 @@ class QueryResourceService extends __BaseService {
    * @param storeId storeId
    * @return OK
    */
-  findAllProductByStoreIdUsingGETResponse(storeId: string): __Observable<__StrictHttpResponse<Array<Product>>> {
+  findAllProductByStoreIdUsingGETResponse(storeId: string): __Observable<__StrictHttpResponse<PageOfProduct>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -1228,7 +1267,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<Product>>;
+        return _r as __StrictHttpResponse<PageOfProduct>;
       })
     );
   }
@@ -1236,9 +1275,9 @@ class QueryResourceService extends __BaseService {
    * @param storeId storeId
    * @return OK
    */
-  findAllProductByStoreIdUsingGET(storeId: string): __Observable<Array<Product>> {
+  findAllProductByStoreIdUsingGET(storeId: string): __Observable<PageOfProduct> {
     return this.findAllProductByStoreIdUsingGETResponse(storeId).pipe(
-      __map(_r => _r.body as Array<Product>)
+      __map(_r => _r.body as PageOfProduct)
     );
   }
 
@@ -1692,7 +1731,7 @@ class QueryResourceService extends __BaseService {
    * @param userName userName
    * @return OK
    */
-  findReviewsByStoreIdUsingGETResponse(userName: string): __Observable<__StrictHttpResponse<Array<Review>>> {
+  findReviewsByStoreIdUsingGETResponse(userName: string): __Observable<__StrictHttpResponse<PageOfReview>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -1710,7 +1749,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<Review>>;
+        return _r as __StrictHttpResponse<PageOfReview>;
       })
     );
   }
@@ -1718,9 +1757,9 @@ class QueryResourceService extends __BaseService {
    * @param userName userName
    * @return OK
    */
-  findReviewsByStoreIdUsingGET(userName: string): __Observable<Array<Review>> {
+  findReviewsByStoreIdUsingGET(userName: string): __Observable<PageOfReview> {
     return this.findReviewsByStoreIdUsingGETResponse(userName).pipe(
-      __map(_r => _r.body as Array<Review>)
+      __map(_r => _r.body as PageOfReview)
     );
   }
 
@@ -1735,7 +1774,7 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findAllReviewsUsingGETResponse(params: QueryResourceService.FindAllReviewsUsingGETParams): __Observable<__StrictHttpResponse<Array<Review>>> {
+  findAllReviewsUsingGETResponse(params: QueryResourceService.FindAllReviewsUsingGETParams): __Observable<__StrictHttpResponse<PageOfReview>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -1755,7 +1794,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<Review>>;
+        return _r as __StrictHttpResponse<PageOfReview>;
       })
     );
   }
@@ -1770,9 +1809,9 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findAllReviewsUsingGET(params: QueryResourceService.FindAllReviewsUsingGETParams): __Observable<Array<Review>> {
+  findAllReviewsUsingGET(params: QueryResourceService.FindAllReviewsUsingGETParams): __Observable<PageOfReview> {
     return this.findAllReviewsUsingGETResponse(params).pipe(
-      __map(_r => _r.body as Array<Review>)
+      __map(_r => _r.body as PageOfReview)
     );
   }
 
@@ -1844,7 +1883,7 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  getAllStockCurrentsUsingGETResponse(params: QueryResourceService.GetAllStockCurrentsUsingGETParams): __Observable<__StrictHttpResponse<Array<StockCurrent>>> {
+  getAllStockCurrentsUsingGETResponse(params: QueryResourceService.GetAllStockCurrentsUsingGETParams): __Observable<__StrictHttpResponse<PageOfStockCurrent>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -1864,7 +1903,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<StockCurrent>>;
+        return _r as __StrictHttpResponse<PageOfStockCurrent>;
       })
     );
   }
@@ -1879,9 +1918,9 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  getAllStockCurrentsUsingGET(params: QueryResourceService.GetAllStockCurrentsUsingGETParams): __Observable<Array<StockCurrent>> {
+  getAllStockCurrentsUsingGET(params: QueryResourceService.GetAllStockCurrentsUsingGETParams): __Observable<PageOfStockCurrent> {
     return this.getAllStockCurrentsUsingGETResponse(params).pipe(
-      __map(_r => _r.body as Array<StockCurrent>)
+      __map(_r => _r.body as PageOfStockCurrent)
     );
   }
 
@@ -2018,7 +2057,7 @@ class QueryResourceService extends __BaseService {
    * @param storeId storeId
    * @return OK
    */
-  findStockCurrentByStoreIdUsingGETResponse(storeId: string): __Observable<__StrictHttpResponse<Array<StockCurrent>>> {
+  findStockCurrentByStoreIdUsingGETResponse(storeId: string): __Observable<__StrictHttpResponse<PageOfStockCurrent>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -2036,7 +2075,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<StockCurrent>>;
+        return _r as __StrictHttpResponse<PageOfStockCurrent>;
       })
     );
   }
@@ -2044,9 +2083,9 @@ class QueryResourceService extends __BaseService {
    * @param storeId storeId
    * @return OK
    */
-  findStockCurrentByStoreIdUsingGET(storeId: string): __Observable<Array<StockCurrent>> {
+  findStockCurrentByStoreIdUsingGET(storeId: string): __Observable<PageOfStockCurrent> {
     return this.findStockCurrentByStoreIdUsingGETResponse(storeId).pipe(
-      __map(_r => _r.body as Array<StockCurrent>)
+      __map(_r => _r.body as PageOfStockCurrent)
     );
   }
 
@@ -2141,7 +2180,7 @@ class QueryResourceService extends __BaseService {
   /**
    * @return OK
    */
-  findStoreByRatingUsingGETResponse(): __Observable<__StrictHttpResponse<Array<Store>>> {
+  findStoreByRatingUsingGETResponse(): __Observable<__StrictHttpResponse<PageOfStore>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -2158,16 +2197,16 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<Store>>;
+        return _r as __StrictHttpResponse<PageOfStore>;
       })
     );
   }
   /**
    * @return OK
    */
-  findStoreByRatingUsingGET(): __Observable<Array<Store>> {
+  findStoreByRatingUsingGET(): __Observable<PageOfStore> {
     return this.findStoreByRatingUsingGETResponse().pipe(
-      __map(_r => _r.body as Array<Store>)
+      __map(_r => _r.body as PageOfStore)
     );
   }
 
@@ -2182,7 +2221,7 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findAllStoresUsingGETResponse(params: QueryResourceService.FindAllStoresUsingGETParams): __Observable<__StrictHttpResponse<Array<Store>>> {
+  findAllStoresUsingGETResponse(params: QueryResourceService.FindAllStoresUsingGETParams): __Observable<__StrictHttpResponse<PageOfStore>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -2202,7 +2241,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<Store>>;
+        return _r as __StrictHttpResponse<PageOfStore>;
       })
     );
   }
@@ -2217,9 +2256,9 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findAllStoresUsingGET(params: QueryResourceService.FindAllStoresUsingGETParams): __Observable<Array<Store>> {
+  findAllStoresUsingGET(params: QueryResourceService.FindAllStoresUsingGETParams): __Observable<PageOfStore> {
     return this.findAllStoresUsingGETResponse(params).pipe(
-      __map(_r => _r.body as Array<Store>)
+      __map(_r => _r.body as PageOfStore)
     );
   }
 
@@ -2263,7 +2302,7 @@ class QueryResourceService extends __BaseService {
    * @param regNo regNo
    * @return OK
    */
-  findUserRatingByRegNoUsingGETResponse(regNo: string): __Observable<__StrictHttpResponse<Array<UserRating>>> {
+  findUserRatingByRegNoUsingGETResponse(regNo: string): __Observable<__StrictHttpResponse<PageOfUserRating>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -2281,7 +2320,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<UserRating>>;
+        return _r as __StrictHttpResponse<PageOfUserRating>;
       })
     );
   }
@@ -2289,9 +2328,9 @@ class QueryResourceService extends __BaseService {
    * @param regNo regNo
    * @return OK
    */
-  findUserRatingByRegNoUsingGET(regNo: string): __Observable<Array<UserRating>> {
+  findUserRatingByRegNoUsingGET(regNo: string): __Observable<PageOfUserRating> {
     return this.findUserRatingByRegNoUsingGETResponse(regNo).pipe(
-      __map(_r => _r.body as Array<UserRating>)
+      __map(_r => _r.body as PageOfUserRating)
     );
   }
 
@@ -2306,7 +2345,7 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findAllUserRatingsUsingGETResponse(params: QueryResourceService.FindAllUserRatingsUsingGETParams): __Observable<__StrictHttpResponse<Array<UserRating>>> {
+  findAllUserRatingsUsingGETResponse(params: QueryResourceService.FindAllUserRatingsUsingGETParams): __Observable<__StrictHttpResponse<PageOfUserRating>> {
     let __params = this.newParams();
     let __headers = new HttpHeaders();
     let __body: any = null;
@@ -2326,7 +2365,7 @@ class QueryResourceService extends __BaseService {
     return this.http.request<any>(req).pipe(
       __filter(_r => _r instanceof HttpResponse),
       __map((_r) => {
-        return _r as __StrictHttpResponse<Array<UserRating>>;
+        return _r as __StrictHttpResponse<PageOfUserRating>;
       })
     );
   }
@@ -2341,9 +2380,9 @@ class QueryResourceService extends __BaseService {
    *
    * @return OK
    */
-  findAllUserRatingsUsingGET(params: QueryResourceService.FindAllUserRatingsUsingGETParams): __Observable<Array<UserRating>> {
+  findAllUserRatingsUsingGET(params: QueryResourceService.FindAllUserRatingsUsingGETParams): __Observable<PageOfUserRating> {
     return this.findAllUserRatingsUsingGETResponse(params).pipe(
-      __map(_r => _r.body as Array<UserRating>)
+      __map(_r => _r.body as PageOfUserRating)
     );
   }
 }

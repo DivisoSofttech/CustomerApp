@@ -1,41 +1,79 @@
 import { Injectable } from '@angular/core';
-import { Product, Stock, StockCurrent, OrderLine } from '../api/models';
+import { Product, Stock, StockCurrent, OrderLine, Store } from '../api/models';
 import { BehaviorSubject } from 'rxjs';
+import { AlertController, NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  orderLines: OrderLine [] = [];
+  currentShopId = 0;
+  orderLines: OrderLine[] = [];
   totalPrice = 0;
   storeId;
   observableTickets: BehaviorSubject<OrderLine[]>;
   observablePrice: BehaviorSubject<number>;
-  constructor() {
+  currentShop: Store;
+  constructor(private alertController: AlertController,
+    private navController: NavController) {
     this.observableTickets = new BehaviorSubject<OrderLine[]>(this.orderLines);
     this.observablePrice = new BehaviorSubject<number>(this.totalPrice);
   }
 
-  addProduct(product: Product, stockCurrent: StockCurrent) {
-    let added = false;
-    this.orderLines.forEach(orderLine => {
-      if (orderLine.productId === product.id) {
-        orderLine.quantity++;
-        orderLine.total += orderLine.pricePerUnit;
-        this.updateCart();
-        added = true;
-      }
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Checkout First',
+      message: 'Checkout From ' + this.currentShop.name,
+      buttons: [
+        {
+          text: 'Go To Cart',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            this.navController.navigateForward('/tabs/basket');
+          }
+        }
+      ]
     });
-    if (!added) {
-      const orderLine: OrderLine = {
-        productId: product.id,
-        quantity: 1,
-        pricePerUnit: stockCurrent.sellPrice,
-        total: stockCurrent.sellPrice
-      };
-      this.orderLines.push(orderLine);
-      this.updateCart();
+    await alert.present();
+  }
+
+  addProduct(product: Product, stockCurrent: StockCurrent, shop: Store) {
+    if (this.currentShopId === 0) {
+      this.currentShop = shop;
+      this.currentShopId = shop.id;
     }
+
+
+
+    if (this.currentShopId === shop.id) {
+
+      let added = false;
+      this.orderLines.forEach(orderLine => {
+        if (orderLine.productId === product.id) {
+          orderLine.quantity++;
+          orderLine.total += orderLine.pricePerUnit;
+          this.updateCart();
+          added = true;
+        }
+      });
+      if (!added) {
+        const orderLine: OrderLine = {
+          productId: product.id,
+          quantity: 1,
+          pricePerUnit: stockCurrent.sellPrice,
+          total: stockCurrent.sellPrice
+        };
+        this.orderLines.push(orderLine);
+        this.updateCart();
+      }
+
+      return true;
+
+    } else {
+      this.presentAlert();
+      return false;
+    }
+
   }
 
   removeProduct(stockCurrent: StockCurrent) {
@@ -67,6 +105,13 @@ export class CartService {
 
   emptyCart() {
     this.orderLines = [];
+    this.currentShopId = 0;
+    this.currentShop = undefined;
     this.updateCart();
+  }
+
+  getTotalQunatity() {
+
+
   }
 }

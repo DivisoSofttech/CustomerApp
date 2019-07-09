@@ -25,7 +25,7 @@ export class ClosedPipe implements PipeTransform {
       closingTime.add(1,'days');
     }
 
-    console.log(now.toString() , '\n' , openingTime.toString() , '\n', closingTime.toString() , '\n\n');
+    // console.log(now.toString() , '\n' , openingTime.toString() , '\n', closingTime.toString() , '\n\n');
 
     return now.isBetween(openingTime , closingTime);
   }

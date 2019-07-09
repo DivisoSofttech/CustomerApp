@@ -56,69 +56,118 @@
   </h4>
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
 
-      <ion-infinite-scroll-content
-      loading-spinner="bubbles">
+    <ion-infinite-scroll-content *ngIf="stores === undefined">
+
+      <ion-card *ngFor="let s of [1,2,3,4,5]">
+        <ion-item lines="none" class="mg-top">
+          <ion-thumbnail class="imageShow">
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-card-content>
+            <ion-card-title class="card-title">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-card-title>
+            <ion-card-subtitle>
+              <ion-skeleton-text animated></ion-skeleton-text>
+              <ion-label>
+                <ion-skeleton-text animated></ion-skeleton-text>
+                <ion-skeleton-text animated></ion-skeleton-text>
+                <ion-text>
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-text>
+                <ion-text>
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                </ion-text>
+              </ion-label>
+            </ion-card-subtitle>
+          </ion-card-content>
+
+        </ion-item>
+        <div class="card-footer">
+          <ion-grid no-padding>
+            <ion-row>
+              <ion-col size="7" text-center no-padding>
+                <rating></rating>
+              </ion-col>
+              <ion-col size="3" text-center no-padding>
+                <ion-buttons>
+                  <ion-button disabled>
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-button>
+                  <ion-button disabled>
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-button>
+                </ion-buttons>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </ion-card>
+    </ion-infinite-scroll-content>
+
+    <ion-infinite-scroll-content loading-spinner="bubbles" *ngIf="stores != undefined">
       <ion-card *ngFor="let store of stores">
 
-          <ion-item lines="none" class="mg-top">
-    
-    
-            <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
-              class="imageShow">
-            </ion-img>
-            <ion-card-content *ngIf="store.regNo" (click)="showHotelMenu(store.regNo)">
-              <ion-card-title class="card-title" *ngIf="store.name">{{store.name}}</ion-card-title>
-              <!-- <ion-card-subtitle *ngIf="store.openingTime">
+        <ion-item lines="none" class="mg-top">
+
+
+          <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
+            class="imageShow">
+          </ion-img>
+          <ion-card-content *ngIf="store.regNo" (click)="showHotelMenu(store.regNo)">
+            <ion-card-title class="card-title" *ngIf="store.name">{{store.name}}</ion-card-title>
+            <!-- <ion-card-subtitle *ngIf="store.openingTime">
               {{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>-->
-              <ion-card-subtitle>
-                {{store.openingTime | date: 'shortTime' }} to {{ store.closingTime |  date: 'shortTime'}}
-                <ion-label>
-                  <ion-text class="category">{{categories[store.regNo] | arrayFormater}} </ion-text>
-                  <br/>
-                  <ion-text color="success" *ngIf="deliveryInfos[store.regNo]">{{deliveryInfos[store.regNo]| arrayFormater:'only'}}
-                  </ion-text>
-                  <ion-text>
-                    
-                  </ion-text>
-                  <ion-text>
-                    <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
-                      Closed
-                    </p>
-                  </ion-text>
-                </ion-label>
-              </ion-card-subtitle>
-            </ion-card-content>
-    
-          </ion-item>
-          <div class="card-footer">
-            <ion-grid no-padding>
-              <ion-row>
-                <ion-col size="7" text-center no-padding>
-                  <rating [rate]="store.totalRating" [readonly]="true"></rating>
-                </ion-col>
-                <ion-col size="3" text-center no-padding>
-                  <ion-buttons>
-                    <ion-button *ngIf="store.userRatings" disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
-                    <ion-button *ngIf="!store.userRatings" disabled>(0)</ion-button>
-                  </ion-buttons>
-                </ion-col>
-                <ion-col size="2" text-center no-padding>
-                  <ion-buttons justify-content-center>
-                    <ion-button fill="none" (click)="addToFavourite(store)" *ngIf="!isFavourite(store)">
-                      <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
-                    </ion-button>
-                    <ion-button fill="none" (click)="removeFromFavourite(store)" *ngIf="isFavourite(store)">
-                      <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
-                    </ion-button>
-                  </ion-buttons>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-    
-    
-          </div>
-        </ion-card>
-    
+            <ion-card-subtitle>
+              {{store.openingTime | date: 'shortTime' }} to {{ store.closingTime |  date: 'shortTime'}}
+              <ion-label>
+                <ion-text class="category">{{categories[store.regNo] | arrayFormater}} </ion-text>
+                <br />
+                <ion-text color="success" *ngIf="deliveryType[store.regNo]">
+                  {{deliveryType[store.regNo]| arrayFormater:'only'}}
+                </ion-text>
+                <ion-text>
+
+                </ion-text>
+                <ion-text>
+                  <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
+                    Closed
+                  </p>
+                </ion-text>
+              </ion-label>
+            </ion-card-subtitle>
+          </ion-card-content>
+
+        </ion-item>
+        <div class="card-footer">
+          <ion-grid no-padding>
+            <ion-row>
+              <ion-col size="7" text-center no-padding>
+                <rating [rate]="store.totalRating" [readonly]="true"></rating>
+              </ion-col>
+              <ion-col size="3" text-center no-padding>
+                <ion-buttons>
+                  <ion-button *ngIf="store.userRatings" disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
+                  <ion-button *ngIf="!store.userRatings" disabled>(0)</ion-button>
+                </ion-buttons>
+              </ion-col>
+              <ion-col size="2" text-center no-padding>
+                <ion-buttons justify-content-center>
+                  <ion-button fill="none" (click)="addToFavourite(store)" *ngIf="!isFavourite(store)">
+                    <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+                  </ion-button>
+                  <ion-button fill="none" (click)="removeFromFavourite(store)" *ngIf="isFavourite(store)">
+                    <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+
+        </div>
+      </ion-card>
+
     </ion-infinite-scroll-content>
 
   </ion-infinite-scroll>

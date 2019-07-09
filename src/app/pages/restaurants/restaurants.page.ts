@@ -42,15 +42,19 @@ export class RestaurantsPage implements OnInit {
   private selectedLon: string;
   locateBarOnly = false;
   map: GoogleMap;
-  stores: Store[] = [];
+  stores: Store[];
   categories: any = {};
-  deliveryInfos: any = {};
+  deliveryType: any = {};
   rate = 2;
   slideOpts = {
     slidesPerView: 2,
     loop: true,
     autoplay: true
   };
+
+  pageNumber = 1;
+  maxPage = 1;
+
   @ViewChild("slides") slides: IonSlides;
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
@@ -103,25 +107,25 @@ export class RestaurantsPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loadingCreator.createLoader().then(async data => {
-      this.loading = data;
-      this.loading.present();
+;
       this.timeTracker();
       this.getStores();
       await this.platform.ready();
       await this.loadMap();
-    });
   }
 
   getStores() {
     this.filterService.getFilter()
     .subscribe(data => {
       if(data.sortFilter != undefined) {
+        console.log('Getting Via Common Filter');
         this.getStoreByCommonSortFilter()
       } else if(data.deliveryTypeFilter != undefined) {
+        console.log('Getting Via Delivery Type Filter');
         this.getStoreByDeliveryType();
       }
       else {
+        console.log('Getting Via No Filter');
         this.getStoresNoFilter();
       }
     });
@@ -129,61 +133,83 @@ export class RestaurantsPage implements OnInit {
   }
 
   getStoreByCommonSortFilter() {
-    this.filterService.getByCommonFilter(false)
-    
+    var setStores = (data)=> {
+      this.stores = data;
+      this.infiniteScroll.disabled = false;
+    }
+    var complete = ()=> {
+      console.log('Hiing Infinite Scroll');
+      this.infiniteScroll.complete();
+    }
+    this.filterService.getByCommonFilter(setStores , complete);
   }
 
   getStoreByDeliveryType() {
-    this.filterService.getByDeliveryType();
+    var setStores = (data)=> {
+      this.stores = data;
+    }
+    var complete = ()=> {
+      console.log('Hiing Infinite Scroll');
+      this.infiniteScroll.complete();
+    }
+    this.filterService.getByDeliveryType(setStores , complete);
   }
 
   getStoresNoFilter() {
-    this.queryResourceService.findAllStoresUsingGET(
-      {
-
-      }).subscribe(
-        res => {
-          this.stores = res;
-          console.log("Got Stores", res);
-          this.setRestaurantMarkers();
-          this.storesBackup = res;
-          this.getFavourites();
-          this.stores.forEach(store => {
-            console.log("Getting Category", store.regNo);
-            this.queryResourceService
-              .findCategoryByStoreIdUsingGET({ userId: store.regNo })
-              .subscribe(
-                success => {
-                  this.categories[store.regNo] = success.content;
-                  console.log("Got Category", success.content);
-                  this.loading.dismiss();
-                },
-                err => {
-                  this.loading.dismiss();
-                  this.toastView("Error, connecting to server.");
-                }
-              );
-            this.queryResourceService
-              .findAllDeliveryTypesByStoreIdUsingGET({
-                storeId: store.id
-              })
-              .subscribe(
-                success => {
-                  this.deliveryInfos[store.regNo] = success.content;
-                  console.log("DeliveryInfo", this.deliveryInfos[store.regNo]);
-                },
-                err => {
-                  console.log("Could Not Find Delivery Info");
-                }
-              );
-          });
-        },
-        err => {
-          console.log("Error fetching stores");
-          this.toastView("Error, connecting to server.");
-          this.loading.dismiss();
-        }
-      );    
+    if(this.pageNumber <= this.maxPage) {
+      console.log('Getting Page' ,  this.pageNumber , this.maxPage);
+      this.queryResourceService.findAllStoresUsingGET(
+        {
+          size: this.pageNumber
+  
+        }).subscribe(
+          res => {
+            this.stores = res.content;
+            if(this.maxPage === 0) {
+              this.maxPage = res.totalPages;
+            }
+            this.pageNumber++;
+            console.log("Got Stores", res);
+            this.setRestaurantMarkers();
+            this.storesBackup = res.content;
+            this.getFavourites();
+            this.stores.forEach(store => {
+              console.log("Getting Category", store.regNo);
+              this.queryResourceService
+                .findCategoryByStoreIdUsingGET({ userId: store.regNo })
+                .subscribe(
+                  success => {;
+                    this.categories[store.regNo] = success.content;
+                    console.log("Got Category", success.content);
+                  },
+                  err => {
+                    this.toastView("Error, connecting to server.");
+                  }
+                );
+  
+              this.queryResourceService
+                .findAllDeliveryTypesByStoreIdUsingGET({
+                  storeId: store.id
+                })
+                .subscribe(
+                  success => {
+                    this.deliveryType[store.regNo] = success.content;
+                    console.log("DeliveryInfo", this.deliveryType[store.regNo]);
+                  },
+                  err => {
+                    console.log("Could Not Find Delivery Info");
+                  }
+                );
+            });
+          },
+          err => {
+            console.log("Error fetching stores");
+            this.toastView("Error, connecting to server.");
+          }
+        );      
+    } else {
+      this.infiniteScroll.complete();
+    }
   }
 
   async toastView(message) {
@@ -386,7 +412,8 @@ export class RestaurantsPage implements OnInit {
   }
 
   loadData(event) {
-
+    console.log('Loading More Data')
+    this.getStores();
   }
 
   toggleInfiniteScroll() {
