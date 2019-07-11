@@ -21,7 +21,7 @@ export class ProfilePage implements OnInit {
   profile: any = {};
   stores: any = {};
   maximumPage;
-  currentOrderPageNumber = 0;
+  currentOrderPageNumber = 1;
 
   favourites: Favourite[] = [];
   frequentOrders: StockCurrent[] = [
@@ -82,12 +82,14 @@ export class ProfilePage implements OnInit {
             });
           this.queryResourceService.findOrdersByCustomerIdUsingGET({
             customerId: this.profile.preferred_username,
-            page: 0
+            page: 1
           })
             .subscribe(orders => {
               if (orders.content.length > 0) {
                 this.orders = orders.content;
                 console.log('No orders', this.orders.length);
+              } else {
+                this.orders = [];
               }
               this.maximumPage = orders.totalPages;
               this.orders.forEach(order => {
@@ -100,11 +102,13 @@ export class ProfilePage implements OnInit {
                     });
                 }
               }, err => {
+
                 this.presentToast('Error connecting to server');
               });
             },
               err => {
-                this.presentToast('Error connecting to server');
+                this.orders = []; // Remove this later
+                // this.presentToast('Error connecting to server');
               });
           console.log(user);
         }, err => {
@@ -148,11 +152,14 @@ export class ProfilePage implements OnInit {
       size: 2
     })
       .subscribe(orders => {
+        this.currentOrderPageNumber = orders.totalPages; 
         if (orders.content.length > 0) {
           console.log('Getting orders', orders);
           orders.content.forEach(order => {
             this.orders.push(order);
           });
+        } else {
+          this.orders= [];
         }
       });
     if (this.currentOrderPageNumber === this.maximumPage) {

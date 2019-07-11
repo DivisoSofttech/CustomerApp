@@ -20,8 +20,8 @@
     <ion-item *ngFor="let term of searchSuggetions" (click)="selectSuggestion(term)">{{term}}</ion-item>
   </ion-list>
 </ion-header>
-<div class="my-overlay" *ngIf=" store!= undefined && !( now | closed:store.openingTime:store.closingTime)" padding>
-</div>
+<!-- <div class="my-overlay" *ngIf=" store!= undefined && !( now | closed:store.openingTime:store.closingTime)" padding>
+</div> -->
 <ion-content *ngIf="store">
 
  
