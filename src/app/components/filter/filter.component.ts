@@ -78,21 +78,25 @@ export class FilterComponent implements OnInit {
             this.filterObject.deliveryTypeFilter = undefined;
             this.filterObject.sortFilter = 'ltoh';
             this.filterService.setFilter(this.filterObject);
-          this.dismiss();
+            this.dismiss();
           break;
 
         case 'htol':
             this.filterObject.deliveryTypeFilter = undefined;
             this.filterObject.sortFilter = 'htol';
             this.filterService.setFilter(this.filterObject);
-          this.dismiss();
+            this.dismiss();
           break;
-          case 'deliveryType':
+        case 'deliveryType':
               this.filterObject.sortFilter = undefined;       
               this.filterObject.deliveryTypeFilter = this.deliveryType;
               this.filterService.setFilter(this.filterObject);
               this.dismiss();
-              break;    
+          break;
+        case 'reset':
+          this.filterObject = {};
+          this.filterService.setFilter(this.filterObject);
+          this.dismiss();
       }
     } catch (error) {
       console.log(error);

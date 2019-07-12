@@ -12,6 +12,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
+import { ErrorComponent } from 'src/app/components/error/error.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,6 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
   ],
   providers: [Geolocation, NativeGeocoder],
   declarations: [RestaurantsPage , ArrayFormaterPipe],
-  entryComponents : [FilterComponent, RatingComponent, NotificationsComponent]
+  entryComponents : [FilterComponent, RatingComponent, NotificationsComponent,ErrorComponent]
 })
 export class RestaurantsPageModule {}

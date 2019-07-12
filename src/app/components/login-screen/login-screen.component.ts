@@ -1,17 +1,10 @@
-import { CustomerDTO } from './../../api/models/customer-dto';
-import { CommandResourceService } from 'src/app/api/services';
-import {
-  ModalController,
-  NavController,
-  ToastController,
-  IonSlides
-} from '@ionic/angular';
+import { IonSlides } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
-import { Loading } from '../loading';
+import { CommandResourceService } from 'src/app/api/services';
+import { KeycloakService } from 'src/app/services/keycloak.service';
+import { Util } from 'src/app/services/util';
+import { ApiConfiguration } from 'src/app/api/api-configuration';
 
 @Component({
   selector: 'app-login-screen',
@@ -19,54 +12,120 @@ import { Loading } from '../loading';
   styleUrls: ['./login-screen.component.scss']
 })
 export class LoginScreenComponent implements OnInit {
+
   username = '';
   password = '';
   email = '';
   loginTab = true;
   value = 'login';
-  kcAdminClient: KeycloakAdminClient;
-  agreement: boolean;
   phone: number;
-  registerStatus = "none";
   @ViewChild('slides') slides: IonSlides;
 
   constructor(
-    private modalController: ModalController,
-    private navController: NavController,
-    private oauthService: OAuthService,
-    private navCtrl: NavController,
+    private keycloakService: KeycloakService,
     private queryResourceService: QueryResourceService,
     private commandResourceService: CommandResourceService,
-    private toastController: ToastController,
-    private loadingService: Loading
-  ) {}
+    private util: Util,
+    private apiConfiguration: ApiConfiguration
+  ) { }
 
   ngOnInit() {
-    this.agreement = false;
-    this.kcAdminClient = new KeycloakAdminClient();
-    this.kcAdminClient.setConfig({
-      baseUrl: 'http://35.196.86.249:8080/auth'
-    });
-    this.configureKeycloakAdmin();
+    this.isLoggedIn();
   }
 
-  configureKeycloakAdmin() {
-    this.kcAdminClient.auth({
-      username: 'admin',
-      password: 'karma123',
-      grantType: 'password',
-      clientId: 'admin-cli',
-    });
+
+  // Login and Register Methods
+
+  login() {
+    this.util.createLoader()
+      .then(loader => {
+        loader.present();
+        this.keycloakService.authenticate({ username: this.username, password: this.password },
+          () => {
+            loader.dismiss();
+            this.createUserIfNotExists(this.username);
+          },
+          () => {
+            loader.dismiss();
+            this.util.createToast('Invalid Username / Password')
+          });
+      })
   }
 
-  async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000,
-      cssClass: 'toast'
-    });
-    toast.present();
+  signup() {
+    this.util.createLoader()
+      .then(loader => {
+        loader.present();
+        let user = { username: this.username, email: this.email };
+        this.keycloakService.createAccount(user, this.password,
+          (res) => {
+            loader.dismiss();
+            this.login()
+          },
+          (err) => {
+            loader.dismiss();
+            if (err.response.status == 409) {
+              this.util.createToast('User Already Exists')
+              this.slideChange();
+            } else {
+              this.util.createToast('Cannot Register User. Please Try Later')
+            }
+            console.log(err);
+          })
+
+      })
   }
+
+
+  isLoggedIn() {
+    this.keycloakService.isAuthenticated()
+      .then(() => {
+        this.util.navigateRoot();
+      }).catch(() => {
+        console.log('Not Logged In');
+      })
+  }
+
+
+  createUserIfNotExists(reference) {
+    this.util.createLoader()
+      .then(loader => {
+        loader.present();
+        this.queryResourceService.findCustomerByReferenceUsingGET(reference)
+        .subscribe(
+            customer => {
+              console.log('Got Customer' , customer);
+              loader.dismiss();
+              this.util.navigateRoot();
+          },
+            err => {
+              if (err.status == 500) {
+                // Check if server is reachable
+                let url = this.apiConfiguration.rootUrl.slice(2, this.apiConfiguration.rootUrl.length);
+                this.commandResourceService
+                  .createCustomerUsingPOST({
+                    reference: this.username,
+                    name: this.username
+                  })
+                  .subscribe(
+                    customer => {
+                      console.log('Customer Created', customer);
+                      loader.dismiss();
+                      this.util.navigateRoot();
+                  },
+                    err => {
+                      console.log(err);
+                      loader.dismiss();
+                      this.util.createToast('Server is Unreachable');
+                  });
+              }
+        });
+      })
+  }
+
+
+  // View Related Methods
+
 
   loginDisabled(): boolean {
     if (this.username === '' || this.password === '') {
@@ -108,106 +167,5 @@ export class LoginScreenComponent implements OnInit {
   setSlideValue(): number {
     this.slideChange();
     return 1;
-  }
-
-  dataChanged(agreement) {
-    console.log('Old Agreement is ' + this.agreement);
-
-    console.log('Agreement is ' + agreement);
-    this.agreement = agreement;
-  }
-
-
-
-  login() {
-    console.log('in login' + this.username + ' password is ' + this.password);
-    this.oauthService
-      .fetchTokenUsingPasswordFlowAndLoadUserProfile(
-        this.username,
-        this.password,
-        new HttpHeaders()
-      )
-      .then(() => {
-        const claims = this.oauthService.getIdentityClaims();
-        if (claims) {
-
-          this.queryResourceService.findCustomerByReferenceUsingGET(this.username) 
-          .subscribe(
-            res => {
-              this.presentToast('Login Successful');
-            }
-            // err => {
-            //   this.commandResourceService
-            //     .createCustomerUsingPOST({
-            //       reference: this.username,
-            //       name: this.username
-            //     })
-            //     .subscribe(data => {
-            //       console.log('User Created', data);
-            //       this.presentToast('Login Successful');
-            //     });
-            // }
-          );
-        }
-        if (this.oauthService.hasValidAccessToken()) {
-          this.navCtrl.navigateRoot('/tabs/home');
-        }
-      })
-      .catch((err: HttpErrorResponse) => {
-        this.presentToast(err.error.error_description);
-      });
-  }
-
-  signup() {
-    this.loadingService.createLoader()
-    .then(loader => {
-
-      loader.present();
-      const map = new Map([['phone', this.phone], ['value', 3]]);
-
-      this.kcAdminClient.users
-        .create({
-          realm: 'graeshoppe',
-          username: this.username,
-          email: this.email,
-          enabled: true,
-          credentials: [
-            {
-              type: 'password',
-              value: this.password
-            }
-          ],
-          attributes: map
-        })
-        .then(res => {
-          this.oauthService
-            .fetchTokenUsingPasswordFlowAndLoadUserProfile(
-              this.username,
-              this.password,
-              new HttpHeaders()
-            )
-            .then(
-              () => {
-                this.commandResourceService
-                  .createCustomerUsingPOST({
-                    reference: this.username,
-                    name: this.username
-                  })
-                  .subscribe(data => {
-                    console.log('User Created', data);
-                    this.presentToast('Registration Successful');
-                    this.navCtrl.navigateRoot('/tabs/home');
-                    loader.dismiss();
-                  });
-              },
-              err => {
-                this.presentToast('Error Registering User');
-                loader.dismiss();
-              }
-            );
-        });
-  
-
-    });
   }
 }
