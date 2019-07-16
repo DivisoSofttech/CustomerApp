@@ -92,6 +92,7 @@ export class HotelMenuPage implements OnInit {
 
         this.getStore();
         this.getProducts();
+        this.getCategories();
         this.getRatingReview();
 
       this.subscriptionCart = this.cartService.observableTickets.subscribe(
@@ -131,6 +132,14 @@ export class HotelMenuPage implements OnInit {
         console.log('Error fetching store data', err);
       }
     );
+  }
+
+  getCategories() {
+    this.queryResourceService
+    .findAllCategoriesUsingGET(this.storeId)
+    .subscribe(result => {
+      this.categories = result;
+    })
   }
 
   getProducts() {
@@ -249,7 +258,8 @@ export class HotelMenuPage implements OnInit {
       translucent: true
     });
     popover.onDidDismiss().then((data: any) => {
-      if (data.data.result !== undefined) {
+      console.log(data.data)
+      if (data.data !== undefined) {
         this.stockCurrents = data.data.result;
         this.selectedCategory = data.data.selectedCategory;
       } else {
@@ -302,9 +312,6 @@ export class HotelMenuPage implements OnInit {
       this.cartService.removeProduct(stock);
     }
   }
-
-
-
 
   selectSuggestion(term) {
     this.disableSuggetions = true;

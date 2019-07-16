@@ -64,7 +64,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-slides #slides (ionSlideDidChange)="slideChange()">
+  <ion-slides  slidesPerView="4" #slides (ionSlideDidChange)="slideChange()">
     <ion-slide class="product-slide">
 
       <div>
@@ -125,6 +125,7 @@
     </ion-slide>
 
     <ion-slide>
+     <div>
       <ion-grid>
         <ion-row>
           <ion-col size="12">
@@ -138,7 +139,7 @@
               </ion-item>
               <ion-item>
                 <ion-textarea [(ngModel)]="review.review" type="text" placeholder="Review.... "></ion-textarea>
-                <ion-button (click)="postReview()">
+                <ion-button (click)="postReview()" fill="clear">
                   <ion-icon slot="icon-only" name="send"></ion-icon>
                 </ion-button>
               </ion-item>
@@ -148,7 +149,7 @@
 
         <ion-row>
           <ion-col size="12">
-            <ion-card *ngFor="let raterev of rateReview">
+            <!-- <ion-card *ngFor="let raterev of rateReview">
               <ion-item lines="none" color="vibrant">
                 <img src="assets/images/user.png" slot="start" class="reviewProfile" />
                 <ion-card-subtitle slot="start" padding>
@@ -159,10 +160,24 @@
               <ion-item lines="none">
                 <ion-card-subtitle class="commentText">{{raterev.review.review}}</ion-card-subtitle>
               </ion-item>
-            </ion-card>
+            </ion-card> -->
+
+            <ion-list>
+              <ion-item *ngFor="let raterev of rateReview">
+                <ion-avatar>
+                  <img src="assets/images/user.png" slot="start" class="reviewProfile"/>
+                </ion-avatar>
+                <ion-label>
+                  <h3>{{raterev.review.userName | uppercase}}</h3>
+                  <p>{{raterev.review.review}}</p>
+                  <rating [rate]="raterev.rating.rating" [readonly]="true"></rating>
+                </ion-label>
+              </ion-item>
+            </ion-list>
           </ion-col>
         </ion-row>
       </ion-grid>
+     </div>
     </ion-slide>
 
     <ion-slide>
