@@ -5,4 +5,5 @@ export { CommandResourceService } from './services/command-resource.service';
 export { OrderCommandResourceService } from './services/order-command-resource.service';
 export { GatewayResourceService } from './services/gateway-resource.service';
 export { LogoutResourceService } from './services/logout-resource.service';
+export { PaymentCommandResourceService } from './services/payment-command-resource.service';
 export { QueryResourceService } from './services/query-resource.service';

@@ -121,7 +121,7 @@ export class DeliveryInfoComponent implements OnInit {
     if (
       this.tmpAddress.name != undefined &&
       this.tmpAddress.phone &&
-      this.tmpAddress.houseNoOrBuildingName
+      this.tmpAddress.houseNoOrBuildingName&&this.deliveryType!=undefined
     ) {
       return false;
     }

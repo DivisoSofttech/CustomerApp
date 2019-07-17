@@ -37,7 +37,7 @@ import {
     OAuthModule.forRoot(),
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
+      apiKey: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c',
       libraries: ['places', 'geometry']
     }),
     IonicStorageModule.forRoot({

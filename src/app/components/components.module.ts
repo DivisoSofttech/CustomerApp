@@ -20,6 +20,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { ImageSelectorComponent } from './image-selector/image-selector.component';
 import { ClosedPipe } from '../pipes/closed.pipe';
 import { DateDifferencePipe } from '../pipes/date-difference.pipe';
+import { ProcessPaymentComponent } from './process-payment/process-payment.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { DateDifferencePipe } from '../pipes/date-difference.pipe';
                   DeliveryInfoComponent,
                   NotificationsComponent,
                   PaymentSuccessfullInfoComponent,
+                  ProcessPaymentComponent,
                   FooterComponent,
                   ProfileEditComponent,
                   ImageSelectorComponent,
@@ -60,6 +62,7 @@ import { DateDifferencePipe } from '../pipes/date-difference.pipe';
               NotificationsComponent,
               DeliveryInfoComponent,
               PaymentSuccessfullInfoComponent,
+              ProcessPaymentComponent,
               FooterComponent,
               ProfileEditComponent,
               ImageSelectorComponent,
@@ -71,6 +74,7 @@ import { DateDifferencePipe } from '../pipes/date-difference.pipe';
               AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent,
               ProfileEditComponent,
               ImageSelectorComponent,
+              ProcessPaymentComponent
             ]
 })
 export class ComponentsModule { }

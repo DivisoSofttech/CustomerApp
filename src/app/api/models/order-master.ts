@@ -1,17 +1,14 @@
 /* tslint:disable */
 export interface OrderMaster {
-  paymentTotal?: number;
+  pricePerUnit?: number;
   amount?: number;
   date?: string;
-  deliveryCharge?: number;
-  deliveryType?: string;
-  expectedDelivery?: string;
   grandTotal?: number;
   id?: number;
   orderId?: string;
-  customerId?: string;
+  paymentTotal?: number;
   paymentType?: string;
-  pricePerUnit?: number;
+  customerId?: string;
   productId?: number;
   quantity?: number;
   ref?: string;
