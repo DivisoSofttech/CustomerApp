@@ -1,31 +1,21 @@
-import { map } from "rxjs/operators";
-import { LocationService } from "./../../services/location-service.service";
-import { Store, Category } from "src/app/api/models";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import {
-  NavController,
   ModalController,
-  ToastController,
   Platform,
   IonSlides,
-  IonInfiniteScroll
+  IonInfiniteScroll,
+  NavController
 } from "@ionic/angular";
+
+import { Store } from "src/app/api/models";
+import { LocationService } from "./../../services/location-service.service";
 import { FilterComponent } from "src/app/components/filter/filter.component";
 import { QueryResourceService } from "src/app/api/services";
-import {
-  GoogleMaps,
-  GoogleMap,
-  GoogleMapOptions,
-  Marker,
-  Environment,
-  MyLocation,
-  GoogleMapsAnimation,
-  GoogleMapsEvent
-} from "@ionic-native/google-maps";
 import { NotificationsComponent } from "src/app/components/notifications/notifications.component";
-import { Loading } from "src/app/components/loading";
 import { FavouriteService } from "src/app/services/favourite/favourite.service";
 import { FilterService } from 'src/app/services/filter.service';
+import { Util } from 'src/app/services/util';
+import { MapService } from 'src/app/services/map/map.service';
 
 @Component({
   selector: "app-restaurants",
@@ -33,325 +23,222 @@ import { FilterService } from 'src/app/services/filter.service';
   styleUrls: ["./restaurants.page.scss"]
 })
 export class RestaurantsPage implements OnInit {
+
   now: Date;
-  loading: HTMLIonLoadingElement;
-  storesBackup: Store[] = [];
-  places: any[] = [];
-  searchBarOnly = false;
-  private selectedLat: string;
-  private selectedLon: string;
-  locateBarOnly = false;
-  map: GoogleMap;
+  pageNumber = 1;
+  maxPage = 1;
+  filterData;
+  showServiceDown: boolean = false;
+
+
   stores: Store[];
+  storesBackup: Store[];
   categories: any = {};
   deliveryType: any = {};
-  rate = 2;
+  favouriteRestaurantsID = [];
+
+  locateBarOnly = false;
+  searchBarOnly = false;
+
+  places: any[] = [];
+
   slideOpts = {
     slidesPerView: 2,
     loop: true,
     autoplay: true
   };
-
-  pageNumber = 1;
-  maxPage = 1;
-
   @ViewChild("slides") slides: IonSlides;
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
-  favouriteRestaurantsID = [];
-
+ 
   constructor(
-    private navCtrl: NavController,
     private modalController: ModalController,
-    private toastCtrl: ToastController,
     private platform: Platform,
     private locationService: LocationService,
     private queryResourceService: QueryResourceService,
-    private loadingCreator: Loading,
     private favourite: FavouriteService,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private util: Util,
+    private map: MapService,
+    private navCtrl: NavController
   ) { }
 
-  ionViewWillLeave() {
-    this.slides.stopAutoplay();
-  }
-  ionViewDideave() {
-    this.slides.stopAutoplay();
-  }
-  ionViewDidEnter() {
-    this.getFavourites();
-    this.stores = this.stores;
-    this.slides.startAutoplay();
-  }
-  showHotelMenu(storeId) {
-    this.slides.stopAutoplay();
-    this.navCtrl.navigateForward("/hotel-menu/" + storeId);
-  }
 
-  async presentFilterModal() {
-    const modal = await this.modalController.create({
-      component: FilterComponent,
-      cssClass: "half-height",
-      showBackdrop: true
-    });
-    return await modal.present();
-  }
+  ngOnInit() {
 
-  // I dont Know/not sure whether this
-  // function will cause any Performance issues
-  timeTracker() {
+    this.showServiceDown = false;
     this.now = new Date();
-    // setInterval(() => {
-    //   this.now = new Date();
-    // }, 10000);
-  }
-
-  async ngOnInit() {
-;
-      this.timeTracker();
+    this.filterService.getFilter()
+    .subscribe(data => {
+      this.filterData = data;
       this.getStores();
-      await this.platform.ready();
-      await this.loadMap();
+    });
+    this.platform.ready()
+      .then(data => {
+        this.map.loadMap();
+      })
   }
 
   getStores() {
-    this.filterService.getFilter()
-    .subscribe(data => {
-      if(data.sortFilter != undefined) {
+      if (this.filterData.sortFilter != undefined) {
         console.log('Getting Via Common Filter');
         this.getStoreByCommonSortFilter()
-      } else if(data.deliveryTypeFilter != undefined) {
+      } else if (this.filterData.deliveryTypeFilter != undefined) {
         console.log('Getting Via Delivery Type Filter');
-        this.getStoreByDeliveryType();
+        this.getStoreByDeliveryType(this.filterData.deliveryTypeFilter);
       }
       else {
         console.log('Getting Via No Filter');
         this.getStoresNoFilter();
       }
-    });
- 
+
   }
 
   getStoreByCommonSortFilter() {
-    var setStores = (data)=> {
-      this.stores = data;
-      this.infiniteScroll.disabled = false;
+    switch(this.filterData.sortFilter) {
+      case 'rating':
+        this.queryResourceService.findStoreByRatingUsingGET()
+        .subscribe(res => {
+
+          console.log('Got CommonFilter' , res.content);
+
+          this.showServiceDown = false;
+          this.stores = res.content;
+
+          this.maxPage = res.totalPages;
+          this.pageNumber++; 
+    
+          this.map.setStores(this.stores);
+          this.map.setRestaurantMarkers();
+          this.getFavourites();
+    
+          this.stores.forEach(store => {
+            this.getStoreCategory(store);
+            this.getStoreDeliveryType(store);
+          });    
+        },
+        err => {
+          console.log("Error fetching stores");
+          this.showServiceDown = true;
+          this.toggleInfiniteScroll();    
+        })
+        break;
     }
-    var complete = ()=> {
-      console.log('Hiing Infinite Scroll');
-      this.infiniteScroll.complete();
-    }
-    this.filterService.getByCommonFilter(setStores , complete);
   }
 
-  getStoreByDeliveryType() {
-    var setStores = (data)=> {
-      this.stores = data;
-    }
-    var complete = ()=> {
-      console.log('Hiing Infinite Scroll');
-      this.infiniteScroll.complete();
-    }
-    this.filterService.getByDeliveryType(setStores , complete);
+  getStoreByDeliveryType(dt) {
+    this.queryResourceService.findStoreByTypeNameUsingGET(
+      {
+        name: dt.toLowerCase()
+      }
+    ).subscribe(res => {
+
+      console.log('Got DeliveryType' , res.content);
+
+      this.showServiceDown = false;
+      this.stores = res.content;
+
+      this.maxPage = res.totalPages;
+      this.pageNumber++; 
+
+      this.map.setStores(this.stores);
+      this.map.setRestaurantMarkers();
+      this.getFavourites();
+
+      this.stores.forEach(store => {
+        this.getStoreCategory(store);
+        this.getStoreDeliveryType(store);
+      });
+    },
+    err=> {
+      console.log("Error fetching stores");
+      this.showServiceDown = true;
+      this.toggleInfiniteScroll();
+    })
   }
 
   getStoresNoFilter() {
-    if(this.pageNumber <= this.maxPage) {
-      console.log('Getting Page' ,  this.pageNumber , this.maxPage);
-      this.queryResourceService.findAllStoresUsingGET(
-        {
-          size: this.pageNumber
-  
-        }).subscribe(
-          res => {
-            this.stores = res.content;
-            if(this.maxPage === 0) {
-              this.maxPage = res.totalPages;
-            }
-            this.pageNumber++;
-            console.log("Got Stores", res);
-            this.setRestaurantMarkers();
-            this.storesBackup = res.content;
-            this.getFavourites();
-            this.stores.forEach(store => {
-              console.log("Getting Category", store.regNo);
-              this.queryResourceService
-                .findCategoryByStoreIdUsingGET({ userId: store.regNo })
-                .subscribe(
-                  success => {;
-                    this.categories[store.regNo] = success.content;
-                    console.log("Got Category", success.content);
-                  },
-                  err => {
-                    this.toastView("Error, connecting to server.");
-                  }
-                );
-  
-              this.queryResourceService
-                .findAllDeliveryTypesByStoreIdUsingGET({
-                  storeId: store.id
-                })
-                .subscribe(
-                  success => {
-                    this.deliveryType[store.regNo] = success.content;
-                    console.log("DeliveryInfo", this.deliveryType[store.regNo]);
-                  },
-                  err => {
-                    console.log("Could Not Find Delivery Info");
-                  }
-                );
-            });
-          },
-          err => {
-            console.log("Error fetching stores");
-            this.toastView("Error, connecting to server.");
-          }
-        );      
-    } else {
-      this.infiniteScroll.complete();
-    }
-  }
+    this.queryResourceService.findAllStoresUsingGET({ page: this.pageNumber })
+      .subscribe(
+        res => {
+          this.showServiceDown = false;
+          this.stores = res.content;
+          this.storesBackup = res.content;
 
-  async toastView(message) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2000,
-      cssClass: "toast"
-    });
-    await toast.present();
-  }
+          this.maxPage = res.totalPages;
+          this.pageNumber++;
+          
+          this.map.setStores(this.stores);
+          this.map.setRestaurantMarkers();
+          this.getFavourites();
 
-  loadMap() {
-    // This code is necessary for browser
-    Environment.setEnv({
-      API_KEY_FOR_BROWSER_RELEASE: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw",
-      API_KEY_FOR_BROWSER_DEBUG: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw"
-    });
-
-    const mapOptions: GoogleMapOptions = {
-      camera: {
-        target: {
-          lat: 43.0741904,
-          lng: -89.3809802
+          this.stores.forEach(store => {
+            this.getStoreCategory(store);
+            this.getStoreDeliveryType(store);
+          });
+        
         },
-        zoom: 14,
-        tilt: 30
-      }
-    };
+        err => {
+          console.log("Error fetching stores");
+          this.showServiceDown = true;
+          this.toggleInfiniteScroll();
+        }
+      );
+  }
 
-    this.map = GoogleMaps.create("map_canvas", mapOptions);
-    this.map
-      .getMyLocation()
-      .then((location: MyLocation) => {
-        console.log(JSON.stringify(location, null, 2));
 
-        // Move the map camera to the location with animation
-        this.map.animateCamera({
-          target: location.latLng,
-          zoom: 14,
-          tilt: 30
-        });
-        const marker: Marker = this.map.addMarkerSync({
-          position: location.latLng,
-          animation: GoogleMapsAnimation.BOUNCE
-        });
-        marker.showInfoWindow();
+  getStoreCategory(store) {
+    console.log("Getting Category", store.regNo);
+    this.queryResourceService
+      .findCategoryByStoreIdUsingGET({ userId: store.regNo })
+      .subscribe(
+        success => {
+          this.categories[store.regNo] = success.content;
+          console.log("Got Category", success.content);
+        },
+        err => { }
+      );
+  }
+
+
+  getStoreDeliveryType(store) {
+    this.queryResourceService
+      .findAllDeliveryTypesByStoreIdUsingGET({
+        storeId: store.id
       })
-      .catch(err => {
-        this.toastView(err.error_message);
-      });
+      .subscribe(
+        success => {
+          this.deliveryType[store.regNo] = success.content;
+          console.log("DeliveryInfo", this.deliveryType[store.regNo]);
+        },
+        err => { }
+      );
   }
 
-  setRestaurantMarkers() {
-    this.stores.forEach(store => {
-      let latLng: string[];
-      try {
-        latLng = store.location.split(",");
-      } catch (error) {
+  loadData(event) {
 
-      }
-      if (this.map != undefined && latLng != undefined) {
-        const marker: Marker = this.map.addMarkerSync({
-          icon: "assets/icon/marker.png",
-          label: store.name,
-          position: {
-            lat: +latLng[0],
-            lng: +latLng[1]
-          },
-          animation: GoogleMapsAnimation.BOUNCE
-        });
-        // const infowindow = new google.maps.InfoWindow({
-        //   content: store.name
-        // });
-        // marker.showInfoWindow();
-        marker.addEventListener(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-          this.showHotelMenu(store.regNo);
-        });
-      }
-    });
-  }
-
-  async notificationsModal() {
-    const modal = await this.modalController.create({
-      component: NotificationsComponent
-    });
-    return await modal.present();
-  }
-
-  toggleSearchView(setVal: boolean) {
-    this.searchBarOnly = setVal;
-    this.stores = this.storesBackup;
-  }
-
-  toggleLocateView(setVal: boolean) {
-    this.places = [];
-    this.locateBarOnly = setVal;
-  }
-
-  doPlaceSearch(event) {
-    this.places = [];
-    console.log(event.detail.value);
-    const searchterm = event.detail.value;
-    if (searchterm === "" || searchterm === null) {
-      return;
+    if (this.pageNumber <= this.maxPage) {
+      console.log('Loading more data');
+      this.getStores();
+    } else {
+      console.log('Disabling Infinite Scroll');
+      this.toggleInfiniteScroll();
     }
-    this.locationService.getPredictions(searchterm).subscribe(res => {
-      console.log(res);
-      this.places = res;
-    });
   }
 
-  decodeLatLongByPlaceId(placeId) {
-    this.places = [];
-    this.map.remove();
-    this.locationService.geocodeAddress(placeId).then(latlon => {
-      console.log(latlon);
-      Environment.setEnv({
-        API_KEY_FOR_BROWSER_RELEASE: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw",
-        API_KEY_FOR_BROWSER_DEBUG: "AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw"
-      });
-      const mapOptions: GoogleMapOptions = {
-        camera: {
-          target: {
-            lat: latlon[0],
-            lng: latlon[1]
-          },
-          zoom: 14,
-          tilt: 30
-        }
-      };
-      this.map = GoogleMaps.create("map_canvas", mapOptions);
-      const marker: Marker = this.map.addMarkerSync({
-        icon: "red",
-        animation: "bounce",
-        position: {
-          lat: latlon[0],
-          lng: latlon[1]
-        }
-      });
-      this.setRestaurantMarkers();
-    });
+  doRefresh(event) {
+    console.log('Refrshing data');
+    this.infiniteScroll.disabled = false;
+    this.ngOnInit();
+    setTimeout(() => {
+      console.log('Refresh has completed');
+      event.target.complete();
+    }, 2000);
   }
+
+
+  // Favourites Methods
+
   addToFavourite(store: Store) {
     console.log("adding to favourite", this.favouriteRestaurantsID);
     this.favourite.addToFavouriteStore(store, "/hotel-menu/" + store.regNo);
@@ -372,12 +259,48 @@ export class RestaurantsPage implements OnInit {
     return this.favouriteRestaurantsID.includes(store.id);
   }
 
+
+  // View Related Methods
+
+  ionViewWillLeave() {
+    this.slides.stopAutoplay();
+  }
+  ionViewDideave() {
+    this.slides.stopAutoplay();
+  }
+  ionViewDidEnter() {
+    this.getFavourites();
+    this.stores = this.stores;
+    this.slides.startAutoplay();
+  }
+ 
+  doPlaceSearch(event) {
+    this.places = [];
+    console.log(event.detail.value);
+    const searchterm = event.detail.value;
+    if (searchterm === "" || searchterm === null) {
+      return;
+    }
+    this.locationService.getPredictions(searchterm).subscribe(res => {
+      console.log(res);
+      this.places = res;
+    });
+  }  
+
+  updateMap(placeId) {
+    this.map.decodeLatLongByPlaceId(placeId);
+  }
+
+  showHotelMenu(storeId) {
+    this.navCtrl.navigateForward("/hotel-menu/" + storeId);
+  }
+
   searchRestaurants(event) {
     this.queryResourceService.findStoreBySearchTermUsingGET({ searchTerm: event.detail.value })
       .subscribe(result => {
         console.log(result.content);
         if (result.content.length === 0) {
-          this.toastView('Sorry, couldn\'t find any match');
+          this.util.createToast('Sorry, couldn\'t find any match');
           return;
         } else {
           this.stores = result.content;
@@ -385,39 +308,40 @@ export class RestaurantsPage implements OnInit {
       });
   }
 
+  async notificationsModal() {
+    const modal = await this.modalController.create({
+      component: NotificationsComponent
+    });
+    return await modal.present();
+  }
+
   async filterModal() {
     const modal = await this.modalController.create({
-      component: FilterComponent,
-      componentProps: { stores: this.stores }
+      component: FilterComponent
     });
 
     modal.onDidDismiss()
-      .then(data => {
+    .then(() => {
 
-        if (data.data != undefined) {
-          this.stores = data.data;
-        }
-      })
+        this.pageNumber = 1;
+        this.infiniteScroll.disabled = false;
+        this.maxPage = 1;
+    });
 
     modal.present();
   }
 
-  doRefresh(event) {
-    console.log('Begin async operation');
-    this.ngOnInit();
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 2000);
+  toggleSearchView(setVal: boolean) {
+    this.searchBarOnly = setVal;
+    this.stores = this.storesBackup;
   }
 
-  loadData(event) {
-    console.log('Loading More Data')
-    this.getStores();
+  toggleLocateView(setVal: boolean) {
+    this.places = [];
+    this.locateBarOnly = setVal;
   }
 
   toggleInfiniteScroll() {
     this.infiniteScroll.disabled = !this.infiniteScroll.disabled;
   }
-
 }

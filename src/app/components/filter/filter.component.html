@@ -7,7 +7,7 @@
       <ion-title>Filters</ion-title>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button>
+      <ion-button (click)="filter('reset')">
         <ion-icon name="refresh"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -85,7 +85,7 @@
     </ion-radio-group>
   </ion-list>
 
-  <ion-list>
+  <!-- <ion-list>
     <ion-list-header>Price</ion-list-header>
     <ion-item>
       <ion-range dualKnobs="true" min="2" max="1000" step="2" [(ngModel)]="price">
@@ -98,7 +98,7 @@
       <ion-text>From {{price.lower}} To {{price.upper}}</ion-text>
     </ion-item>
 
-  </ion-list>
+  </ion-list> -->
 
   <ion-list>
     <ion-list-header>Distance</ion-list-header>

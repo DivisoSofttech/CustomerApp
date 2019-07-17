@@ -21,6 +21,7 @@ import { ImageSelectorComponent } from './image-selector/image-selector.componen
 import { ClosedPipe } from '../pipes/closed.pipe';
 import { DateDifferencePipe } from '../pipes/date-difference.pipe';
 import { ProcessPaymentComponent } from './process-payment/process-payment.component';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ProcessPaymentComponent } from './process-payment/process-payment.compo
                   ProfileEditComponent,
                   ImageSelectorComponent,
                   ClosedPipe,
-                  DateDifferencePipe
+                  DateDifferencePipe,
+                  ErrorComponent
                   
                 ],
   imports: [
@@ -67,8 +69,8 @@ import { ProcessPaymentComponent } from './process-payment/process-payment.compo
               ProfileEditComponent,
               ImageSelectorComponent,
               ClosedPipe,
-              DateDifferencePipe
-              
+              DateDifferencePipe,
+              ErrorComponent
             ],
   entryComponents: [
               AddAddressModalComponent,MakePaymentComponent,PaymentSuccessfullInfoComponent,FooterComponent,

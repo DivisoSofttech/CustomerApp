@@ -25,7 +25,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-list *ngIf="places.length > 0">
-    <ion-item *ngFor="let place of places" (click)="decodeLatLongByPlaceId(place.place_id); toggleLocateView(false);">
+    <ion-item *ngFor="let place of places" (click)="updateMap(place.place_id); toggleLocateView(false);">
       {{place.description}}</ion-item>
   </ion-list>
 </ion-header>
@@ -33,6 +33,7 @@
 <ion-content>
   <div id="map_canvas">
   </div>
+
   <ion-slides #slides [options]="slideOpts" autoplayDisableOnInteraction="false"
     (ionSlideDidChange)="slides.startAutoplay();">
     <ion-slide>
@@ -51,125 +52,117 @@
       </ion-card>
     </ion-slide>
   </ion-slides>
+
   <h4 padding class="head">
     What's Nearby!
   </h4>
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
 
-    <ion-infinite-scroll-content *ngIf="stores === undefined">
+  <div *ngIf="showServiceDown">
+    <app-error></app-error>
+  </div>
 
-      <ion-card *ngFor="let s of [1,2,3,4,5]">
-        <ion-item lines="none" class="mg-top">
-          <ion-thumbnail class="imageShow">
-            <ion-skeleton-text animated></ion-skeleton-text>
+  <div *ngIf="stores != undefined && !showServiceDown && stores.length === 0" class="noStores vertical-align-center">
+    <ion-text text-center color="grey" *ngIf="stores.length === 0">
+      <h4>No Restaurants Found(0)</h4>
+    </ion-text>
+  </div>
+
+  <div *ngIf="!showServiceDown && stores === undefined" >
+
+    <ion-card no-padding *ngFor="let store of [1,2,3,4,5]">
+      <ion-card-header>
+        <ion-item lines="full">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text></ion-skeleton-text>
           </ion-thumbnail>
-          <ion-card-content>
-            <ion-card-title class="card-title">
-              <ion-skeleton-text animated></ion-skeleton-text>
-            </ion-card-title>
-            <ion-card-subtitle>
-              <ion-skeleton-text animated></ion-skeleton-text>
-              <ion-label>
-                <ion-skeleton-text animated></ion-skeleton-text>
-                <ion-skeleton-text animated></ion-skeleton-text>
-                <ion-text>
-                    <ion-skeleton-text animated></ion-skeleton-text>
-                </ion-text>
-                <ion-text>
-                  <ion-skeleton-text animated></ion-skeleton-text>
-                </ion-text>
-              </ion-label>
-            </ion-card-subtitle>
-          </ion-card-content>
+          <ion-label>
+            <ion-text word-wrap text-wrap class="category">
+                <ion-skeleton-text></ion-skeleton-text>
+                <ion-skeleton-text></ion-skeleton-text>
+                <ion-skeleton-text></ion-skeleton-text>
+                <ion-skeleton-text></ion-skeleton-text>
+              </ion-text>
 
+          </ion-label>
         </ion-item>
-        <div class="card-footer">
-          <ion-grid no-padding>
-            <ion-row>
-              <ion-col size="7" text-center no-padding>
-                <rating></rating>
+      </ion-card-header>
+      <ion-card-content >
+        <ion-grid no-padding>
+          <ion-row>
+            <ion-col size="7" text-center no-padding >
+                <rating [rate]="'5'" [readonly]="true"></rating>
               </ion-col>
-              <ion-col size="3" text-center no-padding>
-                <ion-buttons>
-                  <ion-button disabled>
-                    <ion-skeleton-text animated></ion-skeleton-text>
+            <ion-col size="3" text-center no-padding>
+              <ion-buttons>
+                <ion-button fill="none" disabled>
+                    <ion-skeleton-text></ion-skeleton-text>
                   </ion-button>
-                  <ion-button disabled>
-                    <ion-skeleton-text animated></ion-skeleton-text>
-                  </ion-button>
-                </ion-buttons>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </div>
-      </ion-card>
+              </ion-buttons>
+            </ion-col>
+            <ion-col size="2" text-center no-padding>
+              <ion-buttons justify-content-center>
+                <ion-button fill="none">
+                    <ion-skeleton-text></ion-skeleton-text>
+                </ion-button>
+              </ion-buttons>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+
+  <ion-card no-padding *ngFor="let store of stores">
+    <ion-card-header (click)="showHotelMenu(store.regNo)" *ngIf="store.name">
+      <ion-item lines="full">
+        <ion-img slot="start" *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
+          class="imageShow">
+        </ion-img>
+        <ion-label>
+          <ion-text word-wrap text-wrap class="category">
+            <h1>{{store.name}}</h1>
+            <h2>{{categories[store.regNo] | arrayFormater}} </h2>
+            <h3 style="color:#56a232">{{deliveryType[store.regNo]| arrayFormater:'only'}}</h3>
+            <h5>{{store.openingTime | date: 'shortTime' }} to {{ store.closingTime |  date: 'shortTime'}}</h5>
+          </ion-text>
+          <ion-badge *ngIf="!( now | closed:store.openingTime:store.closingTime)" color="danger">
+            Closed
+          </ion-badge>
+        </ion-label>
+      </ion-item>
+    </ion-card-header>
+    <ion-card-content *ngIf="store.name">
+      <ion-grid no-padding>
+        <ion-row>
+          <ion-col size="7" text-center no-padding *ngIf="store != undefined">
+            <rating [rate]="store.totalRating" [readonly]="true"></rating>
+          </ion-col>
+          <ion-col size="3" text-center no-padding>
+            <ion-buttons>
+              <ion-button *ngIf="store.userRatings" disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
+              <ion-button *ngIf="!store.userRatings" disabled>(0)</ion-button>
+            </ion-buttons>
+          </ion-col>
+          <ion-col size="2" text-center no-padding>
+            <ion-buttons justify-content-center>
+              <ion-button fill="none" (click)="addToFavourite(store)" *ngIf="!isFavourite(store)">
+                <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+              </ion-button>
+              <ion-button fill="none" (click)="removeFromFavourite(store)" *ngIf="isFavourite(store)">
+                <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
     </ion-infinite-scroll-content>
-
-    <ion-infinite-scroll-content loading-spinner="bubbles" *ngIf="stores != undefined">
-      <ion-card *ngFor="let store of stores">
-
-        <ion-item lines="none" class="mg-top">
-
-
-          <ion-img *ngIf="store.image" [src]="'data:' + store.imageContentType + ';base64,' + store.image"
-            class="imageShow">
-          </ion-img>
-          <ion-card-content *ngIf="store.regNo" (click)="showHotelMenu(store.regNo)">
-            <ion-card-title class="card-title" *ngIf="store.name">{{store.name}}</ion-card-title>
-            <!-- <ion-card-subtitle *ngIf="store.openingTime">
-              {{store.openingTime.slice(11,16) + ' to ' + store.closingTime.slice(11,16)}}</ion-card-subtitle>-->
-            <ion-card-subtitle>
-              {{store.openingTime | date: 'shortTime' }} to {{ store.closingTime |  date: 'shortTime'}}
-              <ion-label>
-                <ion-text class="category">{{categories[store.regNo] | arrayFormater}} </ion-text>
-                <br />
-                <ion-text color="success" *ngIf="deliveryType[store.regNo]">
-                  {{deliveryType[store.regNo]| arrayFormater:'only'}}
-                </ion-text>
-                <ion-text>
-
-                </ion-text>
-                <ion-text>
-                  <p no-margin class="closedLabel" *ngIf="!( now | closed:store.openingTime:store.closingTime)">
-                    Closed
-                  </p>
-                </ion-text>
-              </ion-label>
-            </ion-card-subtitle>
-          </ion-card-content>
-
-        </ion-item>
-        <div class="card-footer">
-          <ion-grid no-padding>
-            <ion-row>
-              <ion-col size="7" text-center no-padding>
-                <rating [rate]="store.totalRating" [readonly]="true"></rating>
-              </ion-col>
-              <ion-col size="3" text-center no-padding>
-                <ion-buttons>
-                  <ion-button *ngIf="store.userRatings" disabled>{{'(' + store.userRatings.length + ')'}}</ion-button>
-                  <ion-button *ngIf="!store.userRatings" disabled>(0)</ion-button>
-                </ion-buttons>
-              </ion-col>
-              <ion-col size="2" text-center no-padding>
-                <ion-buttons justify-content-center>
-                  <ion-button fill="none" (click)="addToFavourite(store)" *ngIf="!isFavourite(store)">
-                    <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
-                  </ion-button>
-                  <ion-button fill="none" (click)="removeFromFavourite(store)" *ngIf="isFavourite(store)">
-                    <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-
-
-        </div>
-      </ion-card>
-
-    </ion-infinite-scroll-content>
-
   </ion-infinite-scroll>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles">

@@ -8,31 +8,16 @@ import { CartService } from './../../services/cart.service';
 import { StockCurrent } from './../../api/models/stock-current';
 import { Store } from './../../api/models/store';
 import { HotelMenuPopoverComponent } from './../../components/hotel-menu-popover/hotel-menu-popover.component';
-import { HotelMenuPageModule } from './hotel-menu.module';
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import {
-  PopoverController,
-  IonSlide,
-  IonSlides,
-  ToastController,
-  IonSearchbar
-} from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { PopoverController,IonSlides,IonSearchbar} from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 import { UserRating } from 'src/app/api/models/user-rating';
 import { ReviewDTO, Product } from 'src/app/api/models';
-import {
-  GoogleMaps,
-  GoogleMap,
-  GoogleMapOptions,
-  Marker,
-  Environment,
-  GoogleMapsAnimation,
-  LatLng
-} from '@ionic-native/google-maps';
-import { Loading } from 'src/app/components/loading';
 import { SearchHistoryService } from 'src/app/services/search-history-service';
+import { Util } from 'src/app/services/util';
+import { MapService } from 'src/app/services/map/map.service';
+import { KeycloakService } from 'src/app/services/keycloak.service';
 
 @Component({
   selector: 'app-hotel-menu',
@@ -42,7 +27,6 @@ import { SearchHistoryService } from 'src/app/services/search-history-service';
 export class HotelMenuPage implements OnInit {
   accordionArray = [];
   storeId;
-  map: GoogleMap;
   store: Store;
   // delivery
   private subscriptionCart: Subscription;
@@ -83,44 +67,32 @@ export class HotelMenuPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private cartService: CartService,
-    private toastController: ToastController,
-    private oauthService: OAuthService,
+    private util:Util,
     private commandResourceService: CommandResourceService,
     private queryResourceService: QueryResourceService,
-    private loadingCreator: Loading,
+    private keycloakService: KeycloakService,
     private favourite: FavouriteService,
+    private mapService: MapService,
     private searchHistoyService: SearchHistoryService
   ) { }
 
-  closeOpen(index) {
-    for(let i = 0 ;i < this.accordionArray.length;i++) {
-
-      if(i ===index) {
-        this.accordionArray[i] = !this.accordionArray[i];
-      } else {
-        this.accordionArray[i] = false;
-      }
-    }
-  }
+ 
 
   ngOnInit() {
-    this.loadingCreator.createLoader().then(data => {
-      this.loading = data;
-      this.loading.present();
+    this.util.createLoader()
+    .then(loader => {
+      this.loading = loader;
+      this.loading.dismiss();
       this.storeId = this.route.snapshot.paramMap.get('id');
       this.cartService.storeId = this.storeId;
-     
-      this.queryResourceService
-        .findStoreByRegisterNumberUsingGET(this.storeId)
-        .subscribe(
-          result => {
-            this.store = result;
-          },
-          err => {
-            console.log('Error fetching store data', err);
-          }
-        );
+      this.keycloakService.getCurrentUserDetails()
+      .then(data => {
+        this.usr = data;
+      })
+
+        this.getStore();
         this.getProducts();
+        this.getCategories();
         this.getRatingReview();
 
       this.subscriptionCart = this.cartService.observableTickets.subscribe(
@@ -130,7 +102,8 @@ export class HotelMenuPage implements OnInit {
         price => (this.totalPrice = price)
       );
       this.timeTracker();
-    });
+    })
+
   }
 
   getRatingReview() {
@@ -146,6 +119,27 @@ export class HotelMenuPage implements OnInit {
         console.log('Error fetching review data', err);
       }
     );
+  }
+
+  getStore() {
+    this.queryResourceService
+    .findStoreByRegisterNumberUsingGET(this.storeId)
+    .subscribe(
+      result => {
+        this.store = result;
+      },
+      err => {
+        console.log('Error fetching store data', err);
+      }
+    );
+  }
+
+  getCategories() {
+    this.queryResourceService
+    .findAllCategoriesUsingGET(this.storeId)
+    .subscribe(result => {
+      this.categories = result;
+    })
   }
 
   getProducts() {
@@ -171,7 +165,88 @@ export class HotelMenuPage implements OnInit {
     );
   }
 
-  async presentPopover(ev: any) {
+
+  postReview() {
+    console.log('here');
+    this.review.storeId = this.store.id;
+    this.rate.storeId = this.store.id;
+    if (this.review.review !== '') {
+      const raterev: RatingReview = { review: this.review, rating: this.rate };
+      raterev.rating.userName = this.usr.preferred_username;
+      raterev.review.userName = this.usr.preferred_username;
+      this.commandResourceService
+        .createRatingAndReviewUsingPOST({ ratingReview: raterev })
+        .subscribe(
+          result => {
+            console.log(result);
+            this.rateReview = result.content;
+            this.review.review = '';
+          },
+          err => {
+            this.util.createToast('Error while posting review. Try again later');
+          }
+        );
+    } else {
+      this.util.createToast('Review field can\'t be empty.');
+    }
+  }
+
+  updateRating(event) {
+    this.rate.rating = event;
+    console.log(this.rate.rating);
+  }
+
+
+  searchProducts(event) {
+
+    this.searchSuggetions = [];
+    if (event.detail.value !== '') {
+      if(this.disableSuggetions != true) {
+        this.searchHistoyService.findAllSearchTerms(event.detail.value)
+        .then(data => {
+          console.log(data);
+          this.searchSuggetions = data;
+        })
+        this.searchHistoyService.addSearchTerm(event.detail.value);  
+      }
+      const query: string = event.detail.value;
+      this.queryResourceService
+        .findAllStockCurrentByProductNameStoreIdUsingGET({
+          name: query,
+          storeId: this.storeId
+        })
+        .subscribe(
+          res => {
+            console.log('Stock' , this.stockCurrents);
+            this.stockCurrents = res;
+            this.disableSuggetions = false;
+          },
+          err => {
+            this.util.createToast('No results found');
+            this.disableSuggetions = false;
+          }
+        );
+    } else {
+      this.getProducts();
+    }
+  }
+
+
+
+  // View Methods
+
+  closeOpen(index) {
+    for(let i = 0 ;i < this.accordionArray.length;i++) {
+
+      if(i ===index) {
+        this.accordionArray[i] = !this.accordionArray[i];
+      } else {
+        this.accordionArray[i] = false;
+      }
+    }
+  }
+
+  async categoryListPopOver(ev: any) {
     const popover = await this.popoverController.create({
       component: HotelMenuPopoverComponent,
       componentProps: {
@@ -183,11 +258,12 @@ export class HotelMenuPage implements OnInit {
       translucent: true
     });
     popover.onDidDismiss().then((data: any) => {
-      if (data.data.result !== undefined) {
+      console.log(data.data)
+      if (data.data !== undefined) {
         this.stockCurrents = data.data.result;
         this.selectedCategory = data.data.selectedCategory;
       } else {
-        this.presentToast('Error while Getting data');
+        this.util.createToast('Error while Getting data');
       }
     });
     return await popover.present();
@@ -218,45 +294,10 @@ export class HotelMenuPage implements OnInit {
       } else {
         this.currentSubPage = 'info';
         if (!this.mapLoaded) {
-          this.loadMap();
+          this.mapService.loadMap();
         }
       }
     });
-  }
-
-  postReview() {
-    console.log('here');
-    this.review.storeId = this.store.id;
-    this.rate.storeId = this.store.id;
-    if (this.review.review !== '') {
-      const raterev: RatingReview = { review: this.review, rating: this.rate };
-      raterev.rating.userName = this.usr.preferred_username;
-      raterev.review.userName = this.usr.preferred_username;
-      this.commandResourceService
-        .createRatingAndReviewUsingPOST({ ratingReview: raterev })
-        .subscribe(
-          result => {
-            console.log(result);
-            this.rateReview = result.content;
-            this.review.review = '';
-          },
-          err => {
-            this.presentToast('Error while posting review. Try again later');
-          }
-        );
-    } else {
-      this.presentToast('Review field can\'t be empty.');
-    }
-  }
-
-  async presentToast(message) {
-    const toast = await this.toastController.create({
-      message,
-      cssClass: 'toast',
-      duration: 1500
-    });
-
-    await toast.present();
   }
 
   add(i, stock: StockCurrent) {
@@ -264,6 +305,7 @@ export class HotelMenuPage implements OnInit {
       this.cardExpand[i]++;
     }
   }
+
   remove(i, stock: StockCurrent) {
     if (this.cardExpand[i] !== 0) {
       this.cardExpand[i]--;
@@ -271,74 +313,10 @@ export class HotelMenuPage implements OnInit {
     }
   }
 
-  updateRating(event) {
-    this.rate.rating = event;
-    console.log(this.rate.rating);
-  }
-
-  loadMap() {
-    // This code is necessary for browser
-    Environment.setEnv({
-      API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c',
-      API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c'
-    });
-    const latLng: string[] = this.store.location.split(',');
-    const mapOptions: GoogleMapOptions = {
-      camera: {
-        target: {
-          lat: +latLng[0],
-          lng: +latLng[1]
-        },
-        zoom: 14,
-        tilt: 30
-      }
-    };
-    this.map = GoogleMaps.create('map_canvas', mapOptions);
-    const marker: Marker = this.map.addMarkerSync({
-      position: new LatLng(+latLng[0], +latLng[1]),
-      animation: GoogleMapsAnimation.BOUNCE
-    });
-    marker.showInfoWindow();
-  }
-
   selectSuggestion(term) {
     this.disableSuggetions = true;
     this.searchSuggetions = [];
     this.searchBar.value = term;
-  }
-
-  searchProducts(event) {
-
-    this.searchSuggetions = [];
-    if (event.detail.value !== '') {
-      if(this.disableSuggetions != true) {
-        this.searchHistoyService.findAllSearchTerms(event.detail.value)
-        .then(data => {
-          console.log(data);
-          this.searchSuggetions = data;
-        })
-        this.searchHistoyService.addSearchTerm(event.detail.value);  
-      }
-      const query: string = event.detail.value;
-      this.queryResourceService
-        .findAllStockCurrentByProductNameStoreIdUsingGET({
-          name: query,
-          storeId: this.storeId
-        })
-        .subscribe(
-          res => {
-            console.log('Stock' , this.stockCurrents);
-            this.stockCurrents = res;
-            this.disableSuggetions = false;
-          },
-          err => {
-            this.presentToast('No results found');
-            this.disableSuggetions = false;
-          }
-        );
-    } else {
-      this.getProducts();
-    }
   }
 
   // I dont Know/not sure whether this

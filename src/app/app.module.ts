@@ -26,11 +26,18 @@ import {
   GoogleMapsAPIWrapper,
   AgmCoreModule,
 } from '@agm/core';
+import { ConfigsModule } from './configs/configs.module';
+import { Util } from './services/util';
+import { MapService } from './services/map/map.service';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
+
+    ConfigsModule,
+
+
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
@@ -46,6 +53,8 @@ import {
     })
   ],
   providers: [
+    Util,
+    
     StatusBar,
     SplashScreen,
     Geolocation,
@@ -62,7 +71,8 @@ import {
     CartService,
     SearchHistoryService,
     LocationService,
-    FilterService
+    FilterService,
+    MapService
 
   ],
   bootstrap: [AppComponent]
