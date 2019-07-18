@@ -43,10 +43,7 @@ export class LoginScreenComponent implements OnInit {
         this.keycloakService.authenticate({ username: this.username, password: this.password },
           () => {
             loader.dismiss();
-            
-            // Uncomment this later
-            // this.createUserIfNotExists(this.username);
-            // Remove this later
+            this.createUserIfNotExists(this.username);
             this.util.navigateRoot();
 
           },
@@ -65,32 +62,7 @@ export class LoginScreenComponent implements OnInit {
         this.keycloakService.createAccount(user, this.password,
           (res) => {
 
-            // Remove this later
-            this.keycloakService.authenticate({ username: this.username, password: this.password },
-              () => {
-                this.commandResourceService
-                  .createCustomerUsingPOST({
-                    reference: this.username,
-                    name: this.username
-                  })
-                  .subscribe(
-                    customer => {
-                      console.log('Customer Created', customer);
-                      loader.dismiss();
-                      this.util.navigateRoot();
-                  },
-                    err => {
-                      console.log(err);
-                      loader.dismiss();
-                      this.util.createToast('Server is Unreachable');
-                  });
-              },
-              () => {
-                loader.dismiss();
-                this.util.createToast('Invalid Username / Password')
-              });
-            // Remove this later
-
+              this.createUserIfNotExists(res.preferred_username);
           },
           (err) => {
             loader.dismiss();
