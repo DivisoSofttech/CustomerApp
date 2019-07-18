@@ -10,6 +10,7 @@ import { CartService } from 'src/app/services/cart.service';
 export class PaymentSuccessfullInfoComponent implements OnInit {
 
   total;
+  method;
 
 
   constructor(private modalController:ModalController,
