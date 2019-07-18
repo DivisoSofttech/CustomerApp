@@ -44,7 +44,7 @@ import { MapService } from './services/map/map.service';
     OAuthModule.forRoot(),
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
+      apiKey: 'AIzaSyAlRauFHvt4-SPhytz9xNPKqEYWOlyEemI',
       libraries: ['places', 'geometry']
     }),
     IonicStorageModule.forRoot({
