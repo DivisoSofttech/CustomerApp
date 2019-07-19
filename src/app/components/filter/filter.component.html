@@ -103,7 +103,7 @@
   <ion-list>
     <ion-list-header>Distance</ion-list-header>
     <ion-item>
-      <ion-range min="2" max="50" step="2" [(ngModel)]="distance">
+      <ion-range min="2" max="50" step="2" (click)="filter('distance')" [(ngModel)]="distance">
         <ion-icon size="small" slot="start" name="walk"></ion-icon>
         <ion-icon slot="end" name="walk"></ion-icon>
       </ion-range>

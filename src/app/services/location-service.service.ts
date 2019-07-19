@@ -35,14 +35,10 @@ export class LocationService {
     );
     return distance;
   }
+  
 
   getCurrentLocation() {
-    this.geolocation.getCurrentPosition().then(resp => {
-      this.currentLat = resp.coords.latitude;
-      this.currentLon = resp.coords.longitude;
-      console.log('Lat is ' + this.currentLat);
-      console.log('Lon is ' + this.currentLon);
-    });
+    return this.geolocation.getCurrentPosition()
   }
 
   getPredictions(searchTerm: string): Observable<any[]> {

@@ -103,7 +103,7 @@ export class MapService {
 
 
   decodeLatLongByPlaceId(placeId) {
-    this.map.remove();
+    //this.map.remove();
     this.locationService.geocodeAddress(placeId).then(latlon => {
       console.log(latlon);
       Environment.setEnv({

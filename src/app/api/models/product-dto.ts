@@ -1,9 +1,9 @@
 /* tslint:disable */
-import { LabelDTO } from './label-dto';
 import { CategoryDTO } from './category-dto';
+import { LabelDTO } from './label-dto';
 export interface ProductDTO {
-  mpn?: string;
   barcodeId?: number;
+  categories?: Array<CategoryDTO>;
   dateOfExpiry?: string;
   dateOfMfd?: string;
   description?: string;
@@ -12,7 +12,7 @@ export interface ProductDTO {
   imageContentType?: string;
   labels?: Array<LabelDTO>;
   maximumStockLevel?: number;
-  categories?: Array<CategoryDTO>;
+  mpn?: string;
   name: string;
   outOfStock?: boolean;
   reOrderLevel?: number;
