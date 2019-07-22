@@ -11,8 +11,8 @@
   display: block;
   left: 0%;
   top: 0%;
-  width: 30vw;
-  height: 30vw;
+  max-height: 125px;
+  max-width: 125px;
   } 
   .reviewProfile{
     display: block;
@@ -92,6 +92,8 @@
 
   .cart-view {
     width:100%;
+    animation-duration: 0.3s;
+    animation-delay: 0s;
     background-color: #5978ee;
     position: absolute;
     bottom: 0;

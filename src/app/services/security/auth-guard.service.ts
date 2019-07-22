@@ -1,3 +1,4 @@
+import { UserStatusService } from './../user-status.service';
 import { NavController } from '@ionic/angular';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Injectable } from '@angular/core';
@@ -8,13 +9,16 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 })
 export class AuthGuardService implements CanActivate {
 
-  constructor(private oauthService: OAuthService, private router: Router, private navController: NavController) { }
+  constructor(private oauthService: OAuthService,
+              private router: Router,
+              private navController: NavController,
+              private userStatusService: UserStatusService) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    console.log('Check if token valid ' + this.oauthService.hasValidIdToken());
     if (this.oauthService.hasValidAccessToken()) {
+      this.userStatusService.setstatusTrue();
       return true;
     }
-
+    this.userStatusService.setstatusFalse();
     this.navController.navigateRoot('/login');
     return false;
   }

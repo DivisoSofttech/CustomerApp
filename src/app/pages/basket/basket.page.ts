@@ -2,7 +2,7 @@ import { Customer } from './../../api/models/customer';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MakePaymentComponent } from './../../components/make-payment/make-payment.component';
 import { ProductQuantityModalComponent } from 'src/app/components/product-quantity-modal/product-quantity-modal.component';
-import { ModalController, ToastController, LoadingController } from '@ionic/angular';
+import { ModalController, ToastController, LoadingController, Platform, NavController } from '@ionic/angular';
 import { Component } from '@angular/core';
 import { TicketLineDTO, ProductDTO, OrderLine, Order } from 'src/app/api/models';
 import { CartService } from 'src/app/services/cart.service';
@@ -29,15 +29,22 @@ export class BasketPage {
   total = 0;
   constructor(
     private modalController: ModalController,
-    private loading:Loading,
+    private loading: Loading,
     private cartService: CartService,
     private toastController: ToastController,
     private authService: OAuthService,
+    private platform: Platform,
+    private navController: NavController,
     private queryResourceService: QueryResourceService,
     private orderCommandResource: OrderCommandResourceService
-  ) { }
+  ) {
+    if (this.platform.width() <= 640) {
+      this.navController.navigateRoot('/tabs/basket');
+    } else {
+      this.navController.navigateRoot('/basket');
+    }
+  }
 
-  
 
   ionViewWillEnter() {
     this.orderLines = this.cartService.orderLines;

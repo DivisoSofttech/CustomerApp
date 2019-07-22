@@ -12,7 +12,6 @@ import { ApiConfiguration } from 'src/app/api/api-configuration';
   styleUrls: ['./login-screen.component.scss']
 })
 export class LoginScreenComponent implements OnInit {
-
   username = '';
   password = '';
   email = '';
@@ -27,135 +26,138 @@ export class LoginScreenComponent implements OnInit {
     private commandResourceService: CommandResourceService,
     private util: Util,
     private apiConfiguration: ApiConfiguration
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.isLoggedIn();
   }
 
-
   // Login and Register Methods
 
   login() {
-    this.util.createLoader()
-      .then(loader => {
-        loader.present();
-        this.keycloakService.authenticate({ username: this.username, password: this.password },
-          () => {
-            loader.dismiss();
-            
-            // Uncomment this later
-            // this.createUserIfNotExists(this.username);
-            // Remove this later
-            this.util.navigateRoot();
-
-          },
-          () => {
-            loader.dismiss();
-            this.util.createToast('Invalid Username / Password')
-          });
-      })
+    this.util.createLoader().then(loader => {
+      loader.present();
+      this.keycloakService.authenticate(
+        { username: this.username, password: this.password },
+        () => {
+          loader.dismiss();
+          // Uncomment this later
+          // this.createUserIfNotExists(this.username);
+          // Remove this later
+          this.util.navigateRoot();
+        },
+        () => {
+          loader.dismiss();
+          this.util.createToast('Invalid Username / Password');
+        }
+      );
+    });
   }
 
   signup() {
-    this.util.createLoader()
-      .then(loader => {
-        loader.present();
-        let user = { username: this.username, email: this.email };
-        this.keycloakService.createAccount(user, this.password,
-          (res) => {
-
-            // Remove this later
-            this.keycloakService.authenticate({ username: this.username, password: this.password },
-              () => {
-                this.commandResourceService
-                  .createCustomerUsingPOST({
-                    reference: this.username,
-                    name: this.username
-                  })
-                  .subscribe(
-                    customer => {
-                      console.log('Customer Created', customer);
-                      loader.dismiss();
-                      this.util.navigateRoot();
+    this.util.createLoader().then(loader => {
+      loader.present();
+      const user = { username: this.username, email: this.email };
+      this.keycloakService.createAccount(
+        user,
+        this.password,
+        res => {
+          // Remove this later
+          this.keycloakService.authenticate(
+            { username: this.username, password: this.password },
+            () => {
+              this.commandResourceService
+                .createCustomerUsingPOST({
+                  reference: this.username,
+                  name: this.username
+                })
+                .subscribe(
+                  customer => {
+                    console.log('Customer Created', customer);
+                    loader.dismiss();
+                    this.util.navigateRoot();
                   },
-                    err => {
-                      console.log(err);
-                      loader.dismiss();
-                      this.util.createToast('Server is Unreachable');
-                  });
-              },
-              () => {
-                loader.dismiss();
-                this.util.createToast('Invalid Username / Password')
-              });
-            // Remove this later
-
-          },
-          (err) => {
-            loader.dismiss();
-            if (err.response.status == 409) {
-              this.util.createToast('User Already Exists')
-              this.slideChange();
-            } else {
-              this.util.createToast('Cannot Register User. Please Try Later')
+                  err => {
+                    console.log(err);
+                    loader.dismiss();
+                    this.util.createToast('Server is Unreachable');
+                  }
+                );
+            },
+            () => {
+              loader.dismiss();
+              this.util.createToast('Invalid Username / Password');
             }
-            console.log(err);
-          })
-
-      })
+          );
+          // Remove this later
+        },
+        err => {
+          loader.dismiss();
+          if (err.response.status === 409) {
+            this.util.createToast('User Already Exists');
+            this.slideChange();
+          } else {
+            this.util.createToast('Cannot Register User. Please Try Later');
+          }
+          console.log(err);
+        }
+      );
+    });
   }
-
 
   isLoggedIn() {
-    this.keycloakService.isAuthenticated()
+    this.keycloakService
+      .isAuthenticated()
       .then(() => {
         this.util.navigateRoot();
-      }).catch(() => {
-        console.log('Not Logged In');
       })
+      .catch(() => {
+        console.log('Not Logged In');
+      });
   }
-
 
   createUserIfNotExists(reference) {
-    this.util.createLoader()
-      .then(loader => {
-        loader.present();
-        this.queryResourceService.findCustomerByReferenceUsingGET(reference)
+    this.util.createLoader().then(loader => {
+      loader.present();
+      this.queryResourceService
+        .findCustomerByReferenceUsingGET(reference)
         .subscribe(
-            customer => {
-              console.log('Got Customer' , customer);
-              loader.dismiss();
-              this.util.navigateRoot();
+          customer => {
+            console.log('Got Customer', customer);
+            loader.dismiss();
+            this.util.navigateRoot();
           },
-            err => {
-              if (err.status == 500) {
-                // Check if server is reachable
-                let url = this.apiConfiguration.rootUrl.slice(2, this.apiConfiguration.rootUrl.length);
-                this.commandResourceService
-                  .createCustomerUsingPOST({
-                    reference: this.username,
-                    name: this.username
-                  })
-                  .subscribe(
-                    customer => {
-                      console.log('Customer Created', customer);
-                      loader.dismiss();
-                      this.util.navigateRoot();
+          err => {
+            if (err.status === 500) {
+              // Check if server is reachable
+              const url = this.apiConfiguration.rootUrl.slice(
+                2,
+                this.apiConfiguration.rootUrl.length
+              );
+              this.commandResourceService
+                .createCustomerUsingPOST({
+                  reference: this.username,
+                  name: this.username
+                })
+                .subscribe(
+                  customer => {
+                    console.log('Customer Created', customer);
+                    loader.dismiss();
+                    this.util.navigateRoot();
                   },
-                    err => {
-                      console.log(err);
-                      loader.dismiss();
-                      this.util.createToast('Server is Unreachable');
-                  });
-              }
-        });
-      })
+                  eror => {
+                    console.log(eror);
+                    loader.dismiss();
+                    this.util.createToast('Server is Unreachable');
+                  }
+                );
+            }
+          }
+        );
+    });
   }
 
-
   // View Related Methods
-
 
   loginDisabled(): boolean {
     if (this.username === '' || this.password === '') {

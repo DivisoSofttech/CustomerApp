@@ -1,10 +1,10 @@
-<ion-tabs>
+<ion-tabs [ngClass]="enableTabs? '':'hide'">
 
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="home">
       <ion-icon name="business"></ion-icon>
     </ion-tab-button>
-    
+
     <ion-tab-button tab="basket">
       <ion-icon name="basket"></ion-icon>
       <ion-badge color="primary"><strong>{{basketBadge}}</strong></ion-badge>

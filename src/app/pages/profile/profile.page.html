@@ -37,13 +37,13 @@
       <ion-label color="primary">Favourite</ion-label>
     </ion-segment-button>
     <ion-segment-button value="frequently">
-      <ion-label color="primary">Frequently</ion-label>
+      <ion-label color="primary">Frequent</ion-label>
     </ion-segment-button>
   </ion-segment>
 
   <!-- <ion-card *ngIf="'history' === currentSubPage || 'frequently odered'  === currentSubPage"> -->
 
-  <ion-list *ngIf="orders != undefined && orders.length != 0 > 0 && currentSubPage == 'history'">
+  <ion-list *ngIf="orders != undefined && orders.length != 0  && currentSubPage == 'history'">
     <ion-item lines="full" class="order" *ngFor="let order of orders" margin>
       <ion-thumbnail slot="start" *ngIf="stores[order.storeId] != null">
         <ion-img [src]="'data:' + stores[order.storeId].imageContentType + ';base64,' + stores[order.storeId].image"
@@ -110,30 +110,33 @@
   <div *ngIf="frequentOrders.length > 0 && currentSubPage == 'frequently'">
 
     <ion-list>
-      <ion-card padding *ngFor="let stock of frequentOrders, let i = index;">
-        <ion-item lines="none">
-          <ion-img src="assets/images/burger.jpeg" class="imageShow">
-          </ion-img>
-          <ion-card-content>
-            <ion-grid>
-              <ion-row>
-                <ion-col class="title-card">
-                  <ion-card-title>{{stock.product.name}}</ion-card-title>
-                  <ion-text><strong>&#8364;{{stock.sellPrice}}</strong></ion-text>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card-content>
-          <ion-buttons slot = "end">
-            <ion-button fill="none" (click)="addToFavourite(stock.product)" *ngIf="!isFavourite(stock.product)">
-              <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
-            </ion-button>
-            <ion-button fill="none" (click)="removeFromFavourite(stock.product)" *ngIf="isFavourite(stock.product)">
-              <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-item>
-      </ion-card>
+      <ion-grid>
+        <ion-row>
+          <ion-col size-lg="3" size-sm="6" size="6" size-md="4">
+              <ion-card *ngFor="let stock of frequentOrders, let i = index;">
+                <ion-img src="assets/images/burger.jpeg" class="imageShow"></ion-img>
+                  <ion-card-content no-padding class="description">
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="8" text-start>
+                          <ion-text class="stock-name">{{stock.product.name}}</ion-text>
+                          <ion-text text-start class="display-list"><strong>&#8364;{{stock.sellPrice}}</strong></ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                          <ion-button text-end fill="none" (click)="addToFavourite(stock.product)" *ngIf="!isFavourite(stock.product)">
+                            <ion-icon slot="icon-only" name="heart-empty"></ion-icon>
+                          </ion-button>
+                          <ion-button text-end fill="none" (click)="removeFromFavourite(stock.product)" *ngIf="isFavourite(stock.product)">
+                            <ion-icon color="danger" slot="icon-only" name="heart"></ion-icon>
+                          </ion-button>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card-content>
+                </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-list>
   </div>
 

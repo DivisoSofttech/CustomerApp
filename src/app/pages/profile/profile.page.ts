@@ -1,7 +1,7 @@
 import { ProfileEditComponent } from './../../components/profile-edit/profile-edit.component';
 import { CustomerDTO } from './../../api/models/customer-dto';
 import { FavouriteService, Favourite } from './../../services/favourite/favourite.service';
-import { ToastController, AlertController, NavController, IonInfiniteScroll, ModalController } from '@ionic/angular';
+import { ToastController, AlertController, NavController, IonInfiniteScroll, ModalController, Platform } from '@ionic/angular';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { QueryResourceService } from 'src/app/api/services';
@@ -55,7 +55,14 @@ export class ProfilePage implements OnInit {
               private navController: NavController,
               private favourite: FavouriteService,
               private router: Router,
-              private loading: Loading) { }
+              private platform: Platform,
+              private loading: Loading) {
+                if (this.platform.width() <= 640) {
+                  this.navController.navigateRoot('/tabs/profile');
+                } else {
+                  this.navController.navigateRoot('/profile');
+                }
+              }
 
   ngOnInit() {
 

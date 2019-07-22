@@ -6,37 +6,35 @@ import * as moment from 'moment';
 })
 export class DateDifferencePipe implements PipeTransform {
 
-  transform(value: any,  arg1?: any , arg2?:any): any {
+  transform(value: any,  arg1?: any , arg2?: any): any {
 
-    let date = new Date();
+    const date = new Date();
 
-    let st = {
+    const st = {
       month: date.getMonth(),
       year: date.getFullYear(),
     };
 
-    let now = moment(value)
-    let openingTime = moment(new Date(arg1).setDate(date.getDate()));
-    let closingTime = moment(new Date(arg2).setDate(date.getDate()));
+    const now = moment(value);
+    const openingTime = moment(new Date(arg1).setDate(date.getDate()));
+    const closingTime = moment(new Date(arg2).setDate(date.getDate()));
     openingTime.set(st);
     closingTime.set(st);
 
-    if(closingTime.isBefore(openingTime)) {
-      closingTime.add(1,'days');
+    if (closingTime.isBefore(openingTime)) {
+      closingTime.add(1, 'days');
     }
 
-    if(now.isAfter(closingTime)) {
+    if (now.isAfter(closingTime)) {
       openingTime.add(1 , 'days');
     }
 
-    let diff = moment.duration(now.diff(openingTime)).asHours();
+    const diff = Math.abs(moment.duration(now.diff(openingTime)).asHours());
+    const ret = diff < 1 ?
+      parseInt(Math.abs(moment.duration(now.diff(openingTime)).asMinutes()).toString(), 10) + ' minutes' :
+      parseInt(diff.toString(), 10) + ' hours';
 
-    if(diff < 0) {
-
-      diff = diff * -1;
-    }
-
-    return diff;
+    return ret;
   }
 
 }

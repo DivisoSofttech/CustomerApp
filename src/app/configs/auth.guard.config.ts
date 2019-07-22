@@ -7,7 +7,7 @@ export const authConfig: AuthConfig = {
   issuer: 'http://35.196.86.249:8080/auth/realms/graeshoppe',
   redirectUri: window.location.origin,
   clientId: 'account',
-  scope: 'openid profile email',
+  scope: 'openid profile email voucher offline_access',
   dummyClientSecret: '29a095bc-9ced-480b-a719-4e70ce7dcc49',
   tokenEndpoint: 'http://35.196.86.249:8080/auth/realms/graeshoppe/protocol/openid-connect/token',
   userinfoEndpoint: 'http://35.196.86.249:8080/auth/realms/graeshoppe/protocol/openid-connect/userinfo',

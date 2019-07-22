@@ -17,15 +17,15 @@
   <ion-slides #slides (ionSlideDidChange)="slideChange()">
     <ion-slide>
       <ion-grid margin-top>
-        <ion-row justify-content-center>
-          <ion-col size="6" text-center>
+        <ion-row justify-content-center text-center class="centre">
+          <ion-col size="6" justify-content-center>
             <div class="circle">
               <ion-icon class="large-icon" name="person"></ion-icon>
             </div>
           </ion-col>
         </ion-row>
-        <ion-row justify-content-center>
-          <ion-col text-center>
+        <ion-row justify-content-center class="centre">
+          <ion-col text-center class="container-box">
             <ion-item class="item-inner">
               <ion-label color="medium" position="floating">Username or Email</ion-label>
               <ion-input [(ngModel)]="username" background="light"></ion-input>
@@ -49,8 +49,8 @@
             </div>
           </ion-col>
         </ion-row>
-        <ion-row justify-content-center>
-          <ion-col text-center>
+        <ion-row justify-content-center class="centre">
+          <ion-col text-center class="container-box">
             <ion-item class="item-inner">
               <ion-label color="medium" position="floating">Username</ion-label>
               <ion-input [(ngModel)]="username" background="light"></ion-input>
@@ -63,7 +63,8 @@
               <ion-label color="medium" position="floating">Password</ion-label>
               <ion-input [(ngModel)]="password" type="password"></ion-input>
             </ion-item>
-            <ion-button [disabled]="registerDisabled()" (click)="signup()"  expand="block" margin-top margin-bottom>Register</ion-button>
+            <ion-button [disabled]="registerDisabled()" (click)="signup()" expand="block" margin-top margin-bottom>
+              Register</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>

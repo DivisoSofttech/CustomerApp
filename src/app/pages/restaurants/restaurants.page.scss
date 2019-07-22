@@ -72,3 +72,18 @@
  .noStores {
    height: 15vh;
  }
+
+ .store-name {
+   font-size: 20px;
+ }
+
+ .no-wrap {
+   font-size: 11px;
+   white-space: nowrap;
+ }
+
+ .set-duration {
+  animation-duration: 0.3s;
+  animation-delay: 0s;
+  position: absolute;
+ }

@@ -1,26 +1,26 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ModalController,
   Platform,
   IonSlides,
   IonInfiniteScroll,
   NavController
-} from "@ionic/angular";
+} from '@ionic/angular';
 
-import { Store } from "src/app/api/models";
-import { LocationService } from "./../../services/location-service.service";
-import { FilterComponent } from "src/app/components/filter/filter.component";
-import { QueryResourceService } from "src/app/api/services";
-import { NotificationsComponent } from "src/app/components/notifications/notifications.component";
-import { FavouriteService } from "src/app/services/favourite/favourite.service";
+import { Store } from 'src/app/api/models';
+import { LocationService } from './../../services/location-service.service';
+import { FilterComponent } from 'src/app/components/filter/filter.component';
+import { QueryResourceService } from 'src/app/api/services';
+import { NotificationsComponent } from 'src/app/components/notifications/notifications.component';
+import { FavouriteService } from 'src/app/services/favourite/favourite.service';
 import { FilterService } from 'src/app/services/filter.service';
 import { Util } from 'src/app/services/util';
 import { MapService } from 'src/app/services/map/map.service';
 
 @Component({
-  selector: "app-restaurants",
-  templateUrl: "./restaurants.page.html",
-  styleUrls: ["./restaurants.page.scss"]
+  selector: 'app-restaurants',
+  templateUrl: './restaurants.page.html',
+  styleUrls: ['./restaurants.page.scss']
 })
 export class RestaurantsPage implements OnInit {
 
@@ -28,7 +28,7 @@ export class RestaurantsPage implements OnInit {
   pageNumber = 1;
   maxPage = 1;
   filterData;
-  showServiceDown: boolean = false;
+  showServiceDown = false;
 
 
   stores: Store[];
@@ -43,14 +43,14 @@ export class RestaurantsPage implements OnInit {
   places: any[] = [];
 
   slideOpts = {
-    slidesPerView: 2,
+    slidesPerView: this.platform.width() >= 640 ? 3 : 2,
     loop: true,
     autoplay: true
   };
-  @ViewChild("slides") slides: IonSlides;
+  @ViewChild('slides') slides: IonSlides;
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
- 
+
   constructor(
     private modalController: ModalController,
     private platform: Platform,
@@ -61,7 +61,13 @@ export class RestaurantsPage implements OnInit {
     private util: Util,
     private map: MapService,
     private navCtrl: NavController
-  ) { }
+  ) {
+    if (this.platform.width() <= 640) {
+      this.navCtrl.navigateRoot('/tabs/home');
+    } else {
+      this.navCtrl.navigateRoot('/restaurants');
+    }
+  }
 
 
   ngOnInit() {
@@ -75,19 +81,20 @@ export class RestaurantsPage implements OnInit {
     });
     this.platform.ready()
       .then(data => {
-        this.map.loadMap();
-      })
+        if (this.platform.is('cordova')) {
+          this.map.loadMap();
+        }
+      });
   }
 
   getStores() {
       if (this.filterData.sortFilter != undefined) {
         console.log('Getting Via Common Filter');
-        this.getStoreByCommonSortFilter()
+        this.getStoreByCommonSortFilter();
       } else if (this.filterData.deliveryTypeFilter != undefined) {
         console.log('Getting Via Delivery Type Filter');
         this.getStoreByDeliveryType(this.filterData.deliveryTypeFilter);
-      }
-      else {
+      } else {
         console.log('Getting Via No Filter');
         this.getStoresNoFilter();
       }
@@ -95,7 +102,7 @@ export class RestaurantsPage implements OnInit {
   }
 
   getStoreByCommonSortFilter() {
-    switch(this.filterData.sortFilter) {
+    switch (this.filterData.sortFilter) {
       case 'rating':
         this.queryResourceService.findStoreByRatingUsingGET()
         .subscribe(res => {
@@ -106,22 +113,22 @@ export class RestaurantsPage implements OnInit {
           this.stores = res.content;
 
           this.maxPage = res.totalPages;
-          this.pageNumber++; 
-    
+          this.pageNumber++;
+
           this.map.setStores(this.stores);
           this.map.setRestaurantMarkers();
           this.getFavourites();
-    
+
           this.stores.forEach(store => {
             this.getStoreCategory(store);
             this.getStoreDeliveryType(store);
-          });    
+          });
         },
         err => {
-          console.log("Error fetching stores");
+          console.log('Error fetching stores');
           this.showServiceDown = true;
-          this.toggleInfiniteScroll();    
-        })
+          this.toggleInfiniteScroll();
+        });
         break;
     }
   }
@@ -139,7 +146,7 @@ export class RestaurantsPage implements OnInit {
       this.stores = res.content;
 
       this.maxPage = res.totalPages;
-      this.pageNumber++; 
+      this.pageNumber++;
 
       this.map.setStores(this.stores);
       this.map.setRestaurantMarkers();
@@ -150,11 +157,11 @@ export class RestaurantsPage implements OnInit {
         this.getStoreDeliveryType(store);
       });
     },
-    err=> {
-      console.log("Error fetching stores");
+    err => {
+      console.log('Error fetching stores');
       this.showServiceDown = true;
       this.toggleInfiniteScroll();
-    })
+    });
   }
 
   getStoresNoFilter() {
@@ -167,7 +174,7 @@ export class RestaurantsPage implements OnInit {
 
           this.maxPage = res.totalPages;
           this.pageNumber++;
-          
+
           this.map.setStores(this.stores);
           this.map.setRestaurantMarkers();
           this.getFavourites();
@@ -176,10 +183,10 @@ export class RestaurantsPage implements OnInit {
             this.getStoreCategory(store);
             this.getStoreDeliveryType(store);
           });
-        
+
         },
         err => {
-          console.log("Error fetching stores");
+          console.log('Error fetching stores');
           this.showServiceDown = true;
           this.toggleInfiniteScroll();
         }
@@ -188,13 +195,13 @@ export class RestaurantsPage implements OnInit {
 
 
   getStoreCategory(store) {
-    console.log("Getting Category", store.regNo);
+    console.log('Getting Category', store.regNo);
     this.queryResourceService
       .findCategoryByStoreIdUsingGET({ userId: store.regNo })
       .subscribe(
         success => {
           this.categories[store.regNo] = success.content;
-          console.log("Got Category", success.content);
+          console.log('Got Category', success.content);
         },
         err => { }
       );
@@ -209,7 +216,7 @@ export class RestaurantsPage implements OnInit {
       .subscribe(
         success => {
           this.deliveryType[store.regNo] = success.content;
-          console.log("DeliveryInfo", this.deliveryType[store.regNo]);
+          console.log('DeliveryInfo', this.deliveryType[store.regNo]);
         },
         err => { }
       );
@@ -240,13 +247,13 @@ export class RestaurantsPage implements OnInit {
   // Favourites Methods
 
   addToFavourite(store: Store) {
-    console.log("adding to favourite", this.favouriteRestaurantsID);
-    this.favourite.addToFavouriteStore(store, "/hotel-menu/" + store.regNo);
+    console.log('adding to favourite', this.favouriteRestaurantsID);
+    this.favourite.addToFavouriteStore(store, '/hotel-menu/' + store.regNo);
     this.getFavourites();
   }
 
   removeFromFavourite(store) {
-    this.favourite.removeFromFavorite(store, "store");
+    this.favourite.removeFromFavorite(store, 'store');
     this.getFavourites();
   }
 
@@ -273,26 +280,26 @@ export class RestaurantsPage implements OnInit {
     this.stores = this.stores;
     this.slides.startAutoplay();
   }
- 
+
   doPlaceSearch(event) {
     this.places = [];
     console.log(event.detail.value);
     const searchterm = event.detail.value;
-    if (searchterm === "" || searchterm === null) {
+    if (searchterm === '' || searchterm === null) {
       return;
     }
     this.locationService.getPredictions(searchterm).subscribe(res => {
       console.log(res);
       this.places = res;
     });
-  }  
+  }
 
   updateMap(placeId) {
     this.map.decodeLatLongByPlaceId(placeId);
   }
 
   showHotelMenu(storeId) {
-    this.navCtrl.navigateForward("/hotel-menu/" + storeId);
+    this.navCtrl.navigateForward('/hotel-menu/' + storeId);
   }
 
   searchRestaurants(event) {

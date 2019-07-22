@@ -15,7 +15,7 @@ export class CartService {
   observablePrice: BehaviorSubject<number>;
   currentShop: Store;
   constructor(private alertController: AlertController,
-    private navController: NavController) {
+              private navController: NavController) {
     this.observableTickets = new BehaviorSubject<OrderLine[]>(this.orderLines);
     this.observablePrice = new BehaviorSubject<number>(this.totalPrice);
   }

@@ -9,7 +9,7 @@ import { StockCurrent } from './../../api/models/stock-current';
 import { Store } from './../../api/models/store';
 import { HotelMenuPopoverComponent } from './../../components/hotel-menu-popover/hotel-menu-popover.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PopoverController,IonSlides,IonSearchbar} from '@ionic/angular';
+import { PopoverController, IonSlides, IonSearchbar} from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QueryResourceService } from 'src/app/api/services/query-resource.service';
 import { UserRating } from 'src/app/api/models/user-rating';
@@ -67,7 +67,7 @@ export class HotelMenuPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private cartService: CartService,
-    private util:Util,
+    private util: Util,
     private commandResourceService: CommandResourceService,
     private queryResourceService: QueryResourceService,
     private keycloakService: KeycloakService,
@@ -76,7 +76,7 @@ export class HotelMenuPage implements OnInit {
     private searchHistoyService: SearchHistoryService
   ) { }
 
- 
+
 
   ngOnInit() {
     this.util.createLoader()
@@ -88,12 +88,12 @@ export class HotelMenuPage implements OnInit {
       this.keycloakService.getCurrentUserDetails()
       .then(data => {
         this.usr = data;
-      })
+      });
 
-        this.getStore();
-        this.getProducts();
-        this.getCategories();
-        this.getRatingReview();
+      this.getStore();
+      this.getProducts();
+      this.getCategories();
+      this.getRatingReview();
 
       this.subscriptionCart = this.cartService.observableTickets.subscribe(
         orderLines => (this.cartSize = orderLines.length)
@@ -102,7 +102,7 @@ export class HotelMenuPage implements OnInit {
         price => (this.totalPrice = price)
       );
       this.timeTracker();
-    })
+    });
 
   }
 
@@ -139,7 +139,7 @@ export class HotelMenuPage implements OnInit {
     .findAllCategoriesUsingGET(this.storeId)
     .subscribe(result => {
       this.categories = result;
-    })
+    });
   }
 
   getProducts() {
@@ -150,9 +150,9 @@ export class HotelMenuPage implements OnInit {
         if (result != null) {
           this.stockCurrents = result.content;
           this.getFavourites();
-          for(let i = 0;i < result.content.length;i++) {
+          result.content.forEach(() => {
             this.accordionArray.push(false);
-          }
+          });
         }
         this.loading.dismiss();
         result.content.forEach(() => {
@@ -201,13 +201,13 @@ export class HotelMenuPage implements OnInit {
 
     this.searchSuggetions = [];
     if (event.detail.value !== '') {
-      if(this.disableSuggetions != true) {
+      if (this.disableSuggetions != true) {
         this.searchHistoyService.findAllSearchTerms(event.detail.value)
         .then(data => {
           console.log(data);
           this.searchSuggetions = data;
-        })
-        this.searchHistoyService.addSearchTerm(event.detail.value);  
+        });
+        this.searchHistoyService.addSearchTerm(event.detail.value);
       }
       const query: string = event.detail.value;
       this.queryResourceService
@@ -236,9 +236,9 @@ export class HotelMenuPage implements OnInit {
   // View Methods
 
   closeOpen(index) {
-    for(let i = 0 ;i < this.accordionArray.length;i++) {
+    for (let i = 0 ; i < this.accordionArray.length; i++) {
 
-      if(i ===index) {
+      if (i === index) {
         this.accordionArray[i] = !this.accordionArray[i];
       } else {
         this.accordionArray[i] = false;
@@ -258,7 +258,7 @@ export class HotelMenuPage implements OnInit {
       translucent: true
     });
     popover.onDidDismiss().then((data: any) => {
-      console.log(data.data)
+      console.log(data.data);
       if (data.data !== undefined) {
         this.stockCurrents = data.data.result;
         this.selectedCategory = data.data.selectedCategory;
@@ -301,7 +301,7 @@ export class HotelMenuPage implements OnInit {
   }
 
   add(i, stock: StockCurrent) {
-    if(this.cartService.addProduct(stock.product, stock , this.store)) {
+    if (this.cartService.addProduct(stock.product, stock , this.store)) {
       this.cardExpand[i]++;
     }
   }

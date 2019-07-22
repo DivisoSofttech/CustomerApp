@@ -1,3 +1,4 @@
+import { UserStatusService } from './services/user-status.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationService } from './services/location-service.service';
 import { FavouriteService } from './services/favourite/favourite.service';
@@ -54,7 +55,6 @@ import { MapService } from './services/map/map.service';
   ],
   providers: [
     Util,
-    
     StatusBar,
     SplashScreen,
     Geolocation,
@@ -69,6 +69,7 @@ import { MapService } from './services/map/map.service';
     ComponentsModule,
     PayPal,
     CartService,
+    UserStatusService,
     SearchHistoryService,
     LocationService,
     FilterService,

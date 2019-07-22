@@ -1,3 +1,4 @@
+import { RestaurantsPage } from './pages/restaurants/restaurants.page';
 import { AuthGuardService } from './services/security/auth-guard.service';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes, CanActivate } from '@angular/router';
@@ -23,6 +24,11 @@ const routes: Routes = [
     loadChildren: './pages/basket/basket.module#BasketPageModule',
     canActivate: [AuthGuardService]
   },
+  {
+    path: 'restaurants',
+    loadChildren: './pages/restaurants/restaurants.module#RestaurantsPageModule',
+    canActivate: [AuthGuardService]
+  }
 
 ];
 @NgModule({
