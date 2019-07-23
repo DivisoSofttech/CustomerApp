@@ -2,7 +2,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { KeycloakAdminClient } from 'keycloak-admin/lib/client';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { HttpHeaders} from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { KeycloakAdminConfig } from '../configs/keycloak.admin.config';
 import { Util } from './util';
@@ -20,30 +20,36 @@ export class KeycloakService {
     private storage: Storage,
     private util: Util
   ) {
-    this.keycloakAdmin = this.keycloakConfig.kcAdminClient;
+
+
   }
 
 
-  createAccount(user: any, password: string , success:any , err: any) {
-    user.realm = 'graeshoppe';
-    user.credentials = [{ type: 'password', value: password }];
-    user.attributes = map;
-    user.enabled = true;
+  createAccount(user: any, password: string, success: any, err: any) {
+    this.keycloakConfig.refreshClient().then(() => {
+      this.keycloakAdmin = this.keycloakConfig.kcAdminClient
+      user.realm = 'graeshoppe';
+      user.credentials = [{ type: 'password', value: password }];
+      user.attributes = map;
+      user.enabled = true;
 
-    this.keycloakAdmin.users.create(user)
-    .then(res => {
-      success(res);
-    })
-    .catch(e => {
-      err(e);
-    });
+      this.keycloakAdmin.users.create(user)
+        .then(res => {
+          success(res);
+        })
+        .catch(e => {
+          err(e);
+        });
+    }
+    );
+
   }
 
   async isAuthenticated(): Promise<boolean> {
     return await this.oauthService.hasValidAccessToken();
   }
 
-  authenticate(credentials: any , success: any , err: any) {
+  authenticate(credentials: any, success: any, err: any) {
     this.oauthService.fetchTokenUsingPasswordFlow(
       credentials.username,
       credentials.password,

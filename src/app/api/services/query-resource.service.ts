@@ -20,6 +20,7 @@ import { PageOfRatingReview } from '../models/page-of-rating-review';
 import { PageOfStockCurrent } from '../models/page-of-stock-current';
 import { StockCurrent } from '../models/stock-current';
 import { PageOfStore } from '../models/page-of-store';
+import { Store } from '../models/store';
 import { OrderMaster } from '../models/order-master';
 import { PageOfOrder } from '../models/page-of-order';
 import { ProductDTO } from '../models/product-dto';
@@ -29,7 +30,6 @@ import { PageOfReview } from '../models/page-of-review';
 import { StockCurrentDTO } from '../models/stock-current-dto';
 import { StockDiaryDTO } from '../models/stock-diary-dto';
 import { StockLine } from '../models/stock-line';
-import { Store } from '../models/store';
 import { PageOfUserRating } from '../models/page-of-user-rating';
 
 /**
@@ -62,6 +62,8 @@ class QueryResourceService extends __BaseService {
   static readonly findStoreBySearchTermUsingGETPath = '/api/query/findStore/{searchTerm}';
   static readonly findStoreByTypeNameUsingGETPath = '/api/query/findStoreByTypeName/{name}';
   static readonly findAllProductByStoreIdUsingGETPath = '/api/query/findproducts/{storeId}';
+  static readonly headerUsingGETPath = '/api/query/header/{searchTerm}';
+  static readonly searchByNearestLocationUsingGETPath = '/api/query/location/findByNearestLocation/{latLon}/{kiloMeter}';
   static readonly findOrderMasterByOrderIdUsingGETPath = '/api/query/orderMaster/{orderId}';
   static readonly findOrdersByCustomerIdUsingGETPath = '/api/query/ordersByCustomerId/{customerId}';
   static readonly findAndSortProductByPriceUsingGETPath = '/api/query/productByPrice/{from}/{to}';
@@ -1278,6 +1280,110 @@ class QueryResourceService extends __BaseService {
   findAllProductByStoreIdUsingGET(storeId: string): __Observable<PageOfProduct> {
     return this.findAllProductByStoreIdUsingGETResponse(storeId).pipe(
       __map(_r => _r.body as PageOfProduct)
+    );
+  }
+
+  /**
+   * @param params The `QueryResourceService.HeaderUsingGETParams` containing the following parameters:
+   *
+   * - `searchTerm`: searchTerm
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
+   * @return OK
+   */
+  headerUsingGETResponse(params: QueryResourceService.HeaderUsingGETParams): __Observable<__StrictHttpResponse<PageOfStore>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+    (params.sort || []).forEach(val => {if (val != null) __params = __params.append('sort', val.toString())});
+    if (params.size != null) __params = __params.set('size', params.size.toString());
+    if (params.page != null) __params = __params.set('page', params.page.toString());
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/header/${params.searchTerm}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<PageOfStore>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.HeaderUsingGETParams` containing the following parameters:
+   *
+   * - `searchTerm`: searchTerm
+   *
+   * - `sort`: Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   *
+   * - `size`: Size of a page
+   *
+   * - `page`: Page number of the requested page
+   *
+   * @return OK
+   */
+  headerUsingGET(params: QueryResourceService.HeaderUsingGETParams): __Observable<PageOfStore> {
+    return this.headerUsingGETResponse(params).pipe(
+      __map(_r => _r.body as PageOfStore)
+    );
+  }
+
+  /**
+   * @param params The `QueryResourceService.SearchByNearestLocationUsingGETParams` containing the following parameters:
+   *
+   * - `latLon`: latLon
+   *
+   * - `kiloMeter`: kiloMeter
+   *
+   * @return OK
+   */
+  searchByNearestLocationUsingGETResponse(params: QueryResourceService.SearchByNearestLocationUsingGETParams): __Observable<__StrictHttpResponse<Array<Store>>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+
+
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/api/query/location/findByNearestLocation/${params.latLon}/${params.kiloMeter}`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Array<Store>>;
+      })
+    );
+  }
+  /**
+   * @param params The `QueryResourceService.SearchByNearestLocationUsingGETParams` containing the following parameters:
+   *
+   * - `latLon`: latLon
+   *
+   * - `kiloMeter`: kiloMeter
+   *
+   * @return OK
+   */
+  searchByNearestLocationUsingGET(params: QueryResourceService.SearchByNearestLocationUsingGETParams): __Observable<Array<Store>> {
+    return this.searchByNearestLocationUsingGETResponse(params).pipe(
+      __map(_r => _r.body as Array<Store>)
     );
   }
 
@@ -2835,6 +2941,48 @@ module QueryResourceService {
      * Page number of the requested page
      */
     page?: number;
+  }
+
+  /**
+   * Parameters for headerUsingGET
+   */
+  export interface HeaderUsingGETParams {
+
+    /**
+     * searchTerm
+     */
+    searchTerm: string;
+
+    /**
+     * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     */
+    sort?: Array<string>;
+
+    /**
+     * Size of a page
+     */
+    size?: number;
+
+    /**
+     * Page number of the requested page
+     */
+    page?: number;
+  }
+
+  /**
+   * Parameters for searchByNearestLocationUsingGET
+   */
+  export interface SearchByNearestLocationUsingGETParams {
+
+    /**
+     * latLon
+     */
+    latLon: string;
+
+    /**
+     * kiloMeter
+     */
+    kiloMeter: number;
   }
 
   /**

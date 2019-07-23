@@ -98,6 +98,14 @@ export class FilterComponent implements OnInit {
           this.filterObject = {};
           this.filterService.setFilter(this.filterObject);
           this.dismiss();
+
+        case 'distance':
+            this.filterObject.deliveryTypeFilter = undefined;
+            this.filterObject.sortFilter = 'distance';
+            this.filterObject.distance = this.distance;
+            this.filterService.setFilter(this.filterObject);
+            this.dismiss();
+          break;
       }
     } catch (error) {
       console.log(error);

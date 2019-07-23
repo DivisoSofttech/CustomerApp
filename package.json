@@ -35,6 +35,9 @@
     "angular-reverse-geocode": "^1.0.0",
     "bootstrap": "^4.3.1",
     "bowser": "2.4.0",
+    "card.io.cordova.mobilesdk": "^2.1.0",
+    "com.paypal.cordova.mobilesdk": "^3.5.0",
+    "com.razorpay.cordova": "^1.4.5",
     "cordova-android": "7.1.4",
     "cordova-browser": "5.0.4",
     "cordova-ios": "4.5.5",
@@ -56,11 +59,13 @@
     "is-reachable": "^3.1.0",
     "jquery": "^3.4.1",
     "keycloak-admin": "^1.12.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "moment": "^2.24.0",
+    "ng-swagger-gen": "^1.7.1",
     "npm": "^6.10.0",
     "rxjs": "^6.5.2",
     "tslib": "^1.10.0",
+    "zlib": "^1.0.5",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
@@ -104,7 +109,9 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-googlemaps": {
         "PLAY_SERVICES_VERSION": "15.0.1",
@@ -113,7 +120,9 @@
         "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
       },
       "cordova-plugin-camera": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "com.razorpay.cordova": {},
+      "com.paypal.cordova.mobilesdk": {}
     },
     "platforms": [
       "browser",

@@ -9,6 +9,8 @@ export class Filter {
   deliveryTypeFilter?: string;
 
   categoryTypeFilter?: string[];
+
+  distance?: number;
 };
 
 

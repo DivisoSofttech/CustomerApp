@@ -23,13 +23,11 @@ import { MapService } from 'src/app/services/map/map.service';
   styleUrls: ['./restaurants.page.scss']
 })
 export class RestaurantsPage implements OnInit {
-
   now: Date;
   pageNumber = 1;
   maxPage = 1;
   filterData;
   showServiceDown = false;
-
 
   stores: Store[];
   storesBackup: Store[];
@@ -51,7 +49,6 @@ export class RestaurantsPage implements OnInit {
   @ViewChild('slides') slides: IonSlides;
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
-
   constructor(
     private modalController: ModalController,
     private platform: Platform,
@@ -70,45 +67,115 @@ export class RestaurantsPage implements OnInit {
     }
   }
 
-
   ngOnInit() {
     this.showFilter = this.platform.width() <= 640 ? true : false;
     this.showServiceDown = false;
     this.now = new Date();
-    this.filterService.getFilter()
-    .subscribe(data => {
+    this.filterService.getFilter().subscribe(data => {
       this.filterData = data;
       this.getStores();
     });
-    this.platform.ready()
-      .then(data => {
-        if (this.platform.is('cordova')) {
-          this.map.loadMap();
-        }
-      });
+    this.platform.ready().then(data => {
+      if (this.platform.is('cordova')) {
+        this.map.loadMap();
+      }
+    });
   }
 
   getStores() {
-      if (this.filterData.sortFilter != undefined) {
-        console.log('Getting Via Common Filter');
-        this.getStoreByCommonSortFilter();
-      } else if (this.filterData.deliveryTypeFilter != undefined) {
-        console.log('Getting Via Delivery Type Filter');
-        this.getStoreByDeliveryType(this.filterData.deliveryTypeFilter);
-      } else {
-        console.log('Getting Via No Filter');
-        this.getStoresNoFilter();
-      }
+    if (this.filterData.sortFilter != undefined) {
+      console.log('Getting Via Common Filter');
+      this.getStoreByCommonSortFilter();
+    } else if (this.filterData.deliveryTypeFilter != undefined) {
+      console.log('Getting Via Delivery Type Filter');
+      this.getStoreByDeliveryType(this.filterData.deliveryTypeFilter);
+    } else {
+      console.log('Getting Via No Filter');
 
+      this.platform.ready().then(data => {
+        console.log('platform :', data);
+        if (data == 'cordova') {
+          this.getStoresByLocation();
+        } else {
+          this.getStoresNoFilter();
+        }
+      });
+    }
   }
 
   getStoreByCommonSortFilter() {
     switch (this.filterData.sortFilter) {
       case 'rating':
-        this.queryResourceService.findStoreByRatingUsingGET()
-        .subscribe(res => {
+        this.getStoreByRatingFilter();
+        break;
+      case 'distance':
+        this.getStoreByDistanceFilter();
+        break;
+    }
+  }
+  getStoreByRatingFilter() {
+    this.queryResourceService.findStoreByRatingUsingGET().subscribe(
+      res => {
+        console.log('Got CommonFilter', res.content);
 
-          console.log('Got CommonFilter' , res.content);
+        this.showServiceDown = false;
+        this.stores = res.content;
+
+        this.maxPage = res.totalPages;
+        this.pageNumber++;
+
+        this.map.setStores(this.stores);
+        this.map.setRestaurantMarkers();
+        this.getFavourites();
+
+        this.stores.forEach(store => {
+          this.getStoreCategory(store);
+          this.getStoreDeliveryType(store);
+        });
+      },
+      err => {
+        console.log('Error fetching stores');
+        this.showServiceDown = true;
+        this.toggleInfiniteScroll();
+      }
+    );
+  }
+  getStoreByDistanceFilter() {
+    this.queryResourceService.findStoreByRatingUsingGET().subscribe(
+      res => {
+        console.log('Got Distance Filter', res.content);
+
+        this.showServiceDown = false;
+        this.stores = res.content;
+
+        this.maxPage = res.totalPages;
+        this.pageNumber++;
+
+        this.map.setStores(this.stores);
+        this.map.setRestaurantMarkers();
+        this.getFavourites();
+
+        this.stores.forEach(store => {
+          this.getStoreCategory(store);
+          this.getStoreDeliveryType(store);
+        });
+      },
+      err => {
+        console.log('Error fetching stores');
+        this.showServiceDown = true;
+        this.toggleInfiniteScroll();
+      }
+    );
+  }
+
+  getStoreByDeliveryType(dt) {
+    this.queryResourceService
+      .findStoreByTypeNameUsingGET({
+        name: dt.toLowerCase()
+      })
+      .subscribe(
+        res => {
+          console.log('Got DeliveryType', res.content);
 
           this.showServiceDown = false;
           this.stores = res.content;
@@ -129,44 +196,13 @@ export class RestaurantsPage implements OnInit {
           console.log('Error fetching stores');
           this.showServiceDown = true;
           this.toggleInfiniteScroll();
-        });
-        break;
-    }
-  }
-
-  getStoreByDeliveryType(dt) {
-    this.queryResourceService.findStoreByTypeNameUsingGET(
-      {
-        name: dt.toLowerCase()
-      }
-    ).subscribe(res => {
-
-      console.log('Got DeliveryType' , res.content);
-
-      this.showServiceDown = false;
-      this.stores = res.content;
-
-      this.maxPage = res.totalPages;
-      this.pageNumber++;
-
-      this.map.setStores(this.stores);
-      this.map.setRestaurantMarkers();
-      this.getFavourites();
-
-      this.stores.forEach(store => {
-        this.getStoreCategory(store);
-        this.getStoreDeliveryType(store);
-      });
-    },
-    err => {
-      console.log('Error fetching stores');
-      this.showServiceDown = true;
-      this.toggleInfiniteScroll();
-    });
+        }
+      );
   }
 
   getStoresNoFilter() {
-    this.queryResourceService.findAllStoresUsingGET({ page: this.pageNumber })
+    this.queryResourceService
+      .findAllStoresUsingGET({ page: this.pageNumber })
       .subscribe(
         res => {
           this.showServiceDown = false;
@@ -184,7 +220,6 @@ export class RestaurantsPage implements OnInit {
             this.getStoreCategory(store);
             this.getStoreDeliveryType(store);
           });
-
         },
         err => {
           console.log('Error fetching stores');
@@ -193,7 +228,6 @@ export class RestaurantsPage implements OnInit {
         }
       );
   }
-
 
   getStoreCategory(store) {
     console.log('Getting Category', store.regNo);
@@ -204,10 +238,9 @@ export class RestaurantsPage implements OnInit {
           this.categories[store.regNo] = success.content;
           console.log('Got Category', success.content);
         },
-        err => { }
+        err => {}
       );
   }
-
 
   getStoreDeliveryType(store) {
     this.queryResourceService
@@ -219,12 +252,11 @@ export class RestaurantsPage implements OnInit {
           this.deliveryType[store.regNo] = success.content;
           console.log('DeliveryInfo', this.deliveryType[store.regNo]);
         },
-        err => { }
+        err => {}
       );
   }
 
   loadData(event) {
-
     if (this.pageNumber <= this.maxPage) {
       console.log('Loading more data');
       this.getStores();
@@ -243,7 +275,6 @@ export class RestaurantsPage implements OnInit {
       event.target.complete();
     }, 2000);
   }
-
 
   // Favourites Methods
 
@@ -266,7 +297,6 @@ export class RestaurantsPage implements OnInit {
   isFavourite(store: Store) {
     return this.favouriteRestaurantsID.includes(store.id);
   }
-
 
   // View Related Methods
 
@@ -294,7 +324,35 @@ export class RestaurantsPage implements OnInit {
       this.places = res;
     });
   }
-
+  getStoresByLocation() {
+    console.log('Getting Stores By Location');
+    this.locationService.getCurrentLocation().then(resp => {
+      this.queryResourceService
+        .searchByNearestLocationUsingGET({
+          latLon: resp.coords.latitude.toString() + ',' + resp.coords.longitude,
+          kiloMeter: this.filterService.filter.distance
+        })
+        .subscribe(
+          stores => {
+            this.showServiceDown = false;
+            this.stores = stores;
+            console.log('Stores By Location' + stores);
+            this.map.setStores(this.stores);
+            this.map.setRestaurantMarkers();
+            this.getFavourites();
+            this.stores.forEach(store => {
+              this.getStoreCategory(store);
+              this.getStoreDeliveryType(store);
+            });
+          },
+          err => {
+            console.log('error$', err);
+            this.showServiceDown = true;
+            this.toggleInfiniteScroll();
+          }
+        );
+    });
+  }
   updateMap(placeId) {
     this.map.decodeLatLongByPlaceId(placeId);
   }
@@ -304,7 +362,8 @@ export class RestaurantsPage implements OnInit {
   }
 
   searchRestaurants(event) {
-    this.queryResourceService.findStoreBySearchTermUsingGET({ searchTerm: event.detail.value })
+    this.queryResourceService
+      .findStoreBySearchTermUsingGET({ searchTerm: event.detail.value })
       .subscribe(result => {
         console.log(result.content);
         if (result.content.length === 0) {
@@ -328,12 +387,10 @@ export class RestaurantsPage implements OnInit {
       component: FilterComponent
     });
 
-    modal.onDidDismiss()
-    .then(() => {
-
-        this.pageNumber = 1;
-        this.infiniteScroll.disabled = false;
-        this.maxPage = 1;
+    modal.onDidDismiss().then(() => {
+      this.pageNumber = 1;
+      this.infiniteScroll.disabled = false;
+      this.maxPage = 1;
     });
 
     modal.present();

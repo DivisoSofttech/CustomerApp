@@ -1,22 +1,22 @@
 /* tslint:disable */
+import { ProductLine } from './product-line';
 export interface OrderMaster {
-  paymentTotal?: number;
-  amount?: number;
-  date?: string;
+  addressType?: string;
+  alternatePhone?: number;
+  city?: string;
+  customerName?: string;
   deliveryCharge?: number;
-  deliveryType?: string;
-  expectedDelivery?: string;
+  docketDate?: string;
   grandTotal?: number;
-  id?: number;
+  houseNoOrBuildingName?: string;
+  landmark?: string;
+  methodOfOrder?: string;
+  name?: string;
   orderId?: string;
-  customerId?: string;
-  paymentType?: string;
-  pricePerUnit?: number;
-  productId?: number;
-  quantity?: number;
-  ref?: string;
-  status?: string;
-  storeId?: string;
-  tax?: number;
-  total?: number;
+  phone?: number;
+  pincode?: number;
+  productLine?: Array<ProductLine>;
+  roadNameAreaOrStreet?: string;
+  soldBy?: string;
+  state?: string;
 }

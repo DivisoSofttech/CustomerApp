@@ -10,6 +10,7 @@ import { CommandResourceService } from './services/command-resource.service';
 import { OrderCommandResourceService } from './services/order-command-resource.service';
 import { GatewayResourceService } from './services/gateway-resource.service';
 import { LogoutResourceService } from './services/logout-resource.service';
+import { PaymentCommandResourceService } from './services/payment-command-resource.service';
 import { QueryResourceService } from './services/query-resource.service';
 
 /**
@@ -32,6 +33,7 @@ import { QueryResourceService } from './services/query-resource.service';
     OrderCommandResourceService,
     GatewayResourceService,
     LogoutResourceService,
+    PaymentCommandResourceService,
     QueryResourceService
   ],
 })

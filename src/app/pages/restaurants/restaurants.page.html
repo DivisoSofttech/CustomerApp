@@ -1,14 +1,21 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-title *ngIf="!searchBarOnly && !locateBarOnly">
+      <!-- <ion-title *ngIf="!searchBarOnly && !locateBarOnly">
         <ion-img src="/assets/icon/favicon.png" class="icon-logo"></ion-img>
-      </ion-title>
-    </ion-buttons>
+      </ion-title> -->
+      <ion-card id ="locationSearch" *ngIf="!searchBarOnly">
+      <ion-item>
+      <ion-label position="floating" ><ion-icon name="pin"></ion-icon> Search for your location...</ion-label>
+      <ion-input (ionCancel)="toggleSearchView(false); toggleLocateView(false)" showCancelButton debounce="1500"
+        *ngIf="!locateBarOnly && !searchBarOnly" (ionChange)="doPlaceSearch($event)"></ion-input>
+      </ion-item>
+      </ion-card>
+      </ion-buttons>
     <ion-buttons slot="end" *ngIf="!searchBarOnly && !locateBarOnly">
-      <ion-button (click)="toggleLocateView(true)">
+      <!-- <ion-button (click)="toggleLocateView(true)">
         <ion-icon name="locate" slot="icon-only"></ion-icon>
-      </ion-button>
+      </ion-button> -->
       <ion-button (click)="toggleSearchView(true)">
         <ion-icon name="search" slot="icon-only"></ion-icon>
       </ion-button>

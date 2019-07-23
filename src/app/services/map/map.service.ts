@@ -79,9 +79,8 @@ export class MapService {
       try {
         latLng = store.location.split(',');
       } catch (error) {
-
       }
-      if (this.map != undefined && latLng != undefined) {
+      if (this.map != undefined && latLng != undefined && latLng[0] != null && latLng[1] != null) {
         const marker: Marker = this.map.addMarkerSync({
           icon: 'assets/icon/marker.png',
           label: store.name,
@@ -104,7 +103,7 @@ export class MapService {
 
 
   decodeLatLongByPlaceId(placeId) {
-    this.map.remove();
+    // this.map.remove();
     this.locationService.geocodeAddress(placeId).then(latlon => {
       console.log(latlon);
       Environment.setEnv({

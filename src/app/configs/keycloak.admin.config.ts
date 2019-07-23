@@ -14,11 +14,14 @@ export class KeycloakAdminConfig {
       this.kcAdminClient.setConfig({
         baseUrl: 'http://35.196.86.249:8080/auth'
       });
-      this.configureKeycloakAdmin();
+    }
+
+    refreshClient(){
+      return this.configureKeycloakAdmin();
     }
 
     configureKeycloakAdmin() {
-      this.kcAdminClient.auth({
+     return  this.kcAdminClient.auth({
         username: 'admin',
         password: 'karma123',
         grantType: 'password',
