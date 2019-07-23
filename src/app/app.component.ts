@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   private subscriptionUserStatus: Subscription;
   cartSize;
   loggedIn = false;
+  enableFilter = false;
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -44,6 +45,9 @@ export class AppComponent implements OnInit {
     );
     this.userStatusService.observableStatus.subscribe(
       loggedIn => (this.loggedIn = loggedIn)
+    );
+    this.userStatusService.observableFilterToggle.subscribe(
+      enableFilter => (this.enableFilter = enableFilter)
     );
   }
 

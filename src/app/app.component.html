@@ -35,4 +35,8 @@
 
   <!-- the main content -->
   <ion-router-outlet id="menu-content"></ion-router-outlet>
+
+  <ion-menu side="end">
+    <app-filter  *ngIf="enableFilter" [enableCloseButton]='false'></app-filter>
+  </ion-menu>
 </ion-split-pane>

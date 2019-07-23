@@ -41,6 +41,7 @@ export class RestaurantsPage implements OnInit {
   searchBarOnly = false;
 
   places: any[] = [];
+  showFilter = true;
 
   slideOpts = {
     slidesPerView: this.platform.width() >= 640 ? 3 : 2,
@@ -71,7 +72,7 @@ export class RestaurantsPage implements OnInit {
 
 
   ngOnInit() {
-
+    this.showFilter = this.platform.width() <= 640 ? true : false;
     this.showServiceDown = false;
     this.now = new Date();
     this.filterService.getFilter()

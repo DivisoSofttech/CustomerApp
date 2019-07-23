@@ -8,6 +8,7 @@ import { QueryResourceService } from 'src/app/api/services';
 import { Order, Product, Stock, StockCurrent } from 'src/app/api/models';
 import { Loading } from 'src/app/components/loading';
 import { Router } from '@angular/router';
+import { UserStatusService } from 'src/app/services/user-status.service';
 
 @Component({
   selector: 'app-profile',
@@ -26,10 +27,10 @@ export class ProfilePage implements OnInit {
   favourites: Favourite[] = [];
   frequentOrders: StockCurrent[] = [
     {
-      product:{
-        name:'Burger',
-        reference:'abc',
-        searchkey:'cba'
+      product: {
+        name: 'Burger',
+        reference: 'abc',
+        searchkey: 'cba'
       },
       sellPrice: 10
     }
@@ -55,6 +56,7 @@ export class ProfilePage implements OnInit {
               private navController: NavController,
               private favourite: FavouriteService,
               private router: Router,
+              private userStatusService: UserStatusService,
               private platform: Platform,
               private loading: Loading) {
                 if (this.platform.width() <= 640) {
@@ -72,7 +74,7 @@ export class ProfilePage implements OnInit {
     //     this.loadingElement.present();
         this.favourite.getFavourites()
           .subscribe(data => {
-            console.log('favorrite',data);
+            console.log('favorrite', data);
             if (data != undefined) {
               this.favourites = data;
             }
@@ -128,6 +130,11 @@ export class ProfilePage implements OnInit {
 
   ionViewDidEnter() {
     console.log(this.frequentOrders);
+    this.userStatusService.disableFilterView();
+  }
+
+  ionViewWillLeave() {
+    this.userStatusService.enableFilterView();
   }
 
 
@@ -141,9 +148,9 @@ export class ProfilePage implements OnInit {
     modal.onDidDismiss()
       .then((data: any) => {
         try {
-          this.customer = data.data.customer;          
+          this.customer = data.data.customer;
         } catch (error) {
-          
+
         }
       });
 
@@ -159,14 +166,14 @@ export class ProfilePage implements OnInit {
       size: 2
     })
       .subscribe(orders => {
-        this.currentOrderPageNumber = orders.totalPages; 
+        this.currentOrderPageNumber = orders.totalPages;
         if (orders.content.length > 0) {
           console.log('Getting orders', orders);
           orders.content.forEach(order => {
             this.orders.push(order);
           });
         } else {
-          this.orders= [];
+          this.orders = [];
         }
       });
     if (this.currentOrderPageNumber === this.maximumPage) {
@@ -211,7 +218,7 @@ export class ProfilePage implements OnInit {
   }
 
   route(favourite: Favourite) {
-    let routeURL = favourite.route + '#' + favourite.data.id;
+    const routeURL = favourite.route + '#' + favourite.data.id;
     this.navController.navigateForward(routeURL);
   }
 

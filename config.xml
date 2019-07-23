@@ -20,8 +20,8 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
-    <preference name="GOOGLE_MAPS_ANDROID_API_KEY" value="AIzaSyAlRauFHvt4-SPhytz9xNPKqEYWOlyEemI" />
-    <preference name="GOOGLE_MAPS_IOS_API_KEY" value="AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw" />
+    <preference name="GOOGLE_MAPS_ANDROID_API_KEY" value="AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c" />
+    <preference name="GOOGLE_MAPS_IOS_API_KEY" value="AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
@@ -93,9 +93,9 @@
         <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="This app wants to get your location while this app runs only." />
         <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="This app wants to get your location always, even this app runs in background." />
     </plugin>
+    <allow-navigation href="http://localhost:8101" sessionid="acb97dae" />
+    <allow-navigation href="http://localhost:8100" sessionid="623061cc" />
     <engine name="browser" spec="5.0.4" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="4.5.5" />
-    <allow-navigation href="http://localhost:8101" sessionid="acb97dae" />
-    <allow-navigation href="http://localhost:8100" sessionid="623061cc" />
 </widget>

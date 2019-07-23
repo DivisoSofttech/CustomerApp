@@ -12,7 +12,7 @@
       <ion-button (click)="toggleSearchView(true)">
         <ion-icon name="search" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button (click)="filterModal()">
+      <ion-button *ngIf="showFilter"  (click)="filterModal()">
         <ion-icon name="funnel"></ion-icon>
       </ion-button>
     </ion-buttons>

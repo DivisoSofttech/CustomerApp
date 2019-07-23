@@ -1,5 +1,5 @@
 import { ModalController } from '@ionic/angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CategoryDTO, StoreDTO } from 'src/app/api/models';
 import { QueryResourceService } from 'src/app/api/services';
 import { Filter , FilterService } from 'src/app/services/filter.service';
@@ -12,6 +12,7 @@ import { Filter , FilterService } from 'src/app/services/filter.service';
 })
 export class FilterComponent implements OnInit {
 
+  @Input() enableCloseButton = true;
   distance = 4;
 
   price = {

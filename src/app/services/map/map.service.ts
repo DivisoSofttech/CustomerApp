@@ -8,7 +8,7 @@ import {
   MyLocation,
   GoogleMapsAnimation,
   GoogleMapsEvent
-} from "@ionic-native/google-maps";
+} from '@ionic-native/google-maps';
 import { Util } from '../util';
 import { NavController } from '@ionic/angular';
 import { LocationService } from '../location-service.service';
@@ -21,17 +21,17 @@ export class MapService {
   map: GoogleMap;
   stores: any;
 
-  constructor(private util:Util,
-    private navCtrl:NavController,
-    private locationService: LocationService) { }
+  constructor(private util: Util,
+              private navCtrl: NavController,
+              private locationService: LocationService) { }
 
   // Google Maps
 
   loadMap() {
     // This code is necessary for browser
     Environment.setEnv({
-      API_KEY_FOR_BROWSER_RELEASE: "AIzaSyAlRauFHvt4-SPhytz9xNPKqEYWOlyEemI",
-      API_KEY_FOR_BROWSER_DEBUG: "AIzaSyAlRauFHvt4-SPhytz9xNPKqEYWOlyEemI"
+      API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c',
+      API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c'
     });
 
     const mapOptions: GoogleMapOptions = {
@@ -45,7 +45,7 @@ export class MapService {
       }
     };
 
-    this.map = GoogleMaps.create("map_canvas", mapOptions);
+    this.map = GoogleMaps.create('map_canvas', mapOptions);
     this.map
       .getMyLocation()
       .then((location: MyLocation) => {
@@ -59,7 +59,7 @@ export class MapService {
         });
         const marker: Marker = this.map.addMarkerSync({
           position: location.latLng,
-          animation: GoogleMapsAnimation.BOUNCE
+          animation: GoogleMapsAnimation.DROP
         });
         marker.showInfoWindow();
       })
@@ -75,14 +75,15 @@ export class MapService {
   setRestaurantMarkers() {
     this.stores.forEach(store => {
       let latLng: string[];
+      console.log(store.location);
       try {
-        latLng = store.location.split(",");
+        latLng = store.location.split(',');
       } catch (error) {
 
       }
       if (this.map != undefined && latLng != undefined) {
         const marker: Marker = this.map.addMarkerSync({
-          icon: "assets/icon/marker.png",
+          icon: 'assets/icon/marker.png',
           label: store.name,
           position: {
             lat: +latLng[0],
@@ -98,7 +99,7 @@ export class MapService {
   }
 
   showHotelMenu(storeId) {
-    this.navCtrl.navigateForward("/hotel-menu/" + storeId);
+    this.navCtrl.navigateForward('/hotel-menu/' + storeId);
   }
 
 
@@ -107,8 +108,8 @@ export class MapService {
     this.locationService.geocodeAddress(placeId).then(latlon => {
       console.log(latlon);
       Environment.setEnv({
-        API_KEY_FOR_BROWSER_RELEASE: "AIzaSyAlRauFHvt4-SPhytz9xNPKqEYWOlyEemI",
-        API_KEY_FOR_BROWSER_DEBUG: "AIzaSyAlRauFHvt4-SPhytz9xNPKqEYWOlyEemI"
+        API_KEY_FOR_BROWSER_RELEASE: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c',
+        API_KEY_FOR_BROWSER_DEBUG: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c'
       });
       const mapOptions: GoogleMapOptions = {
         camera: {
@@ -120,10 +121,10 @@ export class MapService {
           tilt: 30
         }
       };
-      this.map = GoogleMaps.create("map_canvas", mapOptions);
+      this.map = GoogleMaps.create('map_canvas', mapOptions);
       const marker: Marker = this.map.addMarkerSync({
-        icon: "red",
-        animation: "bounce",
+        icon: 'red',
+        animation: 'bounce',
         position: {
           lat: latlon[0],
           lng: latlon[1]

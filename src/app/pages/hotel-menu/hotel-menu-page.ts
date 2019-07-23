@@ -1,3 +1,4 @@
+import { UserStatusService } from './../../services/user-status.service';
 import { FavouriteService } from './../../services/favourite/favourite.service';
 import { Subscription } from 'rxjs';
 import { CommandResourceService } from 'src/app/api/services';
@@ -73,10 +74,18 @@ export class HotelMenuPage implements OnInit {
     private keycloakService: KeycloakService,
     private favourite: FavouriteService,
     private mapService: MapService,
+    private userStatusService: UserStatusService,
     private searchHistoyService: SearchHistoryService
   ) { }
 
 
+  ionViewDidEnter() {
+    this.userStatusService.disableFilterView();
+  }
+
+  ionViewWillLeave() {
+    this.userStatusService.enableFilterView();
+  }
 
   ngOnInit() {
     this.util.createLoader()

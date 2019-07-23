@@ -1,3 +1,4 @@
+import { FilterComponent } from './components/filter/filter.component';
 import { UserStatusService } from './services/user-status.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { LocationService } from './services/location-service.service';
@@ -33,19 +34,19 @@ import { MapService } from './services/map/map.service';
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
+  entryComponents: [FilterComponent],
   imports: [
 
     ConfigsModule,
 
-
+    ComponentsModule,
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     OAuthModule.forRoot(),
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBMiG49LE8jalJZrgYTKcauhhSGkZHfUcw',
+      apiKey: 'AIzaSyAwC9dPmp280b4C18RBcGWjInRi9NGxo5c',
       libraries: ['places', 'geometry']
     }),
     IonicStorageModule.forRoot({

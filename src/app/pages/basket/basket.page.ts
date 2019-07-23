@@ -1,3 +1,4 @@
+import { UserStatusService } from './../../services/user-status.service';
 import { Customer } from './../../api/models/customer';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { MakePaymentComponent } from './../../components/make-payment/make-payment.component';
@@ -36,6 +37,7 @@ export class BasketPage {
     private platform: Platform,
     private navController: NavController,
     private queryResourceService: QueryResourceService,
+    private userStatusService: UserStatusService,
     private orderCommandResource: OrderCommandResourceService
   ) {
     if (this.platform.width() <= 640) {
@@ -62,8 +64,16 @@ export class BasketPage {
           data.dismiss();
         });
       });
-      this.setTotal();  
-    })
+      this.setTotal();
+    });
+  }
+
+  ionViewDidEnter() {
+    this.userStatusService.disableFilterView();
+  }
+
+  ionViewWillLeave() {
+    this.userStatusService.enableFilterView();
   }
 
   async presentToast(message: string) {

@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons>
-      <ion-button (click)="dismiss()">
-        <ion-icon name="arrow-back"></ion-icon>
+      <ion-button *ngIf="enableCloseButton"  (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
       </ion-button>
       <ion-title>Filters</ion-title>
     </ion-buttons>
@@ -17,7 +17,7 @@
 
   <ion-grid class="icon-grid">
     <ion-row inline>
-      <ion-col text-center>
+      <ion-col text-center size="3">
         <ion-button fill="none" (click)="filter('rating')">
           <ion-icon name="star-half" slot="icon-only"
           [color]="filterObject.sortFilter === 'rating' ? 'success' : 'primary'"></ion-icon>
@@ -26,14 +26,14 @@
         [color]="filterObject.sortFilter === 'rating' ? 'success' : 'primary'"
         >Rating</ion-text>
       </ion-col>
-      <ion-col text-center >
+      <ion-col text-center size="3">
         <ion-button fill="none" (click)="filter('time')" >
           <ion-icon name="time" slot="icon-only"
           [color]="filterObject.sortFilter === 'time' ? 'success' : 'primary'"></ion-icon>
         </ion-button>
         <ion-text color="medium" class="el-bl" [color]="filterObject.sortFilter === 'time' ? 'success' : 'primary'">Time</ion-text>
       </ion-col>
-      <ion-col text-center>
+      <ion-col text-center  size="3">
         <ion-button fill="none"  (click)="filter('ltoh')">
           <ion-icon name="wallet" slot="icon-only"
           [color]="filterObject.sortFilter === 'ltoh' ? 'success' : 'primary'"></ion-icon>
@@ -43,7 +43,7 @@
         <ion-text color="medium" class="el-bl"
         [color]="filterObject.sortFilter === 'ltoh' ? 'success' : 'primary'">Cost (Low to High)</ion-text>
       </ion-col>
-      <ion-col text-center>
+      <ion-col text-center size="3">
         <ion-button fill="none"  (click)="filter('htol')">
           <ion-icon name="wallet" slot="icon-only"
           [color]="filterObject.sortFilter === 'htol' ? 'success' : 'primary'"></ion-icon>
